@@ -10,11 +10,11 @@ sync_files_local(files, remote_path, local_path)
 remove_local_files(files, local_path)
 }
 \arguments{
-\item{files:}{\code{character} with the file names (including relative paths).}
+\item{files}{\code{character} with the file names (including relative paths).}
 
-\item{remote_path:}{\code{character(1)} with the remote location of the files.}
+\item{remote_path}{\code{character(1)} with the remote location of the files.}
 
-\item{local_path:}{\code{character(1)} local path where to store the files.}
+\item{local_path}{\code{character(1)} local path where to store the files.}
 }
 \description{
 Copy \code{files} from \code{remote_path} to \code{local_path}. Parameter \code{files} could e.g.

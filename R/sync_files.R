@@ -15,11 +15,11 @@
 #' the required files. After an analysis local files might again be removed
 #' using the `remove_local_files` function.
 #'
-#' @param files: `character` with the file names (including relative paths).
+#' @param files `character` with the file names (including relative paths).
 #'
-#' @param remote_path: `character(1)` with the remote location of the files.
+#' @param remote_path `character(1)` with the remote location of the files.
 #'
-#' @param local_path: `character(1)` local path where to store the files.
+#' @param local_path `character(1)` local path where to store the files.
 #'
 #' @author Johannes Rainer
 #'
