@@ -1,0 +1,37 @@
+language: r
+r: bioc-devel
+cache:
+  packages: true
+warnings_are_errors: true
+
+jobs:
+  include:
+    - stage: "Build"
+      r_packages:
+        - covr
+        - testthat
+        - knitr
+        - roxygen2
+      before_install:
+        - mkdir -p ~/.R
+        - echo -e 'MAKEFLAGS = -j2' > ~/.R/Makevars
+        - echo 'options(Ncpus = 2)' > ~/.Rprofile
+      script: true
+      name: "Build dependencies and cache"
+    - stage: "Check"
+      install: skip
+    - stage: "Deploy"
+      install: skip
+      script:
+        - travis_wait 20 Rscript -e 'covr::codecov()'
+      name: "codecov and pkgdown (on master)"
+
+# In general the r-travis script automatically dump the logs after failure but
+# because of a bug in travis the output is often truncated. See
+# https://github.com/travis-ci/travis-ci/issues/6018
+after_failure: sleep 10
+
+notifications:
+  email:
+    on_failure: change
+    on_success: change
