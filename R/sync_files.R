@@ -34,7 +34,8 @@
 #' ##sync_files_local(fls, remote_path = "/Users/jo/data",
 #' ##    local_path = "/Users/jo/tmp")
 sync_files_local <- function(files, remote_path, local_path) {
-    ## Check if files exist.
+    if (missing(files) | missing(remote_path) | missing(local_path))
+        stop("'files', 'remote_path' and 'local_path' have to be defined")
     files_remote <- paste0(remote_path, "/", files)
     if (!all(file.exists(files_remote)))
         stop("Can not find remote files ",

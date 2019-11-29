@@ -1,4 +1,4 @@
 library("testthat")
-library("MsCoreUtils")
+library("CompMetaboTools")
 
-test_check("MsCoreUtils")
+test_check("CompMetaboTools")
