@@ -17,14 +17,14 @@ Maintainer: Johannes Rainer <johannes.rainer@eurac.edu>
 Depends:
     R (>= 3.6.0)
 Imports:
-    methods,
     BiocParallel
 Suggests:
     testthat,
     knitr,
     roxygen2,
     msdata (>= 0.19.3),
-    mzR (>= 2.19.6)
+    mzR (>= 2.19.6),
+    robustbase
 License: Artistic-2.0
 LazyData: yes
 VignetteBuilder: knitr
