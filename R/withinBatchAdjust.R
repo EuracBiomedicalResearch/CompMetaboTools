@@ -28,7 +28,7 @@
 #'
 #' @author Johannes Rainer
 #'
-#' @md
+#' @export
 #'
 #' @importMethodsFrom SummarizedExperiment assayNames assay colData assay<-
 withinBatchAdjust <- function(x, models, batch = x$batch, assay = "norm",
