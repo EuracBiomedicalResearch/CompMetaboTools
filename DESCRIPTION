@@ -1,6 +1,6 @@
 Package: CompMetaboTools
 Title: Utility functions from the Eurac Research Computational Metabolomics Team
-Version: 0.0.2
+Version: 0.0.3
 Description: CompMetaboTools provides utility functions used frequently in
     analyses of the Computational Metabolomics Team of the Eurac Research
     Institute for Biomedicine.
@@ -17,7 +17,8 @@ Maintainer: Johannes Rainer <johannes.rainer@eurac.edu>
 Depends:
     R (>= 3.6.0)
 Imports:
-    BiocParallel
+    BiocParallel,
+    SummarizedExperiment
 Suggests:
     testthat,
     knitr,
@@ -32,4 +33,4 @@ BugReports: https://github.com/EuracBiomedicalResearch/CompMetaboTools/issues
 URL: https://github.com/EuracBiomedicalResearch/CompMetaboTools
 biocViews: Infrastructure, MassSpectrometry, Metabolomics
 Roxygen: list(markdown=TRUE)
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0

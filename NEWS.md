@@ -2,6 +2,11 @@
 
 ## CompMetaboTools 0.0.2
 
+- Add `withinBatchFit`, `withinBatchAdjust` and `dropModels` function to perform
+  per-batch separate model-based adjustments.
+
+## CompMetaboTools 0.0.2
+
 - Add `flag_*` functions to flag/identify potentially problematic model fits
   e.g. fitted to experimental data to explain an injection-order-dependent
   signal drift.

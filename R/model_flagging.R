@@ -28,6 +28,13 @@
 #'   (categories) for a categorical variable (e.g. batch) are larger than
 #'   `min_count`.
 #'
+#' - `flag_model_coef_count`: tests if the number of estimated coefficients
+#'   matches the expected number. This is useful/required for linear models
+#'   aimed to adjust a batch effect, but for which a coefficient was not
+#'   estimated for each batch (=level of the categorical variable representing
+#'   the batch). This could happen if only missing values were present for the
+#'   respective batch.
+#' 
 #' @param column for `flag_model_inj_range`: `character(1)` specifying the
 #'     column containing the injection index.
 #' 
@@ -47,6 +54,9 @@
 #' @param min_count for `flag_model_cat_count`: `integer(1)` with the minimum
 #'     required number of values within each category.
 #'
+#' @param n_coef for `flag_model_coef_count`: `integer(1)` with the expected
+#'     number of coefficients.
+#' 
 #' @param variable for `flag_model_cat_count`: `character(1)` with the name of
 #'     the categorical value. Should be one of `colnames(x$model)`.
 #'
@@ -101,4 +111,16 @@ flag_model_cat_count <- function(x, variable, min_count = 4) {
         min(table(x$model[, variable])) < min_count
     }
     else NA
+}
+
+#' @rdname model-flagging
+#'
+#' @export
+flag_model_coef_count <- function(x, n_coef) {
+  if (missing(n_coef))
+    stop("'n_coef' is missing")
+  if (length(x) > 1) {
+   length(x$coefficients) != n_coef
+  }
+  else NA
 }
