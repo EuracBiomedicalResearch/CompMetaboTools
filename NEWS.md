@@ -1,5 +1,10 @@
 # CompMetaboTools 0.1
 
+## CompMetaboTools 0.0.4
+
+- Add `extractSpectraData` to support converting data from the `MSnbase` to the
+  new `Spectra` package.
+
 ## CompMetaboTools 0.0.2
 
 - Add `withinBatchFit`, `withinBatchAdjust` and `dropModels` function to perform
