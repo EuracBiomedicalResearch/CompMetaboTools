@@ -1,5 +1,10 @@
 # CompMetaboTools 0.1
 
+## CompMetaboTools 0.0.5
+
+- Add `groupByCorrelation` to allow grouping of rows within a numeric matrix
+  by pairwise correlation with each other.
+
 ## CompMetaboTools 0.0.4
 
 - Add `extractSpectraData` to support converting data from the `MSnbase` to the
