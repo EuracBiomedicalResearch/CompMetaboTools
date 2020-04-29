@@ -10,7 +10,7 @@ Authors@R: c(person(given = "Johannes", family = "Rainer",
 	                comment = c(ORCID = "0000-0002-6977-7147")),
              person(given = "Mar", family = "Garcia-Aloy",
                     email = "mar.garcia@eurac.edu",
-                    role = c("aut", "cre"),
+                    role = c("aut"),
 	                comment = c(ORCID = "0000-0001-7406-4443")))
 Author: Mar Garcia-Aloy and Johannes Rainer.
 Maintainer: Johannes Rainer <johannes.rainer@eurac.edu>
@@ -22,10 +22,10 @@ Imports:
     S4Vectors,
     IRanges,
     methods,
+    xcms,
     stats
 Suggests:
     testthat,
-    knitr,
     roxygen2,
     msdata (>= 0.19.3),
     mzR (>= 2.19.6),
@@ -36,7 +36,6 @@ Remotes:
     rformassspectrometry/Spectra
 License: Artistic-2.0
 LazyData: yes
-VignetteBuilder: knitr
 BugReports: https://github.com/EuracBiomedicalResearch/CompMetaboTools/issues
 URL: https://github.com/EuracBiomedicalResearch/CompMetaboTools
 biocViews: Infrastructure, MassSpectrometry, Metabolomics
