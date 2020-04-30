@@ -61,10 +61,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          install.packages("BiocManager")
+          BiocManager::install(c("xcms", "mzR", "MSnbase", "SummarizedExperiment", "BiocParallel"))
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          install.packages("BiocManager")
-          BiocManager::install(c("mzR", "MSnbase", "SummarizedExperiment", "BiocParallel"))
         shell: Rscript {0}
 
       - name: Check
