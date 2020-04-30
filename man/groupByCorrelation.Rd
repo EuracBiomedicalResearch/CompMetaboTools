@@ -46,6 +46,11 @@ x <- rbind(
 
 groupByCorrelation(x)
 }
+\seealso{
+Other grouping operations: 
+\code{\link{groupEicCorrelation}()}
+}
 \author{
 Johannes Rainer
 }
+\concept{grouping operations}

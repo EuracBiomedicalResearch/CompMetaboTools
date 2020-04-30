@@ -1,5 +1,5 @@
 Package: CompMetaboTools
-Title: Utility functions from the Eurac Research Computational Metabolomics Team
+Title: Utility Functions from the Eurac Research Computational Metabolomics Team
 Version: 0.0.5
 Description: CompMetaboTools provides utility functions used frequently in
     analyses of the Computational Metabolomics Team of the Eurac Research
@@ -22,6 +22,7 @@ Imports:
     S4Vectors,
     IRanges,
     methods,
+    MSnbase,
     xcms,
     stats
 Suggests:
@@ -30,14 +31,13 @@ Suggests:
     msdata (>= 0.19.3),
     mzR (>= 2.19.6),
     robustbase,
-    MSnbase,
     Spectra
 Remotes:
-    rformassspectrometry/Spectra
+    RforMassSpectrometry/Spectra
 License: Artistic-2.0
 LazyData: yes
 BugReports: https://github.com/EuracBiomedicalResearch/CompMetaboTools/issues
 URL: https://github.com/EuracBiomedicalResearch/CompMetaboTools
 biocViews: Infrastructure, MassSpectrometry, Metabolomics
-Roxygen: list(markdown=TRUE)
 RoxygenNote: 7.1.0
+Roxygen: list(markdown=TRUE)

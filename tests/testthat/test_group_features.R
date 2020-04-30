@@ -27,3 +27,27 @@ test_that("groupByCorrelation works", {
 
     expect_error(groupByCorrelation(x, threshold = c(0.4, 0.3)), "length 1")
 })
+
+test_that("groupEicCorrelation works", {
+    chr1 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
+                         intensity = c(5, 29, 50, NA, 100, 12, 3, 4, 1, 3))
+    chr2 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
+                         intensity = c(80, 50, 20, 10, 9, 4, 3, 4, 1, 3))
+    chr3 <- Chromatogram(rtime = 3:9 + rnorm(7, sd = 0.3),
+                         intensity = c(53, 80, 130, 15, 5, 3, 2))
+    chrs <- Chromatograms(list(chr1, chr2, chr3))
+
+    res <- groupEicCorrelation(chrs)
+    expect_equal(res, list(c(1, 3), 2))
+
+    chrs <- Chromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3,
+                               chr2, chr3, chr1), ncol = 3)
+    res <- groupEicCorrelation(chrs)
+    expect_equal(res, list(1, 2, 3))
+
+    res <- groupEicCorrelation(chrs, aggregationFun = max)
+    expect_equal(res, list(c(1, 3, 2)))
+
+    res <- groupEicCorrelation(chrs, aggregationFun = median)
+    expect_equal(res, list(c(1, 3), 2))
+})

@@ -4,6 +4,8 @@
 
 - Add `groupByCorrelation` to allow grouping of rows within a numeric matrix
   by pairwise correlation with each other.
+- Add `groupEicCorrelation` to allow grouping of (extracted ion) chromatograms 
+  (EICs) based on pairwise correlation.
 
 ## CompMetaboTools 0.0.4
 

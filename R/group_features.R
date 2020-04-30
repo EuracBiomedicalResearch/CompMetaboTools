@@ -72,6 +72,8 @@
 #'
 #' @importFrom stats cor
 #' 
+#' @family grouping operations
+#'
 #' @export
 #'
 #' @examples
@@ -91,4 +93,75 @@ groupByCorrelation <- function(x, method = "pearson",
         stop("'threshold' has to be of length 1")
     cors <- cor(t(x), method = method, use = use) > threshold
     .group_logic_matrix(cors)
+}
+
+#' @title Group EICs based on their correlation
+#'
+#' @description
+#'
+#' `groupEicCorrelation` groups (extracted ion) chromatograms (EICs) based on
+#' their correlation with each other. If this correlation is higher than the
+#' provided `threshold` they are grouped.
+#'
+#' If `x` is a [Chromatograms()] object with more than one column (sample),
+#' pairwise correlations between EICs are first calculated for each column
+#' (sample) of `x` separately and subsequently aggregated across samples using
+#' `aggregationFun`. If `x` is a `Chromatograms` with 4 rows (EICs) and 3
+#' columns (samples), pairwise correlations are first calculated between all
+#' 4 EICs in each of the 3 columns resulting in 3 correlation matrices (of
+#' dimension 4x4). These correlation matrices are combined into a single matrix
+#' by combining the 3 correlation values per comparison with
+#' `aggregationFun`. By default the mean of the correlation value between e.g.
+#' EIC 1 and EIC 2 in each of the 3 columns is used as the final correlation
+#' value. Similar to the one-column case EICs are grouped if their (aggregated)
+#' correlation coefficient is larger than `threshold`.
+#'
+#' @param x [Chromatograms()] object of `list` of [Chromatogram()] objects.
+#'
+#' @param aggregationFun `function` to combine the correlation values between
+#'     pairs of EICs across samples (columns). See description for details.
+#'
+#' @param threshold `numeric(1)` with the threshold for correlation above which
+#'     EICs are grouped together.
+#'
+#' @param ... parameters for the [correlate()] function for [Chromatograms()]
+#'     objects.
+#'
+#' @importMethodsFrom xcms correlate
+#'
+#' @importFrom MSnbase Chromatograms
+#' 
+#' @family grouping operations
+#'
+#' @author Johannes Rainer
+#' 
+#' @export
+#'
+#' @examples
+#' 
+#' chr1 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
+#'     intensity = c(5, 29, 50, NA, 100, 12, 3, 4, 1, 3))
+#' chr2 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
+#'     intensity = c(80, 50, 20, 10, 9, 4, 3, 4, 1, 3))
+#' chr3 <- Chromatogram(rtime = 3:9 + rnorm(7, sd = 0.3),
+#'     intensity = c(53, 80, 130, 15, 5, 3, 2))
+#' chrs <- Chromatograms(list(chr1, chr2, chr3))
+#'
+#' groupEicCorrelation(chrs)
+#'
+#' ## With a Chromatograms with two columns, use the maximal correlation
+#' ## coefficient found in each of the columns
+#' chrs <- Chromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3), ncol = 2)
+#' groupEicCorrelation(chrs, aggregationFun = max)
+groupEicCorrelation <- function(x, aggregationFun = mean,
+                                threshold = 0.8, ...) {
+    nr <- nrow(x)
+    nc <- ncol(x)
+    res <- array(NA_real_, dim = c(nr, nr, nc))
+    ## For performance issues it would also be possible to run with full = FALSE
+    for (i in seq_len(nc)) {
+        res[, , i] <- correlate(x[, i], ...)
+    }
+    res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE) > threshold
+    .group_logic_matrix(res)
 }
