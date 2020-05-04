@@ -36,6 +36,7 @@ test_that("groupByCorrelation works", {
 })
 
 test_that("groupEicCorrelation works", {
+    set.seed(123)
     chr1 <- MSnbase::Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
                          intensity = c(5, 29, 50, NA, 100, 12, 3, 4, 1, 3))
     chr2 <- MSnbase::Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
@@ -46,19 +47,19 @@ test_that("groupEicCorrelation works", {
 
     res <- groupEicCorrelation(chrs)
     expect_true(is.factor(res))
-    expect_equal(res, factor(c(1, 2, 1)))
+    expect_equal(res, factor(c(1L, 2L, 1L)))
 
     chrs <- MSnbase::Chromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3,
                                         chr2, chr3, chr1), ncol = 3)
     res <- groupEicCorrelation(chrs)
     expect_true(is.factor(res))
-    expect_equal(res, factor(c(1, 2, 3)))
+    expect_equal(res, factor(c(1L, 2L, 3L)))
 
     res <- groupEicCorrelation(chrs, aggregationFun = max)
     expect_true(is.factor(res))
-    expect_equal(res, factor(c(1, 1, 1)))
+    expect_equal(res, factor(c(1L, 1L, 1L)))
 
     res <- groupEicCorrelation(chrs, aggregationFun = median)
     expect_true(is.factor(res))
-    expect_equal(res, factor(c(1, 2, 1)))
+    expect_equal(res, factor(c(1L, 2L, 1L)))
 })

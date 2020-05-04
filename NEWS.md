@@ -2,6 +2,7 @@
 
 ## CompMetaboTools 0.0.5
 
+- Add `c` method to (row-wise) combine `Chromatograms` objects.
 - Add `groupByCorrelation` to allow grouping of rows within a numeric matrix
   by pairwise correlation with each other.
 - Add `groupEicCorrelation` to allow grouping of (extracted ion) chromatograms 

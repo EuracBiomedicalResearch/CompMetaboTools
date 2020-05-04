@@ -19,11 +19,13 @@ Depends:
 Imports:
     BiocParallel,
     SummarizedExperiment,
+    Biobase,
     S4Vectors,
     IRanges,
     methods,
     MSnbase,
     xcms,
+    MsCoreUtils,
     stats
 Suggests:
     testthat,
