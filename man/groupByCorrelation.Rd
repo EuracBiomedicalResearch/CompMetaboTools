@@ -25,8 +25,8 @@ correlation. See \code{\link[=corr]{corr()}} for details.}
 rows are considered to be correlated and hence grouped.}
 }
 \value{
-\code{list} of indices of rows which are grouped based on their
-correlation.
+\code{factor} with same length than \code{nrow(x)} with the group each row
+is assigned to.
 }
 \description{
 The \code{groupByCorrelation} allows to group rows in a numeric matrix based on

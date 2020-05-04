@@ -43,6 +43,18 @@
     groups[lengths(groups) > 0]
 }
 
+#' @note this expects a `list` of `integer` were each index is only present
+#'     **once** and in addition no indices should be missing!
+#'
+#' @noRd
+.index_list_to_factor <- function(x) {
+    len <- sum(lengths(x))
+    res <- integer(len)
+    for (i in seq_along(x))
+        res[x[[i]]] <- i
+    as.factor(res)
+}
+
 #' @title Group rows in a matrix based on their correlation
 #'
 #' @description
@@ -65,8 +77,8 @@
 #' @param threshold `numeric(1)` defining the cut of value above which
 #'     rows are considered to be correlated and hence grouped.
 #'
-#' @return `list` of indices of rows which are grouped based on their
-#'     correlation.
+#' @return `factor` with same length than `nrow(x)` with the group each row
+#'     is assigned to.
 #'
 #' @author Johannes Rainer
 #'
@@ -92,7 +104,7 @@ groupByCorrelation <- function(x, method = "pearson",
     if (length(threshold) > 1)
         stop("'threshold' has to be of length 1")
     cors <- cor(t(x), method = method, use = use) > threshold
-    .group_logic_matrix(cors)
+    .index_list_to_factor(.group_logic_matrix(cors))
 }
 
 #' @title Group EICs based on their correlation
@@ -127,6 +139,10 @@ groupByCorrelation <- function(x, method = "pearson",
 #' @param ... parameters for the [correlate()] function for [Chromatograms()]
 #'     objects.
 #'
+#' @return `factor` same length as `nrow(x)` (if `x` is a `Chromatograms`
+#'     object) or `length(x)` (if `x` is a `list`) with the group each EIC
+#'     is assigned to.
+#' 
 #' @importMethodsFrom xcms correlate
 #'
 #' @importFrom MSnbase Chromatograms
@@ -138,7 +154,8 @@ groupByCorrelation <- function(x, method = "pearson",
 #' @export
 #'
 #' @examples
-#' 
+#'
+#' library(MSnbase)
 #' chr1 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
 #'     intensity = c(5, 29, 50, NA, 100, 12, 3, 4, 1, 3))
 #' chr2 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
@@ -163,5 +180,5 @@ groupEicCorrelation <- function(x, aggregationFun = mean,
         res[, , i] <- correlate(x[, i], ...)
     }
     res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE) > threshold
-    .group_logic_matrix(res)
+    .index_list_to_factor(.group_logic_matrix(res))
 }

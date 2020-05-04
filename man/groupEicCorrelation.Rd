@@ -18,6 +18,11 @@ EICs are grouped together.}
 \item{...}{parameters for the \code{\link[=correlate]{correlate()}} function for \code{\link[=Chromatograms]{Chromatograms()}}
 objects.}
 }
+\value{
+\code{factor} same length as \code{nrow(x)} (if \code{x} is a \code{Chromatograms}
+object) or \code{length(x)} (if \code{x} is a \code{list}) with the group each EIC
+is assigned to.
+}
 \description{
 \code{groupEicCorrelation} groups (extracted ion) chromatograms (EICs) based on
 their correlation with each other. If this correlation is higher than the
@@ -38,6 +43,7 @@ correlation coefficient is larger than \code{threshold}.
 }
 \examples{
 
+library(MSnbase)
 chr1 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
     intensity = c(5, 29, 50, NA, 100, 12, 3, 4, 1, 3))
 chr2 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
