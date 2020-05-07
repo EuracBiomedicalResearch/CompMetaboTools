@@ -1,5 +1,13 @@
 # CompMetaboTools 0.1
 
+## CompMetaboTools 0.0.5
+
+- Add `c` method to (row-wise) combine `Chromatograms` objects.
+- Add `groupByCorrelation` to allow grouping of rows within a numeric matrix
+  by pairwise correlation with each other.
+- Add `groupEicCorrelation` to allow grouping of (extracted ion) chromatograms 
+  (EICs) based on pairwise correlation.
+
 ## CompMetaboTools 0.0.4
 
 - Add `extractSpectraData` to support converting data from the `MSnbase` to the
