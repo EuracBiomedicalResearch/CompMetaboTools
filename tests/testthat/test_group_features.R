@@ -33,6 +33,16 @@ test_that("groupByCorrelation works", {
     expect_equal(res, factor(c(1, 1, 2, 1)))
 
     expect_error(groupByCorrelation(x, threshold = c(0.4, 0.3)), "length 1")
+
+    x <- rbind(x,
+               c(2, 4, 6, 9),
+               c(1, 4, 1, 4),
+               c(1, 2, 3, 4))
+    f <- c(1, 2, 2, 1, 1, 2, 2)
+    res <- groupByCorrelation(x, f = f)
+    expect_equal(res, factor(c("1.1", "2.1", "2.2", "1.1", "1.1", "2.2", "2.1")))
+
+    expect_error(groupByCorrelation(x, f = 3), "its length has to ")
 })
 
 test_that("groupEicCorrelation works", {
