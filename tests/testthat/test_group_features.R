@@ -73,3 +73,31 @@ test_that("groupEicCorrelation works", {
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 1L)))
 })
+
+test_that("groupToSinglePolarityPairs works", {
+    x <- rbind(
+        c(4, 3, 5, 1),
+        c(4, 2, 5, 1),
+        c(4, 3, 4, 1),
+        c(4, 3, 4, 1),
+        c(4, 4, 4, 9),
+        c(4, 4, 4, 9),
+        c(4, 4, 4, 9))
+
+    expect_error(groupToSinglePolarityPairs(f = 1:4), "are required")
+    expect_error(groupToSinglePolarityPairs(f = rep(1, nrow(x)), polarity = 4,
+                                fvals = x), "has to match")
+    expect_error(groupToSinglePolarityPairs(f = rep(1, nrow(x)),
+                                            polarity = rep(1, nrow(x)),
+                                            fvals = x[1:4, ]), "has to match")
+
+    res <- groupToSinglePolarityPairs(f = rep(1, nrow(x)),
+                                      polarity = rep(1, nrow(x)),
+                                      x)
+    expect_true(length(res) == length(levels(res)))
+
+    pol <- c("POS", "NEG", "POS", "NEG", "POS", "NEG", "POS")
+    res <- groupToSinglePolarityPairs(f = c(1, 1, 1, 1, 1, 2, 2),
+                                      polarity = pol, x)
+    expect_equal(res, factor(c("1.2", "1.2", "1.1", "1.1", "1.3", "2.1", "2.1")))
+})

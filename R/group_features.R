@@ -222,3 +222,108 @@ groupEicCorrelation <- function(x, aggregationFun = mean,
     res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE) > threshold
     .index_list_to_factor(.group_logic_matrix(res))
 }
+
+#' @title Sub-group allowing only single positive/polarity pairs per group
+#'
+#' @description
+#'
+#' Based on a grouping `f` and the polarity of each element `polarity`, the
+#' function ensures each feature group to consist of only a single
+#' positive/negative feature pair. Thus, each of the groups in `f` is further
+#' sub-grouped into positive/negative feature pairs with the highest correlation
+#' of feature values across samples. In the returned grouping no group will
+#' have more than one feature of the same polarity.
+#'
+#' This function can be helpful for merging feature grouping results from
+#' positive and negative polarity.
+#'
+#' @param f vector defining the initial grouping of elements (e.g. such as
+#'     returned by `groupByCorrelation`.
+#'
+#' @param polarity vector (same length than `f`) with the polarity for each
+#'     element (feature).
+#'
+#' @param fvals `numeric` `matrix` (number of rows matching `length(f)`) with
+#'     feature values across e.g. samples. Correlations will be calculated
+#'     between rows of this matrix.
+#'
+#' @return `factor` with the grouping, ensuring that each group consists of only
+#'     a single positive/negative pair.
+#'
+#' @author Johannes Rainer
+#'
+#' @family grouping operations
+#'
+#' @export
+#'
+#' @examples
+#'
+#' ## Define a simple matrix where the first 4 and the last 3 rows are highly
+#' ## correlated with each other.
+#' x <- rbind(
+#'     c(4, 3, 5, 1),
+#'     c(4, 2, 5, 1),
+#'     c(4, 3, 4, 1),
+#'     c(4, 3, 4, 1),
+#'     c(4, 4, 4, 9),
+#'     c(4, 4, 4, 9),
+#'     c(4, 4, 4, 9))
+#'
+#' ## Determin the expected grouping by correlation
+#' grp <- groupByCorrelation(x)
+#' grp
+#'
+#' ## Each second row represents however a feature measured in a different
+#' ## polarity. From another grouping (e.g. based on EIC correlation) we know
+#' ## however that none of the positive polarity features should be
+#' ## grouped together. We apply now the function to further subgroup `grp`
+#' ## keeping only single positive/negative pairs in each group of `grp`.
+#' pol <- c("NEG", "POS", "NEG", "POS", "NEG", "POS", "NEG")
+#'
+#' groupToSinglePolarityPairs(grp, pol, x)
+groupToSinglePolarityPairs <- function(f, polarity = rep(1, length(f)), fvals) {
+    if (missing(f) || missing(polarity) || missing(fvals))
+        stop("Parameters 'f', 'polarity' and 'fvals' are required")
+    if (length(f) != length(polarity))
+        stop("Length of 'f' and 'polarity' has to match")
+    if (length(f) != nrow(fvals))
+        stop("Number of rows of 'fvals' and length of 'f' has to match")
+    res <- character(length(f))
+    f <- as.character(f)
+    for (fg in unique(f)) {
+        idx <- which(f == fg)
+        idxl <- length(idx)
+        if (idxl > 1) {
+            pols <- polarity[idx]
+            if (length(unique(pols)) > 1) {
+                cors <- cor(t(fvals[idx, ]), use = "pairwise.complete.obs",
+                            method = "pearson")
+                cors[!upper.tri(cors)] <- NA
+                grpl <- list()
+                while(any(!is.na(cors))) {
+                    idx_max <- which(cors == max(cors, na.rm = TRUE),
+                                     arr.ind = TRUE)[1, , drop = FALSE]
+                    cors[idx_max] <- NA
+                    idx_max <- as.numeric(idx_max)
+                    ## Only consider pairing if we have pos AND neg polarity
+                    if (length(unique(pols[idx_max])) > 1) {
+                        grpl[[(length(grpl) + 1)]] <- idx_max
+                        cors[idx_max, ] <- NA
+                        cors[, idx_max] <- NA
+                    }
+                }
+                grps_tmp <- rep(NA_integer_, idxl)
+                for (i in seq_along(grpl))
+                    grps_tmp[grpl[[i]]] <- i
+                nas <- is.na(grps_tmp)
+                if (any(nas))
+                    grps_tmp[nas] <- seq((length(grpl) + 1),
+                                         length.out = sum(nas))
+                res[idx] <- paste0(fg, ".", grps_tmp)
+            } else
+                res[idx] <- paste0(fg, ".", seq_len(idxl))
+        } else
+            res[idx] <- paste0(fg, ".1")
+    }
+    as.factor(res)
+}
