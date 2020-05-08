@@ -1,7 +1,11 @@
 #' @description
 #'
 #' Utility function to group rows/columns in an nxn logical matrix which
-#' have a `TRUE`.
+#' have a `TRUE`. Note that this groups also rows/columns together that are not
+#' direclty *linked* with a `TRUE`, but that are linked via other rows/columns
+#' they have in common (i.e. if between row 2 and 4 is a `TRUE`, but also
+#' between 3 and 4, all 3 of them are joined together, even if they are not
+#' directly linked).
 #'
 #' @param x `logical` `matrix` with same number of rows and columns. See below
 #'      for examples.
@@ -24,21 +28,62 @@
 #' xcor <- cor(t(x))
 #'
 #' .group_logic_matrix(xcor > 0.9)
+#'
+#' xcor <- matrix(FALSE, ncol = 13, nrow = 13)
+#' for (i in 1:13)
+#'     xcor[i, i] <- TRUE
+#' xcor[8, 6] <- TRUE
+#' xcor[8, 7] <- TRUE
+#' xcor[9, 7] <- TRUE
+#' xcor[11, 7] <- TRUE
+#' xcor[6, 8] <- TRUE
+#' xcor[7, 8] <- TRUE
+#' xcor[10, 8] <- TRUE
+#' xcor[13, 8] <- TRUE
+#' xcor[7, 9] <- TRUE
+#' xcor[8, 10] <- TRUE
+#' xcor[7, 11] <- TRUE
+#' xcor[12, 11] <- TRUE
+#' xcor[11, 12] <- TRUE
+#' xcor[8, 13] <- TRUE
+#' .group_logic_matrix(xcor)
+#'
+#' xcor <- matrix(FALSE, ncol = 10, nrow = 10)
+#' for (i in seq_len(ncol(xcor))) {
+#'     xcor[i, i] <- TRUE
+#' }
+#' xcor[1, 4] <- TRUE
+#' xcor[4, 1] <- TRUE
+#' xcor[2, 8] <- TRUE
+#' xcor[8, 2] <- TRUE
+#' xcor[3, 9] <- TRUE
+#' xcor[9, 3] <- TRUE
+#' xcor[8, 9] <- TRUE
+#' xcor[9, 8] <- TRUE
+#' .group_logic_matrix(xcor)
 .group_logic_matrix <- function(x) {
     x <- unname(x)
     nr <- nrow(x)
     if (nr != ncol(x))
         stop("'x' is supposed to be a symmetric matrix")
     groups <- vector("list", nr)
+    idx <- which(x, arr.ind = TRUE)
     is_in_group <- rep(FALSE, nr)
     for (i in seq_len(nr)) {
         if (is_in_group[i])
             next
-        idx <- which(x[i, ])
-        if (length(idx) > 1)
-            idx <- unique(c(idx, which(rowSums(x[, idx], na.rm = TRUE) > 0)))
-        groups[[i]] <- idx
-        is_in_group[idx] <- TRUE
+        elms <- idx[idx[, 1] == i, 2]
+        if (length(elms) == 1) {
+            groups[[i]] <- i
+            is_in_group[i] <- TRUE
+        } else {
+            while(!all(is_in_group[elms])) {
+                is_in_group[elms] <- TRUE
+                ## Get all rows containing these elements
+                elms <- unique(idx[idx[, 1] %in% elms, 2])
+            }
+            groups[[i]] <- elms
+        }
     }
     groups[lengths(groups) > 0]
 }
@@ -126,9 +171,10 @@ groupByCorrelation <- function(x, method = "pearson",
     if (!is.null(f)) {
         if (length(f) != nrow(x))
             stop("If 'f' is provided its length has to be equal to 'nrow(x)'")
-        f <- as.character(f)
-        fnew <- character(length(f))
-        for (fg in unique(f)) {
+        if (!is.factor(f))
+            f <- factor(f, levels = unique(f))
+        fnew <- rep(NA_character_, length(f))
+        for (fg in levels(f)) {
             idx <- which(f == fg)
             idxl <- length(idx)
             if (idxl > 1) {
@@ -288,9 +334,10 @@ groupToSinglePolarityPairs <- function(f, polarity = rep(1, length(f)), fvals) {
         stop("Length of 'f' and 'polarity' has to match")
     if (length(f) != nrow(fvals))
         stop("Number of rows of 'fvals' and length of 'f' has to match")
-    res <- character(length(f))
-    f <- as.character(f)
-    for (fg in unique(f)) {
+    if (!is.factor(f))
+        f <- factor(f, levels = unique(f))
+    res <- rep(NA_character_, length(f))
+    for (fg in levels(f)) {
         idx <- which(f == fg)
         idxl <- length(idx)
         if (idxl > 1) {

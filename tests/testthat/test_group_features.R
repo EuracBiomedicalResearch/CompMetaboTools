@@ -14,7 +14,42 @@ test_that(".group_logic_matrix works", {
                   c(FALSE, FALSE, FALSE, TRUE, FALSE),
                   c(TRUE, FALSE, TRUE, FALSE, TRUE))
     res <- .group_logic_matrix(xmat)
-    expect_equal(res, list(c(1, 5, 3), 2, 4))
+    expect_equal(res, list(c(1, 3, 5), 2, 4))
+
+    xcor <- matrix(FALSE, ncol = 13, nrow = 13)
+    for (i in 1:13)
+        xcor[i, i] <- TRUE
+    xcor[8, 6] <- TRUE
+    xcor[8, 7] <- TRUE
+    xcor[9, 7] <- TRUE
+    xcor[11, 7] <- TRUE
+    xcor[6, 8] <- TRUE
+    xcor[7, 8] <- TRUE
+    xcor[10, 8] <- TRUE
+    xcor[13, 8] <- TRUE
+    xcor[7, 9] <- TRUE
+    xcor[8, 10] <- TRUE
+    xcor[7, 11] <- TRUE
+    xcor[12, 11] <- TRUE
+    xcor[11, 12] <- TRUE
+    xcor[8, 13] <- TRUE
+    res <- .group_logic_matrix(xcor)
+    expect_equal(res, list(1, 2, 3, 4, 5, c(6:13)))
+    
+    xcor <- matrix(FALSE, ncol = 10, nrow = 10)
+    for (i in seq_len(ncol(xcor))) {
+        xcor[i, i] <- TRUE
+    }
+    xcor[1, 4] <- TRUE
+    xcor[4, 1] <- TRUE
+    xcor[2, 8] <- TRUE
+    xcor[8, 2] <- TRUE
+    xcor[3, 9] <- TRUE
+    xcor[9, 3] <- TRUE
+    xcor[8, 9] <- TRUE
+    xcor[9, 8] <- TRUE
+    res <- .group_logic_matrix(xcor)
+    expect_equal(res, list(c(1, 4), c(2, 3, 8, 9), 5, 6, 7, 10))
 })
 
 test_that(".index_list_to_factor works", {
@@ -42,6 +77,10 @@ test_that("groupByCorrelation works", {
     res <- groupByCorrelation(x, f = f)
     expect_equal(res, factor(c("1.1", "2.1", "2.2", "1.1", "1.1", "2.2", "2.1")))
 
+    f <- c(1, 2, NA, NA, 1, 2, 2)
+    res <- groupByCorrelation(x, f = f)
+    expect_equal(res, factor(c("1.1", "2.1", NA, NA, "1.1", "2.2", "2.1")))
+    
     expect_error(groupByCorrelation(x, f = 3), "its length has to ")
 })
 
