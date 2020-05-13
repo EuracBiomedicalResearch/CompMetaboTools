@@ -374,3 +374,112 @@ groupToSinglePolarityPairs <- function(f, polarity = rep(1, length(f)), fvals) {
     }
     as.factor(res)
 }
+
+#' @title Grouping of values into sets with smallest differences
+#'
+#' @description
+#'
+#' `groupClosest` groups values in `x` for which the difference is smaller than
+#' `maxDiff`. As a result, the mean value between the groups will always be
+#' larger than `maxDiff`. Values which would be assigned to more than one
+#' group, are assigned to the one with the smallest difference to the group
+#' mean value.
+#'
+#' In detail, from the sorted `x`, the function starts from the smallest value
+#' defining the first group as the one containing all
+#' values in `x` with a difference to this first value which is `<= maxDiff`.
+#' The next group is the defined based on the next larger value not being part
+#' of the first group and includes all values with a difference `<= maxDiff` to
+#' this value. For values fulfilling this criteria but being already part of
+#' a previous group, the differences to the mean value of the current group
+#' and to the mean of previous groups are compared and values are assigned to
+#' the group to which they have the smallest difference.
+#'
+#' Example: values `1.1, 1.9, 2.2` should be grouped with a `maxDiff = 1`. The
+#' first group is defined to include all values for which the difference to the
+#' first value (`1.1`) is smaller `maxDiff`. Thus, the first group is defined
+#' to contain values `1.1 and 1.9`. Then the next group is defined based on the
+#' next larger value not part of any group, `2.2`. This group contains values
+#' `1.9` and `2.2` with the value `1.9` being already assigned to the first
+#' group. The difference between this value `1.9` and the mean of the
+#' current group (`mean(c(1.9, 2.2)`) is then compared to the difference of
+#' `1.9` to the mean value of the group `1.9` is already part of
+#' (which is `mean(c(1.1, 1.9))`). Since the difference to the second group is
+#' smaller, `1.9` is removed from the first group and assigned to the second
+#' one.
+#'
+#' @note
+#'
+#' This grouping approach, in contrast to [xcms::groupOverlaps()], creates
+#' smaller groups and values might not be included into the same group even
+#' if their difference is smaller than `maxDiff` (see examples below).
+#' 
+#' @param x `numeric` of values that should be grouped.
+#'
+#' @param maxDiff `numeric(1)` defining the threshold for difference between
+#'     values in `x` to be grouped into the same group.
+#'
+#' @return `integer` with the group assignment (values grouped together have
+#'     the same value).
+#'
+#' @author Johannes Rainer
+#' 
+#' @family grouping operations
+#'
+#' @export
+#' 
+#' @examples
+#'
+#' ## The example described above
+#' x <- c(1.1, 1.9, 2.2)
+#' groupClosest(x)
+#' 
+#' x <- c(1.1, 1.5, 1.7, 2.3, 2.7, 4.3, 4.4, 4.9, 5.2, 5.4, 5.8, 6, 7, 9, 9.5, 15)
+#'
+#' groupClosest(x)
+#' ## value 5.2 was initially grouped with 4.3 (because their difference is
+#' ## smaller 1, but then re-grouped together with 5.4 because the difference
+#' ## between 5.4 (the next value outside the group of 4.3) and 5.2 is smaller
+#' ## than its difference to the mean value of the group for value 4.3
+#'
+#' ## Example for a case in which values are NOT grouped into the same group
+#' ## even if the difference between them is <= maxDiff
+#' a <- c(4.9, 5.2, 5.4)
+#' groupClosest(a, maxDiff = 0.3)
+groupClosest <- function(x, maxDiff = 1) {
+    if (is.unsorted(x)) {
+        idx <- order(x)
+        x <- x[idx]
+    } else idx <- integer()
+    x_len <- length(x)
+    x_groups <- rep(NA_integer_, x_len)
+    i <- 1
+    group_id <- 1
+    while(any(is.na(x_groups))) {
+        grp <- which(abs(x - x[i]) <= maxDiff)
+        ## Check if they are already part of a previous group
+        not_in_prev_grp <- is.na(x_groups[grp])
+        in_prev_grp <- grp[!not_in_prev_grp]
+        ## grp <- grp[not_in_prev_grp]
+        if (length(in_prev_grp)) {
+            ## compare difference to current x[i] to mean of previous group(s)
+            ## they are part of and assign them to the group with the closest
+            ## difference
+            ## i_diff <- abs(x[in_prev_grp] - x[i])
+            ## Compare to the average of the current group.
+            i_diff <- abs(x[in_prev_grp] - mean(x[grp]))
+            prev_grp <- x_groups[in_prev_grp]
+            to_rem <- rep(FALSE, length(in_prev_grp))
+            for (j in unique(prev_grp)) {
+                j_diff <- abs(x[in_prev_grp] - mean(x[which(x_groups == j)]))
+                to_rem <- to_rem | j_diff < i_diff
+            }
+            grp <- c(in_prev_grp[!to_rem], grp[not_in_prev_grp])
+        }
+        x_groups[grp] <- group_id
+        group_id <- group_id + 1
+        i <- which.max(is.na(x_groups))
+    }
+    x_groups[idx] <- x_groups
+    x_groups
+}

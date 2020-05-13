@@ -61,6 +61,7 @@ groupToSinglePolarityPairs(grp, pol, x)
 \seealso{
 Other grouping operations: 
 \code{\link{groupByCorrelation}()},
+\code{\link{groupClosest}()},
 \code{\link{groupEicCorrelation}()}
 }
 \author{

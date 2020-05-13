@@ -69,6 +69,7 @@ groupByCorrelation(x, f = f)
 }
 \seealso{
 Other grouping operations: 
+\code{\link{groupClosest}()},
 \code{\link{groupEicCorrelation}()},
 \code{\link{groupToSinglePolarityPairs}()}
 }

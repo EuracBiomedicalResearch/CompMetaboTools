@@ -140,3 +140,20 @@ test_that("groupToSinglePolarityPairs works", {
                                       polarity = pol, x)
     expect_equal(res, factor(c("1.2", "1.2", "1.1", "1.1", "1.3", "2.1", "2.1")))
 })
+
+test_that("groupClosest works", {
+    x <- c(1.1, 1.5, 1.7, 2.3, 2.7, 4.3, 4.4, 4.9, 5.2, 5.4, 5.8, 6, 7, 9, 9.5, 15)
+    res <- groupClosest(x)
+    expect_equal(res, c(1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 6, 6, 7))
+
+    res <- groupClosest(x, maxDiff = 0.3)
+    expect_equal(res, c(1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 8, 9, 10, 11, 12))
+
+    idx <- sample(seq_along(res))
+    res_2 <- groupClosest(x[idx], maxDiff = 0.3)
+    expect_equal(res[idx], res_2)
+    
+    a <- c(4.9, 5.2, 5.4)
+    res <- groupClosest(a, maxDiff = 0.3)
+    expect_equal(res, c(1, 2, 2))
+})
