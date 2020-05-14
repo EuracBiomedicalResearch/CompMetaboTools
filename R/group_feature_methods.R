@@ -17,7 +17,10 @@ setGeneric("groupFeatures", function(object, param, ...)
 #' used as an initial *crude* grouping of features based on the median retention
 #' time of all their chromatographic peaks. All features with a difference in
 #' their retention time which is `<=` parameter `diffRt` of the parameter object
-#' are grouped together. Two different grouping methods are available:
+#' are grouped together. If a column `"feature_group"` is found in
+#' [xcms::featureDefinitions()] this is further sub-grouped by this method.
+#'
+#' Two different grouping methods are available:
 #'
 #' - `method = "greedy"`: this approach consecutively groups elements together
 #'   if their difference in retention time is smaller than `diffRt`. If two
@@ -143,20 +146,33 @@ setMethod(
         is_msLevel <- featureDefinitions(object)$ms_level == msLevel
         if (any(colnames(featureDefinitions(object)) == "feature_group")) {
             f <- featureDefinitions(object)$feature_group
-            if (!all(is.na(f[is_msLevel])))
-                warning("Found existing feature groups. ",
-                        "These will be over-written ")
-        } else
-            f <- rep(NA_character_, nrow(featureDefinitions(object)))
-        if (param@method == "greedy")
-            f[is_msLevel] <- paste0(
-                "FG.", group(featureDefinitions(object)$rtmed[is_msLevel],
-                             tolerance = param@diffRt))
-        if (param@method == "groupClosest")
-            f[is_msLevel] <- paste0(
-                "FG.", groupClosest(featureDefinitions(object)$rtmed[is_msLevel],
-                                    maxDiff = param@diffRt))
-        featureDefinitions(object)$feature_group <- f
+            f_new <- as.character(f)
+        } else {
+            f <- rep("FG", nrow(featureDefinitions(object)))
+            f_new <- rep(NA_character_, length(f))
+        }
+        f[!is_msLevel] <- NA
+        if (is.factor(f))
+            f <- droplevels(f)
+        else
+            f <- factor(f, levels = unique(f))
+        for (fg in levels(f)) {
+            idx <- which(f == fg)
+            idxl <- length(idx)
+            if (idxl > 1) {
+                if (param@method == "greedy")
+                    f_new[idx] <- paste0(
+                        fg, ".", group(featureDefinitions(object)$rtmed[idx],
+                                       tolerance = param@diffRt))
+                if (param@method == "groupClosest")
+                    f_new[idx] <- paste0(
+                        fg, ".", groupClosest(
+                                     featureDefinitions(object)$rtmed[idx],
+                                     maxDiff = param@diffRt))
+            } else
+                f_new[idx] <- paste0(fg, ".1")
+        }
+        featureDefinitions(object)$feature_group <- f_new
         object
     })
 
@@ -329,7 +345,7 @@ setMethod(
             f <- featureDefinitions(object)$feature_group
             f_new <- as.character(f)
         } else {
-            f <- rep("FG.1", nrow(featureDefinitions(object)))
+            f <- rep("FG", nrow(featureDefinitions(object)))
             f_new <- rep(NA_character_, length(f))
         }
         f[!is_msLevel] <- NA
@@ -533,7 +549,7 @@ setMethod(
             f <- featureDefinitions(object)$feature_group
             f_new <- as.character(f)
         } else {
-            f <- rep("FG.1", nrow(featureDefinitions(object)))
+            f <- rep("FG", nrow(featureDefinitions(object)))
             f_new <- rep(NA_character_, length(f))
         }
         f[!is_msLevel] <- NA

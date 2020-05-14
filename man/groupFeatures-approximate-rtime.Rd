@@ -35,7 +35,10 @@ Group features based on similar retention time. This method is supposed to be
 used as an initial \emph{crude} grouping of features based on the median retention
 time of all their chromatographic peaks. All features with a difference in
 their retention time which is \code{<=} parameter \code{diffRt} of the parameter object
-are grouped together. Two different grouping methods are available:
+are grouped together. If a column \code{"feature_group"} is found in
+\code{\link[xcms:featureDefinitions]{xcms::featureDefinitions()}} this is further sub-grouped by this method.
+
+Two different grouping methods are available:
 \itemize{
 \item \code{method = "greedy"}: this approach consecutively groups elements together
 if their difference in retention time is smaller than \code{diffRt}. If two
