@@ -8,7 +8,8 @@ groupByCorrelation(
   x,
   method = "pearson",
   use = "pairwise.complete.obs",
-  threshold = 0.9
+  threshold = 0.9,
+  f = NULL
 )
 }
 \arguments{
@@ -23,6 +24,10 @@ correlation. See \code{\link[=corr]{corr()}} for details.}
 
 \item{threshold}{\code{numeric(1)} defining the cut of value above which
 rows are considered to be correlated and hence grouped.}
+
+\item{f}{optional vector of length equal to \code{nrow(x)} pre-defining groups
+of rows in \code{x} that should be further sub-grouped. See description for
+details.}
 }
 \value{
 \code{factor} with same length than \code{nrow(x)} with the group each row
@@ -34,6 +39,14 @@ their correlation with each other. Note that if for example row 1 and 3 have
 a correlation above the threshold and rows 3 and 5 too (but correlation
 between 1 and 5 is below the threshold) all 3 are grouped into the same
 group (i.e. rows 1, 3 \strong{and} 5).
+
+Note that with parameter \code{f} it is also possible to pre-define groups of
+rows that should be further sub-grouped based on correlation with each other.
+In other words, if \code{f} is provided, correlations are calculated only between
+rows with the same value in \code{f} and hence these pre-defined groups of rows
+are further sub-grouped based on pairwise correlation. The returned \code{factor}
+is then \code{f} with the additional subgroup appended (and separated with a
+\code{"."}). See examples below.
 }
 \examples{
 
@@ -42,13 +55,23 @@ x <- rbind(
     c(2, 6, 4, 7),
     c(1, 1, 3, 1),
     c(1, 3, 3, 6),
-    c(0, 4, 3, 1))
+    c(0, 4, 3, 1),
+    c(1, 4, 2, 6),
+    c(2, 8, 2, 12))
 
+## define which rows have a high correlation with each other
 groupByCorrelation(x)
+
+## assuming we have some prior grouping of rows, further sub-group them
+## based on pairwise correlation.
+f <- c(1, 2, 2, 1, 1, 2, 2)
+groupByCorrelation(x, f = f)
 }
 \seealso{
 Other grouping operations: 
-\code{\link{groupEicCorrelation}()}
+\code{\link{groupClosest}()},
+\code{\link{groupEicCorrelation}()},
+\code{\link{groupToSinglePolarityPairs}()}
 }
 \author{
 Johannes Rainer

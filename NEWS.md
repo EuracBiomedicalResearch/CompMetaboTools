@@ -1,7 +1,17 @@
 # CompMetaboTools 0.1
 
+## CompMetaboTools 0.0.6
+
+- Add `AbundanceCorrelationParam` method to group features based on feature
+  abundances.
+- Add `groupFeatures` method for `XCMSnExp` objects allowing to group features.
+- Add `SimilarRtimeParam` and `EicCorrelationParam` feature grouping methods.
+
 ## CompMetaboTools 0.0.5
 
+- Add `groupClosest` function to group values into small groups based on values
+  being smaller than a threshold.
+- Add `groupToSinglePolarityPairs` function.
 - Add `c` method to (row-wise) combine `Chromatograms` objects.
 - Add `groupByCorrelation` to allow grouping of rows within a numeric matrix
   by pairwise correlation with each other.

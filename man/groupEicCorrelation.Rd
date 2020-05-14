@@ -62,7 +62,9 @@ groupEicCorrelation(chrs, aggregationFun = max)
 }
 \seealso{
 Other grouping operations: 
-\code{\link{groupByCorrelation}()}
+\code{\link{groupByCorrelation}()},
+\code{\link{groupClosest}()},
+\code{\link{groupToSinglePolarityPairs}()}
 }
 \author{
 Johannes Rainer
