@@ -15,7 +15,7 @@ test_that("SimillarRtimeParam works", {
     res <- groupFeatures(xodg, prm)
     expect_true(any(colnames(featureDefinitions(res)) == "feature_group"))
 
-    expect_warning(res <- groupFeatures(res, prm), "Found existing")
+    res <- groupFeatures(res, prm)
 
     tmp <- xodg
     featureDefinitions(tmp)$ms_level[c(1:3, 5)] <- 2
@@ -48,7 +48,7 @@ test_that("EicCorrelationParam works", {
     idx <- c(9, 30, 32, 45, 61, 99, 100, 104, 110, 115, 120, 121, 122, 123)
     tmp <- xodg
     featureDefinitions(tmp)$feature_group <- NA
-    featureDefinitions(tmp)$feature_group[idx] <- "FG.1"
+    featureDefinitions(tmp)$feature_group[idx] <- "FG"
     res <- groupFeatures(tmp, param = EicCorrelationParam())
     expect_true(all(is.na(featureDefinitions(res)$feature_group[-idx])))
 
@@ -91,9 +91,9 @@ test_that("AbundanceCorrelationParam works", {
     featureDefinitions(tmp)$ms_level[idx] <- 2
 
     res <- groupFeatures(tmp, AbundanceCorrelationParam(), msLevel = 1)
-    expect_true(all(featureDefinitions(res)$feature_group[idx] == "FG.2"))
-    expect_true(all(featureDefinitions(res)$feature_group[-idx] != "FG.2"))
+    expect_true(all(featureGroups(res)[idx] == "FG.2"))
+    expect_true(all(featureGroups(res)[-idx] != "FG.2"))
     res_2 <- groupFeatures(tmp, AbundanceCorrelationParam(), msLevel = 2)
-    expect_true(all(featureDefinitions(res_2)$feature_group[-idx] == "FG.2"))
-    expect_true(all(featureDefinitions(res_2)$feature_group[idx] != "FG.2"))
+    expect_true(all(featureGroups(res_2)[-idx] == "FG.2"))
+    expect_true(all(featureGroups(res_2)[idx] != "FG.2"))
 })
