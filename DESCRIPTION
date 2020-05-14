@@ -36,6 +36,7 @@ Suggests:
     faahKO,
     Spectra
 Remotes:
+    RforMassSpectrometry/MsCoreUtils,
     RforMassSpectrometry/Spectra
 License: Artistic-2.0
 LazyData: yes
