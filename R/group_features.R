@@ -179,6 +179,9 @@ groupByCorrelation <- function(x, method = "pearson",
             idxl <- length(idx)
             if (idxl > 1) {
                 cors <- cor(t(x[idx, ]), method = method, use = use) > threshold
+                ## Ensure diagonal matrix is TRUE so that even if some features
+                ## have a correlation value of NA they are not dropped
+                cors[cbind(1:idxl, 1:idxl)] <- TRUE
                 fnew[idx] <- paste0(
                     fg, ".",
                     as.character(.index_list_to_factor(.group_logic_matrix(cors))))
@@ -266,6 +269,8 @@ groupEicCorrelation <- function(x, aggregationFun = mean,
         res[, , i] <- correlate(x[, i], ...)
     }
     res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE) > threshold
+    ## Ensure diagonal is always TRUE to not drop any features!
+    res[cbind(1:nr, 1:nr)] <- TRUE
     .index_list_to_factor(.group_logic_matrix(res))
 }
 

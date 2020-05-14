@@ -61,3 +61,39 @@ test_that("EicCorrelationParam works", {
     expect_equal(featureDefinitions(res)$feature_group,
                  featureDefinitions(res_2)$feature_group)
 })
+
+test_that("AbundanceCorrelationParam works", {
+    prm <- AbundanceCorrelationParam(threshold = 0.5, value = "maxo")
+    expect_equal(prm@threshold, 0.5)
+    expect_equal(prm@value, "maxo")
+    expect_equal(prm@method, "maxint")
+
+    expect_error(AbundanceCorrelationParam(subset = "4"), "integer")
+    
+    expect_error(groupFeatures(xod, AbundanceCorrelationParam()), "feature")
+    expect_error(
+        groupFeatures(xodg, AbundanceCorrelationParam(subset = c(1, 4, 5))),
+        "has to be between")
+    expect_error(
+        groupFeatures(xodg, AbundanceCorrelationParam(subset = c(TRUE))),
+        "Can not calculate")
+
+    res <- groupFeatures(xodg, AbundanceCorrelationParam())
+    expect_true(any(colnames(featureDefinitions(res)) == "feature_group"))
+    expect_true(length(unique(featureDefinitions(res)$feature_group)) <
+                nrow(featureDefinitions(res)))
+    res_2 <- groupFeatures(xodg, AbundanceCorrelationParam(subset = c(2, 3)))
+
+    ## With pre-defined grps.
+    tmp <- xodg
+    featureDefinitions(tmp)$feature_group <- "FG.2"
+    idx <- c(4, 12, 23, 56)
+    featureDefinitions(tmp)$ms_level[idx] <- 2
+
+    res <- groupFeatures(tmp, AbundanceCorrelationParam(), msLevel = 1)
+    expect_true(all(featureDefinitions(res)$feature_group[idx] == "FG.2"))
+    expect_true(all(featureDefinitions(res)$feature_group[-idx] != "FG.2"))
+    res_2 <- groupFeatures(tmp, AbundanceCorrelationParam(), msLevel = 2)
+    expect_true(all(featureDefinitions(res_2)$feature_group[-idx] == "FG.2"))
+    expect_true(all(featureDefinitions(res_2)$feature_group[idx] != "FG.2"))
+})

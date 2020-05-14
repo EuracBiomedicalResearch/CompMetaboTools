@@ -5,6 +5,7 @@
 \alias{hidden_aliases}
 \alias{SimilarRtimeParam-class}
 \alias{EicCorrelationParam-class}
+\alias{AbundanceCorrelationParam-class}
 \alias{groupFeatures}
 \title{Internal page for hidden aliases}
 \usage{

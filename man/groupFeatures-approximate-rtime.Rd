@@ -52,8 +52,41 @@ similar) to the mean retention time of that group. This leads to smaller
 group sizes. See \code{\link[=groupClosest]{groupClosest()}} for details and examples.
 }
 }
+\examples{
+
+## Performing a quick preprocessing of a test data set.
+library(faahKO)
+fls <- c(system.file('cdf/KO/ko15.CDF', package = "faahKO"),
+        system.file('cdf/KO/ko16.CDF', package = "faahKO"),
+        system.file('cdf/WT/wt19.CDF', package = "faahKO"))
+
+od <- readMSData(fls, mode = "onDisk")
+xod <- findChromPeaks(
+    od, param = CentWaveParam(noise = 10000, snthresh = 40,
+                              prefilter = c(3, 10000)))
+pdp <- PeakDensityParam(sampleGroups = c(1, 1, 2))
+xodg <- groupChromPeaks(xod, param = pdp)
+
+## Group features based on similar retention time (i.e. difference <= 2 seconds)
+xodg_grp <- groupFeatures(xodg, param = SimilarRtimeParam(diffRt = 2))
+
+## Feature grouping get added to the featureDefinitions in column "feature_group"
+head(featureDefinitions(xodg_grp)$feature_group)
+
+table(featureDefinitions(xodg_grp)$feature_group)
+length(unique(featureDefinitions(xodg_grp)$feature_group))
+
+## Using the "greedy" method to create larger groups
+xodg_grp <- groupFeatures(xodg,
+    param = SimilarRtimeParam(diffRt = 2, method = "greedy"))
+
+length(unique(featureDefinitions(xodg_grp)$feature_group))
+}
 \seealso{
+feature-grouping for a general overview.
+
 Other feature grouping methods: 
+\code{\link{groupFeatures-abundance-correlation}},
 \code{\link{groupFeatures-eic-correlation}}
 }
 \author{

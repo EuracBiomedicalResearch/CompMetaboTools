@@ -1,6 +1,6 @@
 #' @title Internal page for hidden aliases
 #'
-#' @aliases SimilarRtimeParam-class EicCorrelationParam-class
+#' @aliases SimilarRtimeParam-class EicCorrelationParam-class AbundanceCorrelationParam-class
 #' 
 #' @usage NULL
 #' @format NULL

@@ -54,6 +54,8 @@ setGeneric("groupFeatures", function(object, param, ...)
 #'
 #' @family feature grouping methods
 #' 
+#' @seealso feature-grouping for a general overview.
+#'
 #' @rdname groupFeatures-approximate-rtime
 #'
 #' @importClassesFrom xcms Param
@@ -61,6 +63,36 @@ setGeneric("groupFeatures", function(object, param, ...)
 #' @exportClass SimilarRtimeParam
 #'
 #' @author Johannes Rainer
+#'
+#' @examples
+#'
+#' ## Performing a quick preprocessing of a test data set.
+#' library(faahKO)
+#' fls <- c(system.file('cdf/KO/ko15.CDF', package = "faahKO"),
+#'         system.file('cdf/KO/ko16.CDF', package = "faahKO"),
+#'         system.file('cdf/WT/wt19.CDF', package = "faahKO"))
+#'
+#' od <- readMSData(fls, mode = "onDisk")
+#' xod <- findChromPeaks(
+#'     od, param = CentWaveParam(noise = 10000, snthresh = 40,
+#'                               prefilter = c(3, 10000)))
+#' pdp <- PeakDensityParam(sampleGroups = c(1, 1, 2))
+#' xodg <- groupChromPeaks(xod, param = pdp)
+#'
+#' ## Group features based on similar retention time (i.e. difference <= 2 seconds)
+#' xodg_grp <- groupFeatures(xodg, param = SimilarRtimeParam(diffRt = 2))
+#'
+#' ## Feature grouping get added to the featureDefinitions in column "feature_group"
+#' head(featureDefinitions(xodg_grp)$feature_group)
+#'
+#' table(featureDefinitions(xodg_grp)$feature_group)
+#' length(unique(featureDefinitions(xodg_grp)$feature_group))
+#'
+#' ## Using the "greedy" method to create larger groups
+#' xodg_grp <- groupFeatures(xodg,
+#'     param = SimilarRtimeParam(diffRt = 2, method = "greedy"))
+#' 
+#' length(unique(featureDefinitions(xodg_grp)$feature_group))
 NULL
 
 setClass("SimilarRtimeParam",
@@ -195,11 +227,41 @@ setMethod(
 #'
 #' @family feature grouping methods
 #' 
+#' @seealso feature-grouping for a general overview.
+#'
 #' @rdname groupFeatures-eic-correlation
 #'
 #' @exportClass EicCorrelationParam
 #'
 #' @author Johannes Rainer
+#'
+#' @examples
+#' 
+#' ## Performing a quick preprocessing of a test data set.
+#' library(faahKO)
+#' fls <- c(system.file('cdf/KO/ko15.CDF', package = "faahKO"),
+#'         system.file('cdf/KO/ko16.CDF', package = "faahKO"),
+#'         system.file('cdf/WT/wt19.CDF', package = "faahKO"))
+#'
+#' od <- readMSData(fls, mode = "onDisk")
+#' xod <- findChromPeaks(
+#'     od, param = CentWaveParam(noise = 10000, snthresh = 40,
+#'                               prefilter = c(3, 10000)))
+#' pdp <- PeakDensityParam(sampleGroups = c(1, 1, 2))
+#' xodg <- groupChromPeaks(xod, param = pdp)
+#'
+#' ## Performing a feature grouping based on EIC correlation on a single
+#' ## sample
+#' xodg_grp <- groupFeatures(xodg, param = EicCorrelationParam(n = 1))
+#'
+#' table(featureDefinitions(xodg_grp)$feature_group)
+#'
+#' ## Usually it is better to perform this correlation on pre-grouped features
+#' ## e.g. based on approximate retention time.
+#' xodg_grp <- groupFeatures(xodg, param = SimilarRtimeParam(diffRt = 4))
+#' xodg_grp <- groupFeatures(xodg_grp, param = EicCorrelationParam(n = 1))
+#'
+#' table(featureDefinitions(xodg_grp)$feature_group)
 NULL
 
 setClass("EicCorrelationParam",
@@ -295,8 +357,9 @@ setMethod(
                 idx_miss <- which(!rownames(fvals)[idx] %in%
                                   rownames(featureDefinitions(obj_sub)))
                 if (length(idx_miss)) {
-                    idx_miss <- idx[idx_miss]
+                    tmp <- idx[idx_miss]
                     idx <- idx[-idx_miss]
+                    idx_miss <- tmp
                 }
                 if (length(idx) > 1) {
                     eics <- featureChromatograms(
@@ -321,3 +384,206 @@ setMethod(
         featureDefinitions(object)$feature_group <- f_new
         object
     })
+
+#' @title Group features based on correlation of abundances across samples
+#'
+#' @name groupFeatures-abundance-correlation
+#'
+#' @description
+#'
+#' This methods groups features based on correlation of abundances (i.e.
+#' *feature values*) across samples. Parameter `subset` allows to define a sub
+#' set of samples on which this correlation should be correlated. It might for
+#' example be better to exclude QC samples from this correlation analysis
+#' because values of all features are supposed to be constant in these samples
+#' and including these could bias the correlation estimation. Also, it might
+#' be better to perform the correlation including also *gap filled* values which
+#' is possible with parameter `filled = TRUE` on an `object` on which also
+#' [xcms::fillChromPeaks()] was called.
+#'
+#' @param filled `logical(1)` whether filled-in values should be included in
+#'     the correlation analysis. Defaults to `filled = TRUE`.
+#' 
+#' @param intensity `character(1)` passed to the `featureValues` call. See
+#'     [featureValues()] for details. Defaults to `intensity = "maxo"`.
+#'
+#' @param method `character(1)` passed to the `featureValues` call. See
+#'     [featureValues()] for details. Defaults to `method = "maxint"`.
+#' 
+#' @param msLevel `integer(1)` defining the MS level on which the features
+#'     should be grouped.
+#' 
+#' @param object [XCMSnExp()] object containing also correspondence results.
+#' 
+#' @param param `AbudanceCorrelationParam` object with the settings for the
+#'     method.
+#'
+#' @param subset `integer` or `logical` defining a subset of samples (at least
+#'     2) on which the correlation should be performed.
+#' 
+#' @param threshold `numeric(1)` with the minimal required correlation
+#'     coefficient to group featues.
+#' 
+#' @param value `character(1)` passed to the `featureValues` call. See
+#'     [featureValues()] for details. Defaults to `value = "into"`.
+#' 
+#' @return input `XCMSnExp` with feature groups added (i.e. in column
+#'     `"feature_group"` of its `featureDefinitions` data frame. 
+#'
+#' @family feature grouping methods
+#' 
+#' @rdname groupFeatures-abundance-correlation
+#'
+#' @exportClass AbundanceCorrelationParam
+#'
+#' @author Johannes Rainer
+#'
+#' @seealso feature-grouping for a general overview.
+#' 
+#' @examples
+#' 
+#' ## Performing a quick preprocessing of a test data set.
+#' library(faahKO)
+#' fls <- c(system.file('cdf/KO/ko15.CDF', package = "faahKO"),
+#'         system.file('cdf/KO/ko16.CDF', package = "faahKO"),
+#'         system.file('cdf/WT/wt19.CDF', package = "faahKO"))
+#'
+#' od <- readMSData(fls, mode = "onDisk")
+#' xod <- findChromPeaks(
+#'     od, param = CentWaveParam(noise = 10000, snthresh = 40,
+#'                               prefilter = c(3, 10000)))
+#' pdp <- PeakDensityParam(sampleGroups = c(1, 1, 2))
+#' xodg <- groupChromPeaks(xod, param = pdp)
+#'
+#' ## Group features based on correlation of feature values (integrated
+#' ## peak area) across samples. Note that there are many missing values
+#' ## in the feature value which influence grouping of features in the present
+#' ## data set.
+#' xodg_grp <- groupFeatures(xodg,
+#'     param = AbundanceCorrelationParam(threshold = 0.8))
+#' table(featureDefinitions(xodg_grp)$feature_group)
+#'
+#' ## Group based on the maximal peak intensity per feature
+#' xodg_grp <- groupFeatures(xodg,
+#'     param = AbundanceCorrelationParam(threshold = 0.8, value = "maxo"))
+#' table(featureDefinitions(xodg_grp)$feature_group)
+NULL
+
+setClass("AbundanceCorrelationParam",
+         slots = c(threshold = "numeric",
+                   method = "character",
+                   value = "character",
+                   intensity = "character",
+                   filled = "logical",
+                   subset = "integer"),
+         contains = "Param",
+         prototype = prototype(
+             threshold = 0.9,
+             method = "maxint",
+             value = "into",
+             intensity = "maxo",
+             filled = TRUE,
+             subset = integer()
+         ),
+         validity = function(object) {
+             msg <- NULL
+             msg
+         })
+
+#' @rdname groupFeatures-abundance-correlation
+#'
+#' @export
+AbundanceCorrelationParam <- function(threshold = 0.9, value = "into",
+                                      method = c("maxint", "medret", "sum"),
+                                      intensity = "maxo", filled = TRUE,
+                                      subset = integer()) {
+    method <- match.arg(method)
+    if (is.logical(subset))
+        subset <- which(subset)
+    if (is.numeric(subset))
+        subset <- as.integer(subset)
+    if (!is.integer(subset))
+        stop("'subset' has to be either a logical or an integer vector")
+    new("AbundanceCorrelationParam", threshold = threshold, value = value,
+        method = method, intensity = intensity, filled = filled,
+        subset = subset)
+}
+
+#' @rdname groupFeatures-abundance-correlation
+#'
+setMethod(
+    "groupFeatures",
+    signature(object = "XCMSnExp", param = "AbundanceCorrelationParam"),
+    function(object, param, msLevel = 1L) {
+        if (!hasFeatures(object))
+            stop("No feature definitions present. Please run ",
+                 "first 'groupChromPeaks'")
+        if (length(msLevel) > 1)
+            stop("Currently only grouping of features from a single MS level",
+                 " is supported.")
+        nc <- length(fileNames(object))
+        if (!length(param@subset))
+            param@subset <- seq_len(nc)
+        if (!all(param@subset %in% seq_len(nc)))
+            stop("'subset' has to be between 1 and ", nc)
+        if (length(param@subset) < 2)
+            stop("Can not calculate correlations for less than 2 samples")
+        is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        if (any(colnames(featureDefinitions(object)) == "feature_group")) {
+            f <- featureDefinitions(object)$feature_group
+            f_new <- as.character(f)
+        } else {
+            f <- rep("FG.1", nrow(featureDefinitions(object)))
+            f_new <- rep(NA_character_, length(f))
+        }
+        f[!is_msLevel] <- NA
+        if (is.factor(f))
+            f <- droplevels(f)
+        else
+            f <- factor(f, levels = unique(f))
+        fvals <- featureValues(
+            object, method = param@method, value = param@value,
+            intensity = param@intensity,
+            filled = param@filled)[, param@subset, drop = FALSE]
+        res <- groupByCorrelation(
+            fvals[is_msLevel, ], method = "pearson",
+            use = "pairwise.complete.obs", threshold = param@threshold,
+            f = f[is_msLevel])
+        f_new[is_msLevel] <- as.character(res)
+        featureDefinitions(object)$feature_group <- f_new
+        object
+    })
+
+#' @title Grouping of features
+#'
+#' @name feature-grouping
+#' 
+#' @description
+#'
+#' After correspondence analysis ([xcms::groupChromPeaks()]) the identified
+#' features can be further grouped based on different criteria into
+#' *feature groups* which can ideally group features representing signals from
+#' ions (adducts, isotopes) of the same compound/metabolite.
+#'
+#' The available options for the `groupFeatures` method are:
+#'
+#' - Grouping by similar retention times: [SimilarRtimeParam()].
+#'
+#' - Grouping by similar feature values across samples:
+#'   [AbundanceCorrelationParam()].
+#'
+#' - Grouping by similar peak shape of extracted ion chromatograms:
+#'   [EicCorrelationParam()].
+#'
+#' An ideal workflow grouping features should sequentially perform the above
+#' methods (in the listed order).
+#'
+#' @param object an [XCMSnExp()] object.
+#' 
+#' @author Johannes Rainer, Mar Garcia-Aloy, Vinicius Veri Hernandes
+NULL
+
+#' @rdname feature-grouping
+featureGroups <- function(object) {
+    featureDefinitions(object)$feature_group
+}

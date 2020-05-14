@@ -77,8 +77,39 @@ or noisy peak shapes as much as possible.
 By default also the signal which is outside identified chromatographic peaks
 is excluded from the correlation  (parameter \code{clean}).
 }
+\examples{
+
+## Performing a quick preprocessing of a test data set.
+library(faahKO)
+fls <- c(system.file('cdf/KO/ko15.CDF', package = "faahKO"),
+        system.file('cdf/KO/ko16.CDF', package = "faahKO"),
+        system.file('cdf/WT/wt19.CDF', package = "faahKO"))
+
+od <- readMSData(fls, mode = "onDisk")
+xod <- findChromPeaks(
+    od, param = CentWaveParam(noise = 10000, snthresh = 40,
+                              prefilter = c(3, 10000)))
+pdp <- PeakDensityParam(sampleGroups = c(1, 1, 2))
+xodg <- groupChromPeaks(xod, param = pdp)
+
+## Performing a feature grouping based on EIC correlation on a single
+## sample
+xodg_grp <- groupFeatures(xodg, param = EicCorrelationParam(n = 1))
+
+table(featureDefinitions(xodg_grp)$feature_group)
+
+## Usually it is better to perform this correlation on pre-grouped features
+## e.g. based on approximate retention time.
+xodg_grp <- groupFeatures(xodg, param = SimilarRtimeParam(diffRt = 4))
+xodg_grp <- groupFeatures(xodg_grp, param = EicCorrelationParam(n = 1))
+
+table(featureDefinitions(xodg_grp)$feature_group)
+}
 \seealso{
+feature-grouping for a general overview.
+
 Other feature grouping methods: 
+\code{\link{groupFeatures-abundance-correlation}},
 \code{\link{groupFeatures-approximate-rtime}}
 }
 \author{
