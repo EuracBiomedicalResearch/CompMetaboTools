@@ -1,9 +1,9 @@
 Package: CompMetaboTools
 Title: Utility Functions from the Eurac Research Computational Metabolomics Team
 Version: 0.0.6
-Description: CompMetaboTools provides utility functions used frequently in
-    analyses of the Computational Metabolomics Team of the Eurac Research
-    Institute for Biomedicine.
+Description: Utility functions used frequently in analyses of the
+    Computational Metabolomics Team of the Eurac Research, Institute for
+    Biomedicine.
 Authors@R: c(person(given = "Johannes", family = "Rainer",
                     email = "johannes.rainer@eurac.edu",
                     role = c("aut", "cre"),
