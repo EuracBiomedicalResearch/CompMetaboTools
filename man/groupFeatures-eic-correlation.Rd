@@ -10,7 +10,8 @@ EicCorrelationParam(
   threshold = 0.9,
   n = 1,
   clean = TRUE,
-  value = c("maxo", "into")
+  value = c("maxo", "into"),
+  greedy = FALSE
 )
 
 \S4method{groupFeatures}{XCMSnExp,EicCorrelationParam}(object, param, msLevel = 1L)
@@ -31,6 +32,12 @@ chromatogram.}
 \item{value}{\code{character(1)} defining whether samples should be grouped based
 on the sum of the maximal peak intensity (\code{value = "maxo"}, the default)
 or the integrated peak area (\code{value = "into"}) for a feature.}
+
+\item{greedy}{\code{logical(1)} which grouping algorithm should be used: one that
+creates small groups of highly correlated features (\code{greedy = FALSE}, the
+default) or whether features should be grouped that have at least one
+correlation with any other member of the group in common
+(\code{greedy = TRUE}). See \code{\link[=groupByCorrelation]{groupByCorrelation()}} for more information.}
 
 \item{object}{\code{\link[=XCMSnExp]{XCMSnExp()}} object containing also correspondence results.}
 

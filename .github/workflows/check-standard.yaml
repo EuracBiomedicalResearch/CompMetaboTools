@@ -63,11 +63,11 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          remotes::install_github("RforMassSpectrometry/MsCoreUtils")
           install.packages("BiocManager")
           BiocManager::install(c("mzR", "MSnbase", "SummarizedExperiment", "BiocParallel", "xcms", "faahKO"))
           remotes::install_github("RforMassSpectrometry/MsCoreUtils", force = TRUE)
           remotes::install_github("RforMassSpectrometry/Spectra")
+	  remotes::install_github("sneumann/xcms", ref = "jomaster")
         shell: Rscript {0}
 
       - name: Check

@@ -12,7 +12,8 @@ AbundanceCorrelationParam(
   method = c("maxint", "medret", "sum"),
   intensity = "maxo",
   filled = TRUE,
-  subset = integer()
+  subset = integer(),
+  greedy = FALSE
 )
 
 \S4method{groupFeatures}{XCMSnExp,AbundanceCorrelationParam}(object, param, msLevel = 1L)
@@ -35,6 +36,12 @@ the correlation analysis. Defaults to \code{filled = TRUE}.}
 
 \item{subset}{\code{integer} or \code{logical} defining a subset of samples (at least
 2) on which the correlation should be performed.}
+
+\item{greedy}{\code{logical(1)} which grouping algorithm should be used: one that
+creates small groups of highly correlated features (\code{greedy = FALSE}, the
+default) or whether features should be grouped that have at least one
+correlation with any other member of the group in common
+(\code{greedy = TRUE}). See \code{\link[=groupByCorrelation]{groupByCorrelation()}} for details.}
 
 \item{object}{\code{\link[=XCMSnExp]{XCMSnExp()}} object containing also correspondence results.}
 

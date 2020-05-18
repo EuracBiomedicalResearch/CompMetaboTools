@@ -132,7 +132,7 @@ SimilarRtimeParam <- function(diffRt = 1, method = c("groupClosest", "greedy")) 
 #'
 #' @importFrom MsCoreUtils group
 #' 
-#' @importClassesFrom xcms XCMSnExp
+#' @importClassesFrom xcms XCMSnExp XProcessHistory
 setMethod(
     "groupFeatures",
     signature(object = "XCMSnExp", param = "SimilarRtimeParam"),
@@ -173,6 +173,12 @@ setMethod(
                 f_new[idx] <- paste0(fg, ".1")
         }
         featureDefinitions(object)$feature_group <- f_new
+        xph <- new("XProcessHistory", param = param, date = date(),
+                   type = xcms:::.PROCSTEP.FEATURE.GROUPING,
+                   fileIndex = 1:length(fileNames(object)),
+                   msLevel = as.integer(msLevel))
+        object@.processHistory[[(length(object@.processHistory) + 1)]] <- xph
+        validObject(object)
         object
     })
 
@@ -220,6 +226,12 @@ setMethod(
 #'     (`clean = TRUE`, default) or all the signal from the extracted ion
 #'     chromatogram.
 #'
+#' @param greedy `logical(1)` which grouping algorithm should be used: one that
+#'     creates small groups of highly correlated features (`greedy = FALSE`, the
+#'     default) or whether features should be grouped that have at least one
+#'     correlation with any other member of the group in common
+#'     (`greedy = TRUE`). See [groupByCorrelation()] for more information.
+#' 
 #' @param msLevel `integer(1)` defining the MS level on which the features
 #'     should be grouped.
 #' 
@@ -284,13 +296,15 @@ setClass("EicCorrelationParam",
          slots = c(threshold = "numeric",
                    n = "numeric",
                    clean = "logical",
-                   value = "character"),
+                   value = "character",
+                   greedy = "logical"),
          contains = "Param",
          prototype = prototype(
              threshold = 0.9,
              n = 1,
              clean = TRUE,
-             value = "maxo"
+             value = "maxo",
+             greedy = FALSE
          ),
          validity = function(object) {
              msg <- NULL
@@ -310,10 +324,10 @@ setClass("EicCorrelationParam",
 #'
 #' @export
 EicCorrelationParam <- function(threshold = 0.9, n = 1, clean = TRUE,
-                                value = c("maxo", "into")) {
+                                value = c("maxo", "into"), greedy = FALSE) {
     value = match.arg(value)
     new("EicCorrelationParam", threshold = threshold, n = n, clean = clean,
-        value = value)
+        value = value, greedy = FALSE)
 }
 
 #' @rdname groupFeatures-eic-correlation
@@ -384,7 +398,7 @@ setMethod(
                         eics <- removeIntensity(eics, which = "outside_chromPeak")
                     res <- groupEicCorrelation(
                         as(eics, "Chromatograms"), aggregationFun = ffun,
-                        threshold = param@threshold)
+                        threshold = param@threshold, greedy = param@greedy)
                 } else res <- factor(1)
                 f_new[idx] <- paste0(fg, ".", res)
                 if (length(idx_miss))
@@ -398,6 +412,12 @@ setMethod(
         setTxtProgressBar(pb, nrow(fvals))
         close(pb)
         featureDefinitions(object)$feature_group <- f_new
+        xph <- new("XProcessHistory", param = param, date = date(),
+                   type = xcms:::.PROCSTEP.FEATURE.GROUPING,
+                   fileIndex = 1:length(fileNames(object)),
+                   msLevel = as.integer(msLevel))
+        object@.processHistory[[(length(object@.processHistory) + 1)]] <- xph
+        validObject(object)
         object
     })
 
@@ -419,6 +439,12 @@ setMethod(
 #'
 #' @param filled `logical(1)` whether filled-in values should be included in
 #'     the correlation analysis. Defaults to `filled = TRUE`.
+#' 
+#' @param greedy `logical(1)` which grouping algorithm should be used: one that
+#'     creates small groups of highly correlated features (`greedy = FALSE`, the
+#'     default) or whether features should be grouped that have at least one
+#'     correlation with any other member of the group in common
+#'     (`greedy = TRUE`). See [groupByCorrelation()] for details.
 #' 
 #' @param intensity `character(1)` passed to the `featureValues` call. See
 #'     [featureValues()] for details. Defaults to `intensity = "maxo"`.
@@ -491,7 +517,8 @@ setClass("AbundanceCorrelationParam",
                    value = "character",
                    intensity = "character",
                    filled = "logical",
-                   subset = "integer"),
+                   subset = "integer",
+                   greedy = "logical"),
          contains = "Param",
          prototype = prototype(
              threshold = 0.9,
@@ -499,7 +526,8 @@ setClass("AbundanceCorrelationParam",
              value = "into",
              intensity = "maxo",
              filled = TRUE,
-             subset = integer()
+             subset = integer(),
+             greedy = FALSE
          ),
          validity = function(object) {
              msg <- NULL
@@ -512,7 +540,7 @@ setClass("AbundanceCorrelationParam",
 AbundanceCorrelationParam <- function(threshold = 0.9, value = "into",
                                       method = c("maxint", "medret", "sum"),
                                       intensity = "maxo", filled = TRUE,
-                                      subset = integer()) {
+                                      subset = integer(), greedy = FALSE) {
     method <- match.arg(method)
     if (is.logical(subset))
         subset <- which(subset)
@@ -522,7 +550,7 @@ AbundanceCorrelationParam <- function(threshold = 0.9, value = "into",
         stop("'subset' has to be either a logical or an integer vector")
     new("AbundanceCorrelationParam", threshold = threshold, value = value,
         method = method, intensity = intensity, filled = filled,
-        subset = subset)
+        subset = subset, greedy = greedy)
 }
 
 #' @rdname groupFeatures-abundance-correlation
@@ -564,9 +592,15 @@ setMethod(
         res <- groupByCorrelation(
             fvals[is_msLevel, ], method = "pearson",
             use = "pairwise.complete.obs", threshold = param@threshold,
-            f = f[is_msLevel])
+            f = f[is_msLevel], greedy = param@greedy)
         f_new[is_msLevel] <- as.character(res)
         featureDefinitions(object)$feature_group <- f_new
+        xph <- new("XProcessHistory", param = param, date = date(),
+                   type = xcms:::.PROCSTEP.FEATURE.GROUPING,
+                   fileIndex = 1:length(fileNames(object)),
+                   msLevel = as.integer(msLevel))
+        object@.processHistory[[(length(object@.processHistory) + 1)]] <- xph
+        validObject(object)
         object
     })
 
@@ -600,6 +634,8 @@ setMethod(
 NULL
 
 #' @rdname feature-grouping
+#'
+#' @export
 featureGroups <- function(object) {
     featureDefinitions(object)$feature_group
 }

@@ -2,6 +2,10 @@
 
 ## CompMetaboTools 0.0.6
 
+- Use a less *greedy* grouping algorithm: create only groups of features with
+  a correlation between each other `>= threshold`.
+- `groupFeatures` adds a *process history* step to the `XCMSnExp` with the
+  parameter object.
 - Add `AbundanceCorrelationParam` method to group features based on feature
   abundances.
 - Add `groupFeatures` method for `XCMSnExp` objects allowing to group features.
