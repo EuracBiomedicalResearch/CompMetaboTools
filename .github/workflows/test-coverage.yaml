@@ -39,7 +39,7 @@ jobs:
           remotes::install_github("RforMassSpectrometry/Spectra")
           install.packages("BiocManager")
           BiocManager::install(c("mzR", "MSnbase", "SummarizedExperiment", "BiocParallel", "xcms"))
-	  remotes::install_github("sneumann/xcms", ref = "jomaster")
+          remotes::install_github("sneumann/xcms", ref = "jomaster")
           remotes::install_cran("covr")
         shell: Rscript {0}
 
