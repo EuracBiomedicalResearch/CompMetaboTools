@@ -24,7 +24,7 @@ Imports:
     IRanges,
     methods,
     MSnbase,
-    xcms,
+    xcms (>= 3.11.1),
     MsCoreUtils (>= 1.1.0),
     stats
 Suggests:
@@ -37,7 +37,8 @@ Suggests:
     Spectra
 Remotes:
     RforMassSpectrometry/MsCoreUtils,
-    RforMassSpectrometry/Spectra
+    RforMassSpectrometry/Spectra,
+    sneumann/xcms@jomaster
 License: Artistic-2.0
 LazyData: yes
 BugReports: https://github.com/EuracBiomedicalResearch/CompMetaboTools/issues
