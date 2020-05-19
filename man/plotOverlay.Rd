@@ -4,7 +4,15 @@
 \alias{plotOverlay}
 \title{Overlay plots from multiple EICs}
 \usage{
-plotOverlay(x, col = "#00000060", type = "l", main = NULL, ...)
+plotOverlay(
+  x,
+  col = "#00000060",
+  type = "l",
+  main = NULL,
+  xlab = "rtime",
+  ylab = "intensity",
+  ...
+)
 }
 \arguments{
 \item{x}{\code{\link[=Chromatograms]{Chromatograms()}} object with the EICs to draw.}
@@ -19,6 +27,10 @@ would draw each intensity as a point etc.}
 
 \item{main}{optional \code{character} with the title for the plot of each sample.
 Can be either of length 1 or equal \code{ncol(x)}.}
+
+\item{xlab}{\code{character(1)} with the label for the x-axis.}
+
+\item{ylab}{\code{character(1)} with the label for the y-axis.}
 
 \item{...}{additional parameters to be passed down to the \code{points} function.}
 }

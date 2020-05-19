@@ -92,6 +92,10 @@ setMethod("c", "XChromatograms", function(x, ...) {
 #' @param main optional `character` with the title for the plot of each sample.
 #'     Can be either of length 1 or equal `ncol(x)`.
 #'
+#' @param xlab `character(1)` with the label for the x-axis.
+#'
+#' @param ylab `character(1)` with the label for the y-axis.
+#' 
 #' @param ... additional parameters to be passed down to the `points` function.
 #'
 #' @author Johannes Rainer
@@ -99,7 +103,8 @@ setMethod("c", "XChromatograms", function(x, ...) {
 #' @importFrom graphics par
 #'
 #' @export
-plotOverlay <- function(x, col = "#00000060", type = "l", main = NULL, ...) {
+plotOverlay <- function(x, col = "#00000060", type = "l", main = NULL,
+                        xlab = "rtime", ylab = "intensity", ...) {
     if (!inherits(x, "Chromatograms"))
         stop("'x' is supposed to be a 'Chromatograms' object")
     nc <- ncol(x)
@@ -113,11 +118,12 @@ plotOverlay <- function(x, col = "#00000060", type = "l", main = NULL, ...) {
     if (length(main) != nc)
         main <- rep(main[1], nc)
     for (i in seq_len(ncol(x))) {
-        data <- lapply(x[, i], as.data.frame)
+        data <- lapply(x[, i], function(z) data.frame(rtime = z@rtime,
+                                                      intensity = z@intensity))
         xl <- vapply(data, function(z) range(z$rtime, na.rm = TRUE), numeric(2))
         yl <- vapply(data, function(z) range(z$intensity, na.rm = TRUE), numeric(2))
         plot(3, 3, pch = NA, xlim = range(xl), ylim = range(yl),
-             main = main[i], xlab = "rtime", ylab = "intensity", ...)
+             main = main[i], xlab = xlab, ylab = ylab, ...)
         for (j in seq_along(data))
             points(data[[j]]$rtime, data[[j]]$intensity, col = col[j],
                    type = type, ...)
