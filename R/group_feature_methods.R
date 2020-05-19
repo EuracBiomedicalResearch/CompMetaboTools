@@ -462,6 +462,11 @@ setMethod(
 #'
 #' @param subset `integer` or `logical` defining a subset of samples (at least
 #'     2) on which the correlation should be performed.
+#'
+#' @param transform `function` to be applied to the feature intensities prior
+#'     correlation. Defaults to `transform = log2`, i.e. log2 transforms the
+#'     data before correlation. To use the values *as-is* use
+#'     `transform = identity`.
 #' 
 #' @param threshold `numeric(1)` with the minimal required correlation
 #'     coefficient to group featues.
@@ -518,7 +523,8 @@ setClass("AbundanceCorrelationParam",
                    intensity = "character",
                    filled = "logical",
                    subset = "integer",
-                   greedy = "logical"),
+                   greedy = "logical",
+                   transform = "function"),
          contains = "Param",
          prototype = prototype(
              threshold = 0.9,
@@ -527,7 +533,8 @@ setClass("AbundanceCorrelationParam",
              intensity = "maxo",
              filled = TRUE,
              subset = integer(),
-             greedy = FALSE
+             greedy = FALSE,
+             transform = log2
          ),
          validity = function(object) {
              msg <- NULL
@@ -540,7 +547,8 @@ setClass("AbundanceCorrelationParam",
 AbundanceCorrelationParam <- function(threshold = 0.9, value = "into",
                                       method = c("maxint", "medret", "sum"),
                                       intensity = "maxo", filled = TRUE,
-                                      subset = integer(), greedy = FALSE) {
+                                      subset = integer(), greedy = FALSE,
+                                      transform = log2) {
     method <- match.arg(method)
     if (is.logical(subset))
         subset <- which(subset)
@@ -550,7 +558,7 @@ AbundanceCorrelationParam <- function(threshold = 0.9, value = "into",
         stop("'subset' has to be either a logical or an integer vector")
     new("AbundanceCorrelationParam", threshold = threshold, value = value,
         method = method, intensity = intensity, filled = filled,
-        subset = subset, greedy = greedy)
+        subset = subset, greedy = greedy, transform = transform)
 }
 
 #' @rdname groupFeatures-abundance-correlation
@@ -590,7 +598,7 @@ setMethod(
             intensity = param@intensity,
             filled = param@filled)[, param@subset, drop = FALSE]
         res <- groupByCorrelation(
-            fvals[is_msLevel, ], method = "pearson",
+            param@transform(fvals[is_msLevel, ]), method = "pearson",
             use = "pairwise.complete.obs", threshold = param@threshold,
             f = f[is_msLevel], greedy = param@greedy)
         f_new[is_msLevel] <- as.character(res)

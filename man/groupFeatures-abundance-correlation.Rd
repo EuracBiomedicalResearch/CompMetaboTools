@@ -13,7 +13,8 @@ AbundanceCorrelationParam(
   intensity = "maxo",
   filled = TRUE,
   subset = integer(),
-  greedy = FALSE
+  greedy = FALSE,
+  transform = log2
 )
 
 \S4method{groupFeatures}{XCMSnExp,AbundanceCorrelationParam}(object, param, msLevel = 1L)
@@ -42,6 +43,11 @@ creates small groups of highly correlated features (\code{greedy = FALSE}, the
 default) or whether features should be grouped that have at least one
 correlation with any other member of the group in common
 (\code{greedy = TRUE}). See \code{\link[=groupByCorrelation]{groupByCorrelation()}} for details.}
+
+\item{transform}{\code{function} to be applied to the feature intensities prior
+correlation. Defaults to \code{transform = log2}, i.e. log2 transforms the
+data before correlation. To use the values \emph{as-is} use
+\code{transform = identity}.}
 
 \item{object}{\code{\link[=XCMSnExp]{XCMSnExp()}} object containing also correspondence results.}
 
