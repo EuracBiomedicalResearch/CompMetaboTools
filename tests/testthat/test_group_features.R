@@ -67,6 +67,9 @@ test_that("groupByCorrelation works", {
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1, 1, 2, 1)))
 
+    res_2 <- groupByCorrelation(x, greedy = TRUE)
+    expect_equal(res, res_2)
+    
     expect_error(groupByCorrelation(x, threshold = c(0.4, 0.3)), "length 1")
 
     x <- rbind(x,
@@ -104,9 +107,13 @@ test_that("groupEicCorrelation works", {
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 3L)))
 
-    res <- groupEicCorrelation(chrs, aggregationFun = max)
+    res <- groupEicCorrelation(chrs, aggregationFun = max, greedy = TRUE)
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 1L, 1L)))
+
+    res <- groupEicCorrelation(chrs, aggregationFun = max, greedy = FALSE)
+    expect_true(is.factor(res))
+    expect_equal(res, factor(c(1L, 2L, 1L)))
 
     res <- groupEicCorrelation(chrs, aggregationFun = median)
     expect_true(is.factor(res))
@@ -156,4 +163,42 @@ test_that("groupClosest works", {
     a <- c(4.9, 5.2, 5.4)
     res <- groupClosest(a, maxDiff = 0.3)
     expect_equal(res, c(1, 2, 2))
+})
+
+test_that(".group_correlation_matrix works", {
+    x <- rbind(
+        c(1, 0.9, 0.6, 0.8, 0.5),
+        c(0.9, 1, 0.7, 0.92, 0.8),
+        c(0.6, 0.7, 1, 0.91, 0.7),
+        c(0.8, 0.92, 0.91, 1, 0.9),
+        c(0.5, 0.8, 0.7, 0.9, 1)
+    )
+    expect_error(.group_correlation_matrix(x[1:4, ]), "symmetric matrix")
+    
+    res <- .group_correlation_matrix(x, threshold = 0.9)
+    expect_equal(res, c(2, 1, 3, 1, 4))   
+ 
+    ## Add also a correlation between 3 and 2
+    x[2, 3] <- 0.9
+    x[3, 2] <- 0.9
+    res <- .group_correlation_matrix(x, threshold = 0.9)
+    expect_equal(res, c(2, 1, 1, 1, 3))
+    
+    ## Add a higher correlation between 4 and 5
+    x[4, 5] <- 0.99
+    x[5, 4] <- 0.99
+    res <- .group_correlation_matrix(x, threshold = 0.9)
+    expect_equal(res, c(2, 2, 3, 1, 1))
+    
+    ## Increase correlation between 2 and 3
+    x[2, 3] <- 0.92
+    x[3, 2] <- 0.92
+    res <- .group_correlation_matrix(x, threshold = 0.9)
+    expect_equal(res, c(3, 2, 2, 1, 1))
+
+    ## 3 and 5 above threshold
+    x[3, 5] <- 0.9
+    x[5, 3] <- 0.9
+    res <- .group_correlation_matrix(x, threshold = 0.9)
+    expect_equal(res, c(3, 2, 2, 1, 1))    
 })

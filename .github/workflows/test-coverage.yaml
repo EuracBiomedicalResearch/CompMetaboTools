@@ -35,6 +35,11 @@ jobs:
         run: |
           install.packages(c("remotes"))
           remotes::install_deps(dependencies = TRUE)
+          remotes::install_github("RforMassSpectrometry/MsCoreUtils")
+          remotes::install_github("RforMassSpectrometry/Spectra")
+          install.packages("BiocManager")
+          BiocManager::install(c("mzR", "MSnbase", "SummarizedExperiment", "BiocParallel", "xcms"))
+          remotes::install_github("sneumann/xcms", ref = "jomaster")
           remotes::install_cran("covr")
         shell: Rscript {0}
 

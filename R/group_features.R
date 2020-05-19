@@ -100,15 +100,167 @@
     as.factor(res)
 }
 
+#' @description
+#'
+#' This function creates clusters of highest correlations between elements in
+#' which **all** elements have a correlation `>= threshold` with each other.
+#' This is in contrast to
+#' `.group_logic_matrix(x >= threshold)` that creates clusters of elements that
+#' have a correlation `>= threshold` to any other (i.e. at least one other)
+#' element of a cluster. Thus, this function creates smaller clusters of
+#' highly correlated elements. Note however that with this approach single
+#' elements in one cluster could also have a correlation `>= threshold` to
+#' another element in another cluster. The average correlation to its own
+#' cluster will however be larger to that of the other.
+#'
+#' The algorithm is defined as follows:
+#' - all pairs of values in `x` which are `>= threshold` are identified and
+#'   sorted decreasingly.
+#' - starting with the pair with the highest correlation groups are defined:
+#' - if none of the two is in a group, both are put into the same new group.
+#' - if one of the two is already in a group, the other is put into the same
+#'   group if **all** correlations of it to that group are `>= threshold`
+#'   (and are not `NA`).
+#' - if both are already in the same group nothing is done.
+#' - if both are in different groups: an element is put into the group of the
+#'   other if a) all correlations of it to members of the other's group 
+#'   are not `NA` and `>= threshold` **and** b) the average correlation to the
+#'   other group is larger than the average correlation to its own group.
+#'
+#' This ensures that groups are defined in which all elements have a correlation
+#' `>= threshold` with each other and the correlation between members of the
+#' same group is maximized.
+#' 
+#' @param x symmetrix `numeric` `matrix`.
+#'
+#' @param threshold `numeric(1)` above which rows in `x` should be grouped.
+#'
+#' @param full `logical(1)` whether the full matrix should be considered, or
+#'     just the upper triangular matrix (including the diagonal).
+#'
+#' @noRd
+#' 
+#' @examples
+#' 
+#' x <- rbind(
+#'     c(1, 0.9, 0.6, 0.8, 0.5),
+#'     c(0.9, 1, 0.7, 0.92, 0.8),
+#'     c(0.6, 0.7, 1, 0.91, 0.7),
+#'     c(0.8, 0.92, 0.91, 1, 0.9),
+#'     c(0.5, 0.8, 0.7, 0.9, 1)
+#'     )
+#'
+#' .group_correlation_matrix(x, threshold = 0.9)
+#'
+#' ## In contrast to the "greedy" version that groups all elements together
+#' ## that have a correlation >= 0.9 with any other element in a cluster.
+#' CompMetaboTools:::.group_logic_matrix(x >= 0.9)
+#'
+#' ## Add also a correlation between 3 and 2
+#' x[2, 3] <- 0.9
+#' x[3, 2] <- 0.9
+#' x
+#' .group_correlation_matrix(x, threshold = 0.9)
+#'
+#' ## Add a higher correlation between 4 and 5
+#' x[4, 5] <- 0.99
+#' x[5, 4] <- 0.99
+#' x
+#' .group_correlation_matrix(x, threshold = 0.9)
+#'
+#' ## Increase correlation between 2 and 3
+#' x[2, 3] <- 0.92
+#' x[3, 2] <- 0.92
+#' x
+#' .group_correlation_matrix(x, threshold = 0.9) ## Don't break previous cluster!
+.group_correlation_matrix <- function(x, threshold = 0.9, full = TRUE) {
+    if (!full)
+        x[lower.tri(x)] <- NA
+    nr <- nrow(x)
+    if (nr != ncol(x))
+        stop("'x' should be a symmetric matrix")
+    res <- rep(NA_integer_, nr)
+    x[cbind(1:nr, 1:nr)] <- NA
+    idx_pairs <- which(x >= threshold, arr.ind = TRUE)
+    idx_pairs <- idx_pairs[order(x[idx_pairs], decreasing = TRUE), , drop = FALSE]
+    grp_id <- 1
+    the_other <- c(2, 1)
+    for (i in seq_len(nrow(idx_pairs))) {
+        got_grp <- res[idx_pairs[i, ]]
+        nas <- is.na(got_grp)
+        if (any(nas)) {
+            ## at least one of them is not in a group
+            if (sum(nas) == 2) {
+                ## none of the two is in a group: create one for them.
+                res[idx_pairs[i, ]] <- grp_id
+                grp_id <- grp_id + 1
+            } else {
+                ## One is not in a group. Put that into the group of the
+                ## other if a) no cor is NA and b) cor to all of the group
+                ## are >= threshold.
+                idx <- idx_pairs[i, nas]
+                idx_grp <- which(res == got_grp[!nas])
+                cor_to_grp <- x[idx, idx_grp]
+                if (full)
+                    cor_to_grp <- c(cor_to_grp, x[idx_grp, idx])
+                if (!(any(is.na(cor_to_grp)) || any(cor_to_grp < threshold)))
+                    res[idx] <- got_grp[!nas]
+            }
+        } else {
+            ## both are in a group
+            if (length(unique(got_grp)) > 1) {
+                grp_1 <- which(res == got_grp[1])
+                grp_2 <- which(res == got_grp[2])
+                cor_1_1 <- x[idx_pairs[i, 1], grp_1]
+                cor_1_2 <- x[idx_pairs[i, 1], grp_2]
+                cor_2_1 <- x[idx_pairs[i, 2], grp_1]
+                cor_2_2 <- x[idx_pairs[i, 2], grp_2]
+                if (full) {
+                    cor_1_1 <- c(cor_1_1, x[grp_1, idx_pairs[i, 1]])
+                    cor_1_2 <- c(cor_1_2, x[grp_2, idx_pairs[i, 1]])
+                    cor_2_1 <- c(cor_2_1, x[grp_1, idx_pairs[i, 2]])
+                    cor_2_2 <- c(cor_2_2, x[grp_2, idx_pairs[i, 2]])
+                }
+                mcor_1_1 <- mean(cor_1_1, na.rm = TRUE)
+                mcor_1_2 <- mean(cor_1_2)
+                mcor_2_1 <- mean(cor_2_1)
+                mcor_2_2 <- mean(cor_2_2, na.rm =TRUE)
+                ## Put the elements into the group of the other, if its
+                ## correlation to its group is larger than to its own group
+                if (!(is.na(mcor_1_2) || any(cor_1_2 < threshold))
+                    && mcor_1_2 > mcor_1_1)
+                    res[idx_pairs[i, 1]] <- got_grp[2]
+                if (!(is.na(mcor_2_1) || any(cor_2_1 < threshold))
+                    && mcor_2_1 > mcor_2_2)
+                    res[idx_pairs[i, 2]] <- got_grp[1]
+            } # else nothing to do - they are already in the same group
+        }
+    }
+    nas <- is.na(res)
+    if (any(nas))
+        res[nas] <- seq(grp_id, length.out = sum(nas))
+    res
+}
+
 #' @title Group rows in a matrix based on their correlation
 #'
 #' @description
 #'
 #' The `groupByCorrelation` allows to group rows in a numeric matrix based on
-#' their correlation with each other. Note that if for example row 1 and 3 have
-#' a correlation above the threshold and rows 3 and 5 too (but correlation
-#' between 1 and 5 is below the threshold) all 3 are grouped into the same
-#' group (i.e. rows 1, 3 **and** 5).
+#' their correlation with each other.
+#'
+#' Two types of groupings are available:
+#' 
+#' - `greedy = FALSE` (the default): the algorithm creates small groups of
+#'   highly correlated members, all of which have a correlation with each other
+#'   that are `>= threshold`. Note that with this algorithm, rows in `x` could
+#'   still have a correlation `>= threshold` with one or more elements of a
+#'   group they are not part of. See notes below for more information.
+#' - `greedy = TRUE`: the algorithm creates large groups containing rows that
+#'   have a correlation `>= threshold` with at least one element of that group.
+#'   For example, if row 1 and 3 have a correlation above the threshold and
+#'   rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
+#'   all 3 are grouped into the same group (i.e. rows 1, 3 **and** 5).
 #'
 #' Note that with parameter `f` it is also possible to pre-define groups of
 #' rows that should be further sub-grouped based on correlation with each other.
@@ -118,6 +270,27 @@
 #' is then `f` with the additional subgroup appended (and separated with a
 #' `"."`). See examples below.
 #'
+#' @note
+#'
+#' Implementation note of the grouping algorithm:
+#'
+#' - all correlations between rows in `x` which are `>= threshold` are
+#'   identified and sorted decreasingly.
+#' - starting with the pair with the highest correlation groups are defined:
+#' - if none of the two is in a group, both are put into the same new group.
+#' - if one of the two is already in a group, the other is put into the same
+#'   group if **all** correlations of it to that group are `>= threshold`
+#'   (and are not `NA`).
+#' - if both are already in the same group nothing is done.
+#' - if both are in different groups: an element is put into the group of the
+#'   other if a) all correlations of it to members of the other's group 
+#'   are not `NA` and `>= threshold` **and** b) the average correlation to the
+#'   other group is larger than the average correlation to its own group.
+#'
+#' This ensures that groups are defined in which all elements have a correlation
+#' `>= threshold` with each other and the correlation between members of the
+#' same group is maximized.
+#' 
 #' @param x `numeric` `matrix` where rows should be grouped based on
 #'     correlation of their values across columns being larger than `threshold`.
 #'
@@ -134,6 +307,10 @@
 #'     of rows in `x` that should be further sub-grouped. See description for
 #'     details.
 #'
+#' @param greedy `logical(1)` whether a version of the grouping algorithm should
+#'     be used that leads to larger, more loosely correlated, groups. The
+#'     default is `greedy = FALSE`. See description for more information.
+#' 
 #' @return `factor` with same length than `nrow(x)` with the group each row
 #'     is assigned to.
 #'
@@ -165,7 +342,7 @@
 #' groupByCorrelation(x, f = f)
 groupByCorrelation <- function(x, method = "pearson",
                                use = "pairwise.complete.obs",
-                               threshold = 0.9, f = NULL) {
+                               threshold = 0.9, f = NULL, greedy = FALSE) {
     if (length(threshold) > 1)
         stop("'threshold' has to be of length 1")
     if (!is.null(f)) {
@@ -178,20 +355,28 @@ groupByCorrelation <- function(x, method = "pearson",
             idx <- which(f == fg)
             idxl <- length(idx)
             if (idxl > 1) {
-                cors <- cor(t(x[idx, ]), method = method, use = use) > threshold
-                ## Ensure diagonal matrix is TRUE so that even if some features
-                ## have a correlation value of NA they are not dropped
-                cors[cbind(1:idxl, 1:idxl)] <- TRUE
-                fnew[idx] <- paste0(
-                    fg, ".",
-                    as.character(.index_list_to_factor(.group_logic_matrix(cors))))
+                cors <- cor(t(x[idx, ]), method = method, use = use)
+                if (greedy) {
+                    ## Ensure diagonal matrix is TRUE so that even if some
+                    ## features have a correlation value of NA they are not
+                    ## dropped
+                    cors <- cors >= threshold
+                    cors[cbind(1:idxl, 1:idxl)] <- TRUE
+                    fids <- .index_list_to_factor(.group_logic_matrix(cors))
+                } else
+                    fids <- .group_correlation_matrix(
+                        cors, threshold = threshold)
+                fnew[idx] <- paste0(fg, ".", fids)
             } else
                 fnew[idx] <- paste0(fg, ".1")
         }
         as.factor(fnew)
     } else {
-        cors <- cor(t(x), method = method, use = use) > threshold
-        .index_list_to_factor(.group_logic_matrix(cors))
+        cors <- cor(t(x), method = method, use = use)
+        if (greedy)
+            .index_list_to_factor(.group_logic_matrix(cors >= threshold))
+        else
+            as.factor(.group_correlation_matrix(cors, threshold = threshold))
     }
 }
 
@@ -200,7 +385,7 @@ groupByCorrelation <- function(x, method = "pearson",
 #' @description
 #'
 #' `groupEicCorrelation` groups (extracted ion) chromatograms (EICs) based on
-#' their correlation with each other. If this correlation is higher than the
+#' their correlation with each other. If this correlation is `>=` than the
 #' provided `threshold` they are grouped.
 #'
 #' If `x` is a [Chromatograms()] object with more than one column (sample),
@@ -216,10 +401,29 @@ groupByCorrelation <- function(x, method = "pearson",
 #' value. Similar to the one-column case EICs are grouped if their (aggregated)
 #' correlation coefficient is larger than `threshold`.
 #'
+#' Two types of groupings are available:
+#' 
+#' - `greedy = FALSE` (the default): the algorithm creates small groups of
+#'   highly correlated members, all of which have a correlation with each other
+#'   that are `>= threshold`. Note that with this algorithm, rows in `x` could
+#'   still have a correlation `>= threshold` with one or more elements of a
+#'   group they are not part of. See notes below for more information.
+#' - `greedy = TRUE`: the algorithm creates large groups containing rows that
+#'   have a correlation `>= threshold` with at least one element of that group.
+#'   For example, if row 1 and 3 have a correlation above the threshold and
+#'   rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
+#'   all 3 are grouped into the same group (i.e. rows 1, 3 **and** 5).
+#'
+#' For more information see [groupByCorrelation()].
+#' 
 #' @param x [Chromatograms()] object of `list` of [Chromatogram()] objects.
 #'
 #' @param aggregationFun `function` to combine the correlation values between
 #'     pairs of EICs across samples (columns). See description for details.
+#'
+#' @param greedy `logical(1)` whether a version of the grouping algorithm should
+#'     be used that leads to larger, more loosely correlated, groups. The
+#'     default is `greedy = FALSE`. See description for more information.
 #'
 #' @param threshold `numeric(1)` with the threshold for correlation above which
 #'     EICs are grouped together.
@@ -260,7 +464,7 @@ groupByCorrelation <- function(x, method = "pearson",
 #' chrs <- Chromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3), ncol = 2)
 #' groupEicCorrelation(chrs, aggregationFun = max)
 groupEicCorrelation <- function(x, aggregationFun = mean,
-                                threshold = 0.8, ...) {
+                                threshold = 0.8, greedy = FALSE, ...) {
     nr <- nrow(x)
     nc <- ncol(x)
     res <- array(NA_real_, dim = c(nr, nr, nc))
@@ -271,7 +475,9 @@ groupEicCorrelation <- function(x, aggregationFun = mean,
     res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE) > threshold
     ## Ensure diagonal is always TRUE to not drop any features!
     res[cbind(1:nr, 1:nr)] <- TRUE
-    .index_list_to_factor(.group_logic_matrix(res))
+    if (greedy)
+        .index_list_to_factor(.group_logic_matrix(res))
+    else as.factor(.group_correlation_matrix(res, threshold = threshold))
 }
 
 #' @title Sub-group allowing only single positive/polarity pairs per group

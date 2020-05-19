@@ -1,17 +1,17 @@
 Package: CompMetaboTools
 Title: Utility Functions from the Eurac Research Computational Metabolomics Team
 Version: 0.0.6
-Description: CompMetaboTools provides utility functions used frequently in
-    analyses of the Computational Metabolomics Team of the Eurac Research
-    Institute for Biomedicine.
+Description: Utility functions used frequently in analyses of the
+    Computational Metabolomics Team of the Eurac Research, Institute for
+    Biomedicine.
 Authors@R: c(person(given = "Johannes", family = "Rainer",
                     email = "johannes.rainer@eurac.edu",
                     role = c("aut", "cre"),
-	                comment = c(ORCID = "0000-0002-6977-7147")),
+                    comment = c(ORCID = "0000-0002-6977-7147")),
              person(given = "Mar", family = "Garcia-Aloy",
                     email = "mar.garcia@eurac.edu",
                     role = c("aut"),
-	                comment = c(ORCID = "0000-0001-7406-4443")))
+                    comment = c(ORCID = "0000-0001-7406-4443")))
 Author: Mar Garcia-Aloy and Johannes Rainer.
 Maintainer: Johannes Rainer <johannes.rainer@eurac.edu>
 Depends:
@@ -24,8 +24,8 @@ Imports:
     IRanges,
     methods,
     MSnbase,
-    xcms,
-    MsCoreUtils,
+    xcms (>= 3.11.1),
+    MsCoreUtils (>= 1.1.0),
     stats
 Suggests:
     testthat,
@@ -36,7 +36,9 @@ Suggests:
     faahKO,
     Spectra
 Remotes:
-    RforMassSpectrometry/Spectra
+    RforMassSpectrometry/MsCoreUtils,
+    RforMassSpectrometry/Spectra,
+    sneumann/xcms@jomaster
 License: Artistic-2.0
 LazyData: yes
 BugReports: https://github.com/EuracBiomedicalResearch/CompMetaboTools/issues

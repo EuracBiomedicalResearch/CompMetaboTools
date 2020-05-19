@@ -4,7 +4,13 @@
 \alias{groupEicCorrelation}
 \title{Group EICs based on their correlation}
 \usage{
-groupEicCorrelation(x, aggregationFun = mean, threshold = 0.8, ...)
+groupEicCorrelation(
+  x,
+  aggregationFun = mean,
+  threshold = 0.8,
+  greedy = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{\link[=Chromatograms]{Chromatograms()}} object of \code{list} of \code{\link[=Chromatogram]{Chromatogram()}} objects.}
@@ -14,6 +20,10 @@ pairs of EICs across samples (columns). See description for details.}
 
 \item{threshold}{\code{numeric(1)} with the threshold for correlation above which
 EICs are grouped together.}
+
+\item{greedy}{\code{logical(1)} whether a version of the grouping algorithm should
+be used that leads to larger, more loosely correlated, groups. The
+default is \code{greedy = FALSE}. See description for more information.}
 
 \item{...}{parameters for the \code{\link[=correlate]{correlate()}} function for \code{\link[=Chromatograms]{Chromatograms()}}
 objects.}
@@ -25,7 +35,7 @@ is assigned to.
 }
 \description{
 \code{groupEicCorrelation} groups (extracted ion) chromatograms (EICs) based on
-their correlation with each other. If this correlation is higher than the
+their correlation with each other. If this correlation is \code{>=} than the
 provided \code{threshold} they are grouped.
 
 If \code{x} is a \code{\link[=Chromatograms]{Chromatograms()}} object with more than one column (sample),
@@ -40,6 +50,22 @@ by combining the 3 correlation values per comparison with
 EIC 1 and EIC 2 in each of the 3 columns is used as the final correlation
 value. Similar to the one-column case EICs are grouped if their (aggregated)
 correlation coefficient is larger than \code{threshold}.
+
+Two types of groupings are available:
+\itemize{
+\item \code{greedy = FALSE} (the default): the algorithm creates small groups of
+highly correlated members, all of which have a correlation with each other
+that are \verb{>= threshold}. Note that with this algorithm, rows in \code{x} could
+still have a correlation \verb{>= threshold} with one or more elements of a
+group they are not part of. See notes below for more information.
+\item \code{greedy = TRUE}: the algorithm creates large groups containing rows that
+have a correlation \verb{>= threshold} with at least one element of that group.
+For example, if row 1 and 3 have a correlation above the threshold and
+rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
+all 3 are grouped into the same group (i.e. rows 1, 3 \strong{and} 5).
+}
+
+For more information see \code{\link[=groupByCorrelation]{groupByCorrelation()}}.
 }
 \examples{
 

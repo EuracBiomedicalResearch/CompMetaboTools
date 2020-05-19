@@ -9,7 +9,8 @@ groupByCorrelation(
   method = "pearson",
   use = "pairwise.complete.obs",
   threshold = 0.9,
-  f = NULL
+  f = NULL,
+  greedy = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,10 @@ rows are considered to be correlated and hence grouped.}
 \item{f}{optional vector of length equal to \code{nrow(x)} pre-defining groups
 of rows in \code{x} that should be further sub-grouped. See description for
 details.}
+
+\item{greedy}{\code{logical(1)} whether a version of the grouping algorithm should
+be used that leads to larger, more loosely correlated, groups. The
+default is \code{greedy = FALSE}. See description for more information.}
 }
 \value{
 \code{factor} with same length than \code{nrow(x)} with the group each row
@@ -35,10 +40,21 @@ is assigned to.
 }
 \description{
 The \code{groupByCorrelation} allows to group rows in a numeric matrix based on
-their correlation with each other. Note that if for example row 1 and 3 have
-a correlation above the threshold and rows 3 and 5 too (but correlation
-between 1 and 5 is below the threshold) all 3 are grouped into the same
-group (i.e. rows 1, 3 \strong{and} 5).
+their correlation with each other.
+
+Two types of groupings are available:
+\itemize{
+\item \code{greedy = FALSE} (the default): the algorithm creates small groups of
+highly correlated members, all of which have a correlation with each other
+that are \verb{>= threshold}. Note that with this algorithm, rows in \code{x} could
+still have a correlation \verb{>= threshold} with one or more elements of a
+group they are not part of. See notes below for more information.
+\item \code{greedy = TRUE}: the algorithm creates large groups containing rows that
+have a correlation \verb{>= threshold} with at least one element of that group.
+For example, if row 1 and 3 have a correlation above the threshold and
+rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
+all 3 are grouped into the same group (i.e. rows 1, 3 \strong{and} 5).
+}
 
 Note that with parameter \code{f} it is also possible to pre-define groups of
 rows that should be further sub-grouped based on correlation with each other.
@@ -47,6 +63,27 @@ rows with the same value in \code{f} and hence these pre-defined groups of rows
 are further sub-grouped based on pairwise correlation. The returned \code{factor}
 is then \code{f} with the additional subgroup appended (and separated with a
 \code{"."}). See examples below.
+}
+\note{
+Implementation note of the grouping algorithm:
+\itemize{
+\item all correlations between rows in \code{x} which are \verb{>= threshold} are
+identified and sorted decreasingly.
+\item starting with the pair with the highest correlation groups are defined:
+\item if none of the two is in a group, both are put into the same new group.
+\item if one of the two is already in a group, the other is put into the same
+group if \strong{all} correlations of it to that group are \verb{>= threshold}
+(and are not \code{NA}).
+\item if both are already in the same group nothing is done.
+\item if both are in different groups: an element is put into the group of the
+other if a) all correlations of it to members of the other's group
+are not \code{NA} and \verb{>= threshold} \strong{and} b) the average correlation to the
+other group is larger than the average correlation to its own group.
+}
+
+This ensures that groups are defined in which all elements have a correlation
+\verb{>= threshold} with each other and the correlation between members of the
+same group is maximized.
 }
 \examples{
 
