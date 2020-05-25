@@ -84,6 +84,10 @@ test_that("AbundanceCorrelationParam works", {
                 nrow(featureDefinitions(res)))
     res_2 <- groupFeatures(xodg, AbundanceCorrelationParam(subset = c(2, 3)))
 
+    plotFeatureGroups(res_2)
+    expect_error(plotFeatureGroups(res_2, featureGroups = "a"), "None of the")
+    expect_error(plotFeatureGroups(xodg), "No feature groups")
+    
     ## With pre-defined grps.
     tmp <- xodg
     featureDefinitions(tmp)$feature_group <- "FG.2"
@@ -96,6 +100,7 @@ test_that("AbundanceCorrelationParam works", {
     res_2 <- groupFeatures(tmp, AbundanceCorrelationParam(), msLevel = 2)
     expect_true(all(featureGroups(res_2)[-idx] == "FG.2"))
     expect_true(all(featureGroups(res_2)[idx] != "FG.2"))
+
 })
 
 test_that(".format_groups works", {

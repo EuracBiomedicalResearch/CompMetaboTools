@@ -1,5 +1,9 @@
 # CompMetaboTools 0.1
 
+## CompMetaboTools 0.0.7
+
+- Add `plotFeatureGroups` to draw feature groups into the m/z-rt space.
+
 ## CompMetaboTools 0.0.6
 
 - Add the `plotOverlay` function to create a overlay plot of EICs.

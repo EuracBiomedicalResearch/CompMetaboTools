@@ -644,6 +644,8 @@ setMethod(
 #' @param object an [XCMSnExp()] object.
 #' 
 #' @author Johannes Rainer, Mar Garcia-Aloy, Vinicius Veri Hernandes
+#'
+#' @seealso [plotFeatureGroups()] for visualization of grouped features.
 NULL
 
 #' @rdname feature-grouping
@@ -651,4 +653,73 @@ NULL
 #' @export
 featureGroups <- function(object) {
     featureDefinitions(object)$feature_group
+}
+
+#' @title Plot feature groups in the m/z-retention time space
+#'
+#' @description
+#'
+#' `plotFeatureGroups` visualizes defined feature groups in the m/z by
+#' retention time space. Features are indicated by points with features from
+#' the same feature group being connected by a line. See [featureGroups()]
+#' for details on and options for feature grouping.
+#'
+#' @param x [XCMSnExp()] object with grouped features (i.e. after calling
+#'     [groupFeatures()].
+#'
+#' @param xlim `numeric(2)` with the lower and upper limit for the x-axis.
+#'
+#' @param ylim `numeric(2)` with the lower and upper limit for the y-axis.
+#'
+#' @param xlab `character(1)` with the label for the x-axis.
+#'
+#' @param ylab `character(1)` with the label for the y-axis.
+#'
+#' @param pch the plotting character. Defaults to `pch = 4` i.e. plotting
+#'     features as crosses. See [par()] for more information.
+#'
+#' @param col color to be used to draw the features. At present only a single
+#'     color is supported.
+#'
+#' @param type plotting type (see [par()]). Defaults to `type = "o"` which
+#'     draws each feature as a point and connecting the features of the same
+#'     feature group with a line.
+#'
+#' @param main `character(1)` with the title of the plot.
+#'
+#' @param featureGroups optional `character` of feature group IDs to draw only
+#'     specified feature group(s). If not provided, all feature groups are
+#'     drawn.
+#'
+#' @export
+#'
+#' @author Johannes Rainer
+plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
+                              xlab = "retention time", ylab = "m/z",
+                              pch = 4, col = "#00000060", type = "o",
+                              main = "Feature groups",
+                              featureGroups = character()) {
+    if (!inherits(x, "XCMSnExp"))
+        stop("'x' is supposed to be an xcms result object ('XCMSnExp')")
+    if (!length(featureGroups(x)))
+        stop("No feature groups present. Please run 'groupFeatures' first")
+    fts <- factor(featureGroups(x))
+    if (!length(featureGroups))
+        featureGroups <- levels(fts)
+    fts <- fts[fts %in% featureGroups]
+    fts <- droplevels(fts)
+    if (!length(fts))
+        stop("None of the specified feature groups found")
+    fdef <- featureDefinitions(x)[featureGroups(x) %in% fts, ]
+    rts <- split(fdef$rtmed, fts)
+    mzs <- split(fdef$mzmed, fts)
+    xy <- cbind(
+        x = unlist(lapply(rts, function(z) c(z, NA)), use.names = FALSE),
+        y = unlist(lapply(mzs, function(z) c(z, NA)), use.names = FALSE))
+    if (length(xlim) != 2)
+        xlim <- range(unlist(rts, use.names = FALSE))
+    if (length(ylim) != 2)
+        ylim <- range(unlist(mzs, use.names = FALSE))
+    plot(3, 3, pch = NA, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab)
+    lines(xy, type = type, col = col, pch = pch)
 }
