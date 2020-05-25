@@ -97,3 +97,11 @@ test_that("AbundanceCorrelationParam works", {
     expect_true(all(featureGroups(res_2)[-idx] == "FG.2"))
     expect_true(all(featureGroups(res_2)[idx] != "FG.2"))
 })
+
+test_that(".format_groups works", {
+    res <- .format_groups(1:3)
+    expect_equal(res, c("1", "2", "3"))
+    res <- .format_groups(1:10)
+    expect_equal(res, c("01", "02", "03", "04", "05", "06", "07", "08",
+                        "09", "10"))
+})

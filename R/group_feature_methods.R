@@ -161,14 +161,13 @@ setMethod(
             idxl <- length(idx)
             if (idxl > 1) {
                 if (param@method == "greedy")
-                    f_new[idx] <- paste0(
-                        fg, ".", group(featureDefinitions(object)$rtmed[idx],
-                                       tolerance = param@diffRt))
+                    fids <- group(featureDefinitions(object)$rtmed[idx],
+                                  tolerance = param@diffRt)
                 if (param@method == "groupClosest")
-                    f_new[idx] <- paste0(
-                        fg, ".", groupClosest(
-                                     featureDefinitions(object)$rtmed[idx],
-                                     maxDiff = param@diffRt))
+                    fids <- groupClosest(
+                        featureDefinitions(object)$rtmed[idx],
+                        maxDiff = param@diffRt)
+                f_new[idx] <- paste0(fg, ".", .format_groups(fids))
             } else
                 f_new[idx] <- paste0(fg, ".1")
         }
@@ -181,6 +180,11 @@ setMethod(
         validObject(object)
         object
     })
+
+.format_groups <- function(x) {
+    digits <- ceiling(log10(length(x) + 1L))
+    sprintf(paste0("%0", digits, "d"), as.integer(x))
+}
 
 #' @title Group features based on correlation of extracted ion chromatograms
 #'
@@ -400,11 +404,12 @@ setMethod(
                         as(eics, "Chromatograms"), aggregationFun = ffun,
                         threshold = param@threshold, greedy = param@greedy)
                 } else res <- factor(1)
-                f_new[idx] <- paste0(fg, ".", res)
+                f_new[idx] <- paste0(fg, ".", .format_groups(res))
                 if (length(idx_miss))
                     f_new[idx_miss] <- paste0(
-                        fg, ".", seq((length(levels(res)) + 1),
-                                     length.out = length(idx_miss)))
+                        fg, ".", .format_groups(
+                                     seq((length(levels(res)) + 1),
+                                         length.out = length(idx_miss))))
             } else
                 f_new[idx] <- paste0(fg, ".1")
             setTxtProgressBar(pb, counter)
