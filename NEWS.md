@@ -2,6 +2,7 @@
 
 ## CompMetaboTools 0.0.7
 
+- Fix `groupFeatures` for older xcms result objects that don't record MS level.
 - Add `plotFeatureGroups` to draw feature groups into the m/z-rt space.
 
 ## CompMetaboTools 0.0.6

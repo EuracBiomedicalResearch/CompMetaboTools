@@ -143,7 +143,9 @@ setMethod(
         if (length(msLevel) > 1)
             stop("Currently only grouping of features from a single MS level",
                  " is supported.")
-        is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        if (any(colnames(featureDefinitions(object)) == "ms_level"))
+            is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        else is_msLevel <- rep(TRUE, nrow(featureDefinitions(object)))
         if (any(colnames(featureDefinitions(object)) == "feature_group")) {
             f <- featureDefinitions(object)$feature_group
             f_new <- as.character(f)
@@ -358,7 +360,9 @@ setMethod(
         if (n > nc)
             stop("'n' should be smaller or equal than the number of ",
                  "samples (", nc, ")")
-        is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        if (any(colnames(featureDefinitions(object)) == "ms_level"))
+            is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        else is_msLevel <- rep(TRUE, nrow(featureDefinitions(object)))
         if (any(colnames(featureDefinitions(object)) == "feature_group")) {
             f <- featureDefinitions(object)$feature_group
             f_new <- as.character(f)
@@ -585,7 +589,9 @@ setMethod(
             stop("'subset' has to be between 1 and ", nc)
         if (length(param@subset) < 2)
             stop("Can not calculate correlations for less than 2 samples")
-        is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        if (any(colnames(featureDefinitions(object)) == "ms_level"))
+            is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        else is_msLevel <- rep(TRUE, nrow(featureDefinitions(object)))
         if (any(colnames(featureDefinitions(object)) == "feature_group")) {
             f <- featureDefinitions(object)$feature_group
             f_new <- as.character(f)
@@ -690,6 +696,8 @@ featureGroups <- function(object) {
 #' @param featureGroups optional `character` of feature group IDs to draw only
 #'     specified feature group(s). If not provided, all feature groups are
 #'     drawn.
+#'
+#' @importFrom graphics lines
 #'
 #' @export
 #'
