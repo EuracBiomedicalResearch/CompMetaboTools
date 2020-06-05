@@ -1,4 +1,4 @@
-[![build status](https://github.com/EuracBiomedicalResearch/MetaboCoreUtils/workflows/R-CMD-check/badge.svg)](https://github.com/EuracBiomedicalResearch/MetaboCoreUtils/actions?query=workflow%3AR-CMD-check)
+[![build status](https://github.com/EuracBiomedicalResearch/CompMetaboTools/workflows/R-CMD-check/badge.svg)](https://github.com/EuracBiomedicalResearch/CompMetaboTools/actions?query=workflow%3AR-CMD-check)
 [![codecov.io](https://codecov.io/github/EuracBiomedicalResearch/CompMetaboTools/coverage.svg?branch=master)](https://codecov.io/github/EuracBiomedicalResearch/CompMetaboTools?branch=master)
 
 
