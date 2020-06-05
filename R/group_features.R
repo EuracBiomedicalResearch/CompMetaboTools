@@ -372,7 +372,7 @@ groupByCorrelation <- function(x, method = "pearson",
                 } else
                     fids <- .group_correlation_matrix(
                         cors, threshold = threshold)
-                fnew[idx] <- paste0(fg, ".", fids)
+                fnew[idx] <- paste0(fg, ".", .format_groups(fids))
             } else
                 fnew[idx] <- paste0(fg, ".1")
         }

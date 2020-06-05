@@ -28,6 +28,9 @@ The available options for the \code{groupFeatures} method are:
 An ideal workflow grouping features should sequentially perform the above
 methods (in the listed order).
 }
+\seealso{
+\code{\link[=plotFeatureGroups]{plotFeatureGroups()}} for visualization of grouped features.
+}
 \author{
 Johannes Rainer, Mar Garcia-Aloy, Vinicius Veri Hernandes
 }

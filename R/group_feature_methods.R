@@ -143,7 +143,9 @@ setMethod(
         if (length(msLevel) > 1)
             stop("Currently only grouping of features from a single MS level",
                  " is supported.")
-        is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        if (any(colnames(featureDefinitions(object)) == "ms_level"))
+            is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        else is_msLevel <- rep(TRUE, nrow(featureDefinitions(object)))
         if (any(colnames(featureDefinitions(object)) == "feature_group")) {
             f <- featureDefinitions(object)$feature_group
             f_new <- as.character(f)
@@ -161,14 +163,13 @@ setMethod(
             idxl <- length(idx)
             if (idxl > 1) {
                 if (param@method == "greedy")
-                    f_new[idx] <- paste0(
-                        fg, ".", group(featureDefinitions(object)$rtmed[idx],
-                                       tolerance = param@diffRt))
+                    fids <- group(featureDefinitions(object)$rtmed[idx],
+                                  tolerance = param@diffRt)
                 if (param@method == "groupClosest")
-                    f_new[idx] <- paste0(
-                        fg, ".", groupClosest(
-                                     featureDefinitions(object)$rtmed[idx],
-                                     maxDiff = param@diffRt))
+                    fids <- groupClosest(
+                        featureDefinitions(object)$rtmed[idx],
+                        maxDiff = param@diffRt)
+                f_new[idx] <- paste0(fg, ".", .format_groups(fids))
             } else
                 f_new[idx] <- paste0(fg, ".1")
         }
@@ -181,6 +182,11 @@ setMethod(
         validObject(object)
         object
     })
+
+.format_groups <- function(x) {
+    digits <- ceiling(log10(length(x) + 1L))
+    sprintf(paste0("%0", digits, "d"), as.integer(x))
+}
 
 #' @title Group features based on correlation of extracted ion chromatograms
 #'
@@ -354,7 +360,9 @@ setMethod(
         if (n > nc)
             stop("'n' should be smaller or equal than the number of ",
                  "samples (", nc, ")")
-        is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        if (any(colnames(featureDefinitions(object)) == "ms_level"))
+            is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        else is_msLevel <- rep(TRUE, nrow(featureDefinitions(object)))
         if (any(colnames(featureDefinitions(object)) == "feature_group")) {
             f <- featureDefinitions(object)$feature_group
             f_new <- as.character(f)
@@ -400,11 +408,12 @@ setMethod(
                         as(eics, "Chromatograms"), aggregationFun = ffun,
                         threshold = param@threshold, greedy = param@greedy)
                 } else res <- factor(1)
-                f_new[idx] <- paste0(fg, ".", res)
+                f_new[idx] <- paste0(fg, ".", .format_groups(res))
                 if (length(idx_miss))
                     f_new[idx_miss] <- paste0(
-                        fg, ".", seq((length(levels(res)) + 1),
-                                     length.out = length(idx_miss)))
+                        fg, ".", .format_groups(
+                                     seq((length(levels(res)) + 1),
+                                         length.out = length(idx_miss))))
             } else
                 f_new[idx] <- paste0(fg, ".1")
             setTxtProgressBar(pb, counter)
@@ -580,7 +589,9 @@ setMethod(
             stop("'subset' has to be between 1 and ", nc)
         if (length(param@subset) < 2)
             stop("Can not calculate correlations for less than 2 samples")
-        is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        if (any(colnames(featureDefinitions(object)) == "ms_level"))
+            is_msLevel <- featureDefinitions(object)$ms_level == msLevel
+        else is_msLevel <- rep(TRUE, nrow(featureDefinitions(object)))
         if (any(colnames(featureDefinitions(object)) == "feature_group")) {
             f <- featureDefinitions(object)$feature_group
             f_new <- as.character(f)
@@ -639,6 +650,8 @@ setMethod(
 #' @param object an [XCMSnExp()] object.
 #' 
 #' @author Johannes Rainer, Mar Garcia-Aloy, Vinicius Veri Hernandes
+#'
+#' @seealso [plotFeatureGroups()] for visualization of grouped features.
 NULL
 
 #' @rdname feature-grouping
@@ -646,4 +659,75 @@ NULL
 #' @export
 featureGroups <- function(object) {
     featureDefinitions(object)$feature_group
+}
+
+#' @title Plot feature groups in the m/z-retention time space
+#'
+#' @description
+#'
+#' `plotFeatureGroups` visualizes defined feature groups in the m/z by
+#' retention time space. Features are indicated by points with features from
+#' the same feature group being connected by a line. See [featureGroups()]
+#' for details on and options for feature grouping.
+#'
+#' @param x [XCMSnExp()] object with grouped features (i.e. after calling
+#'     [groupFeatures()].
+#'
+#' @param xlim `numeric(2)` with the lower and upper limit for the x-axis.
+#'
+#' @param ylim `numeric(2)` with the lower and upper limit for the y-axis.
+#'
+#' @param xlab `character(1)` with the label for the x-axis.
+#'
+#' @param ylab `character(1)` with the label for the y-axis.
+#'
+#' @param pch the plotting character. Defaults to `pch = 4` i.e. plotting
+#'     features as crosses. See [par()] for more information.
+#'
+#' @param col color to be used to draw the features. At present only a single
+#'     color is supported.
+#'
+#' @param type plotting type (see [par()]). Defaults to `type = "o"` which
+#'     draws each feature as a point and connecting the features of the same
+#'     feature group with a line.
+#'
+#' @param main `character(1)` with the title of the plot.
+#'
+#' @param featureGroups optional `character` of feature group IDs to draw only
+#'     specified feature group(s). If not provided, all feature groups are
+#'     drawn.
+#'
+#' @importFrom graphics lines
+#'
+#' @export
+#'
+#' @author Johannes Rainer
+plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
+                              xlab = "retention time", ylab = "m/z",
+                              pch = 4, col = "#00000060", type = "o",
+                              main = "Feature groups",
+                              featureGroups = character()) {
+    if (!inherits(x, "XCMSnExp"))
+        stop("'x' is supposed to be an xcms result object ('XCMSnExp')")
+    if (!length(featureGroups(x)))
+        stop("No feature groups present. Please run 'groupFeatures' first")
+    fts <- factor(featureGroups(x))
+    if (!length(featureGroups))
+        featureGroups <- levels(fts)
+    fts <- fts[fts %in% featureGroups]
+    fts <- droplevels(fts)
+    if (!length(fts))
+        stop("None of the specified feature groups found")
+    fdef <- featureDefinitions(x)[featureGroups(x) %in% fts, ]
+    rts <- split(fdef$rtmed, fts)
+    mzs <- split(fdef$mzmed, fts)
+    xy <- cbind(
+        x = unlist(lapply(rts, function(z) c(z, NA)), use.names = FALSE),
+        y = unlist(lapply(mzs, function(z) c(z, NA)), use.names = FALSE))
+    if (length(xlim) != 2)
+        xlim <- range(unlist(rts, use.names = FALSE))
+    if (length(ylim) != 2)
+        ylim <- range(unlist(mzs, use.names = FALSE))
+    plot(3, 3, pch = NA, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab)
+    lines(xy, type = type, col = col, pch = pch)
 }
