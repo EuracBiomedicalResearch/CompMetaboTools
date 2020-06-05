@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract run start time stamp — extract_time_stamp • CompMetaboTools</title>
+<title>Plot feature groups in the m/z-retention time space — plotFeatureGroups • CompMetaboTools</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,11 @@
 
 
 
-<meta property="og:title" content="Extract run start time stamp — extract_time_stamp" />
-<meta property="og:description" content="Extract the start time stamps from (mzML) files." />
+<meta property="og:title" content="Plot feature groups in the m/z-retention time space — plotFeatureGroups" />
+<meta property="og:description" content="plotFeatureGroups visualizes defined feature groups in the m/z by
+retention time space. Features are indicated by points with features from
+the same feature group being connected by a line. See featureGroups()
+for details on and options for feature grouping." />
 
 
 
@@ -111,19 +114,29 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract run start time stamp</h1>
-    <small class="dont-index">Source: <a href='https://github.com/EuracBiomedicalResearch/CompMetaboTools/blob/master/R/ms_file_utils.R'><code>R/ms_file_utils.R</code></a></small>
-    <div class="hidden name"><code>extract_time_stamp.Rd</code></div>
+    <h1>Plot feature groups in the m/z-retention time space</h1>
+    <small class="dont-index">Source: <a href='https://github.com/EuracBiomedicalResearch/CompMetaboTools/blob/master/R/group_feature_methods.R'><code>R/group_feature_methods.R</code></a></small>
+    <div class="hidden name"><code>plotFeatureGroups.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Extract the start time stamps from (mzML) files.</p>
+    <p><code>plotFeatureGroups</code> visualizes defined feature groups in the m/z by
+retention time space. Features are indicated by points with features from
+the same feature group being connected by a line. See <code><a href='feature-grouping.html'>featureGroups()</a></code>
+for details on and options for feature grouping.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>extract_time_stamp</span>(
-  <span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(),
-  <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"%Y-%m-%dT%H:%M:%S"</span>,
-  <span class='kw'>BPPARAM</span> <span class='kw'>=</span> <span class='fu'>bpparam</span>()
+    <pre class="usage"><span class='fu'>plotFeatureGroups</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(),
+  <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(),
+  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"retention time"</span>,
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"m/z"</span>,
+  <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"#00000060"</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"o"</span>,
+  <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Feature groups"</span>,
+  <span class='kw'>featureGroups</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>()
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -131,22 +144,53 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p><code>character</code> with the file names (full path) or the mzML files.</p></td>
+      <td><p><code>XCMSnExp()</code> object with grouped features (i.e. after calling
+<code><a href='hidden_aliases.html'>groupFeatures()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>format</th>
-      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> defining the date/time format of the time
-stamp. If <code>NULL</code> the time stamp will be returned as a <code>character</code>.</p></td>
+      <th>xlim</th>
+      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> with the lower and upper limit for the x-axis.</p></td>
     </tr>
     <tr>
-      <th>BPPARAM</th>
-      <td><p>Parallel processing setup. See <code>bpparam()</code> for details.</p></td>
+      <th>ylim</th>
+      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code> with the lower and upper limit for the y-axis.</p></td>
+    </tr>
+    <tr>
+      <th>xlab</th>
+      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> with the label for the x-axis.</p></td>
+    </tr>
+    <tr>
+      <th>ylab</th>
+      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> with the label for the y-axis.</p></td>
+    </tr>
+    <tr>
+      <th>pch</th>
+      <td><p>the plotting character. Defaults to <code>pch = 4</code> i.e. plotting
+features as crosses. See <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code> for more information.</p></td>
+    </tr>
+    <tr>
+      <th>col</th>
+      <td><p>color to be used to draw the features. At present only a single
+color is supported.</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>plotting type (see <code><a href='https://rdrr.io/r/graphics/par.html'>par()</a></code>). Defaults to <code>type = "o"</code> which
+draws each feature as a point and connecting the features of the same
+feature group with a line.</p></td>
+    </tr>
+    <tr>
+      <th>main</th>
+      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> with the title of the plot.</p></td>
+    </tr>
+    <tr>
+      <th>featureGroups</th>
+      <td><p>optional <code>character</code> of feature group IDs to draw only
+specified feature group(s). If not provided, all feature groups are
+drawn.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p><code>character</code> (or date/time) with the start time stamps.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Johannes Rainer</p>

@@ -93,7 +93,7 @@ group sizes. See groupClosest() for details and examples.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
       </span>
     </div>
 
@@ -207,6 +207,9 @@ should be grouped.</p></td>
 <p>Other feature grouping methods: 
 <code><a href='groupFeatures-abundance-correlation.html'>groupFeatures-abundance-correlation</a></code>,
 <code><a href='groupFeatures-eic-correlation.html'>groupFeatures-eic-correlation</a></code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Johannes Rainer</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -225,28 +228,28 @@ should be grouped.</p></td>
 <span class='no'>xodg_grp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>groupFeatures</a></span>(<span class='no'>xodg</span>, <span class='kw'>param</span> <span class='kw'>=</span> <span class='fu'>SimilarRtimeParam</span>(<span class='kw'>diffRt</span> <span class='kw'>=</span> <span class='fl'>2</span>))
 
 <span class='co'>## Feature grouping get added to the featureDefinitions in column "feature_group"</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>featureDefinitions</span>(<span class='no'>xodg_grp</span>)$<span class='no'>feature_group</span>)</div><div class='output co'>#&gt; [1] "FG.80" "FG.35" "FG.14" "FG.16" "FG.44" "FG.79"</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>featureDefinitions</span>(<span class='no'>xodg_grp</span>)$<span class='no'>feature_group</span>)</div><div class='output co'>#&gt; [1] "FG.080" "FG.035" "FG.014" "FG.016" "FG.044" "FG.079"</div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fu'>featureDefinitions</span>(<span class='no'>xodg_grp</span>)$<span class='no'>feature_group</span>)</div><div class='output co'>#&gt; 
-#&gt;   FG.1  FG.10 FG.100 FG.101 FG.102 FG.103 FG.104 FG.105 FG.106 FG.107 FG.108 
-#&gt;      1      1      1      2      1      1      1      2      1      2      1 
-#&gt;  FG.11  FG.12  FG.13  FG.14  FG.15  FG.16  FG.17  FG.18  FG.19   FG.2  FG.20 
-#&gt;      1      1      4      2      1      1      1      2      1      3      1 
-#&gt;  FG.21  FG.22  FG.23  FG.24  FG.25  FG.26  FG.27  FG.28  FG.29   FG.3  FG.30 
-#&gt;      1      3      1      1      1      1      1      1      1      1      1 
-#&gt;  FG.31  FG.32  FG.33  FG.34  FG.35  FG.36  FG.37  FG.38  FG.39   FG.4  FG.40 
+#&gt; FG.001 FG.002 FG.003 FG.004 FG.005 FG.006 FG.007 FG.008 FG.009 FG.010 FG.011 
+#&gt;      1      3      1      1      1      1      1      1      4      1      1 
+#&gt; FG.012 FG.013 FG.014 FG.015 FG.016 FG.017 FG.018 FG.019 FG.020 FG.021 FG.022 
+#&gt;      1      4      2      1      1      1      2      1      1      1      3 
+#&gt; FG.023 FG.024 FG.025 FG.026 FG.027 FG.028 FG.029 FG.030 FG.031 FG.032 FG.033 
 #&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt;  FG.41  FG.42  FG.43  FG.44  FG.45  FG.46  FG.47  FG.48  FG.49   FG.5  FG.50 
-#&gt;      2      2      1      1      1      2      2      1      1      1      2 
-#&gt;  FG.51  FG.52  FG.53  FG.54  FG.55  FG.56  FG.57  FG.58  FG.59   FG.6  FG.60 
-#&gt;      1      2      1      2      1      1      2      1      1      1      1 
-#&gt;  FG.61  FG.62  FG.63  FG.64  FG.65  FG.66  FG.67  FG.68  FG.69   FG.7  FG.70 
-#&gt;      3      2      3      2      2      1      1      1      1      1      1 
-#&gt;  FG.71  FG.72  FG.73  FG.74  FG.75  FG.76  FG.77  FG.78  FG.79   FG.8  FG.80 
-#&gt;      1      1      1      3      2      2      2      2      2      1      7 
-#&gt;  FG.81  FG.82  FG.83  FG.84  FG.85  FG.86  FG.87  FG.88  FG.89   FG.9  FG.90 
-#&gt;      1      1      2      1      1      1      1      1      2      4      1 
-#&gt;  FG.91  FG.92  FG.93  FG.94  FG.95  FG.96  FG.97  FG.98  FG.99 
-#&gt;      1      2      1      1      1      1      1      3      1 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'>featureDefinitions</span>(<span class='no'>xodg_grp</span>)$<span class='no'>feature_group</span>))</div><div class='output co'>#&gt; [1] 108</div><div class='input'>
+#&gt; FG.034 FG.035 FG.036 FG.037 FG.038 FG.039 FG.040 FG.041 FG.042 FG.043 FG.044 
+#&gt;      1      1      1      1      1      1      1      2      2      1      1 
+#&gt; FG.045 FG.046 FG.047 FG.048 FG.049 FG.050 FG.051 FG.052 FG.053 FG.054 FG.055 
+#&gt;      1      2      2      1      1      2      1      2      1      2      1 
+#&gt; FG.056 FG.057 FG.058 FG.059 FG.060 FG.061 FG.062 FG.063 FG.064 FG.065 FG.066 
+#&gt;      1      2      1      1      1      3      2      3      2      2      1 
+#&gt; FG.067 FG.068 FG.069 FG.070 FG.071 FG.072 FG.073 FG.074 FG.075 FG.076 FG.077 
+#&gt;      1      1      1      1      1      1      1      3      2      2      2 
+#&gt; FG.078 FG.079 FG.080 FG.081 FG.082 FG.083 FG.084 FG.085 FG.086 FG.087 FG.088 
+#&gt;      2      2      7      1      1      2      1      1      1      1      1 
+#&gt; FG.089 FG.090 FG.091 FG.092 FG.093 FG.094 FG.095 FG.096 FG.097 FG.098 FG.099 
+#&gt;      2      1      1      2      1      1      1      1      1      3      1 
+#&gt; FG.100 FG.101 FG.102 FG.103 FG.104 FG.105 FG.106 FG.107 FG.108 
+#&gt;      1      2      1      1      1      2      1      2      1 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'>featureDefinitions</span>(<span class='no'>xodg_grp</span>)$<span class='no'>feature_group</span>))</div><div class='output co'>#&gt; [1] 108</div><div class='input'>
 <span class='co'>## Using the "greedy" method to create larger groups</span>
 <span class='no'>xodg_grp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='hidden_aliases.html'>groupFeatures</a></span>(<span class='no'>xodg</span>,
     <span class='kw'>param</span> <span class='kw'>=</span> <span class='fu'>SimilarRtimeParam</span>(<span class='kw'>diffRt</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"greedy"</span>))
