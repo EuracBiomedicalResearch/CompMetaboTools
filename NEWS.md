@@ -2,6 +2,8 @@
 
 ## CompMetaboTools 0.0.7
 
+- Add `matchRtMz` function to match features based on retention time and m/z 
+  values.
 - Fix `groupFeatures` for older xcms result objects that don't record MS level.
 - Add `plotFeatureGroups` to draw feature groups into the m/z-rt space.
 

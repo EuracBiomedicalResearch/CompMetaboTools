@@ -52,6 +52,7 @@ Collate:
     'hidden_aliases.R'
     'group_feature_methods.R'
     'group_features.R'
+    'matching.R'
     'model_flagging.R'
     'ms_file_utils.R'
     'plotting.R'
