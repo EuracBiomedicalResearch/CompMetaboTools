@@ -177,7 +177,10 @@ test_that(".group_correlation_matrix works", {
     
     res <- .group_correlation_matrix(x, threshold = 0.9)
     expect_equal(res, c(2, 1, 3, 1, 4))   
- 
+
+    res <- .group_correlation_matrix(x, threshold = 0)
+    expect_true(all(res == 1))
+    
     ## Add also a correlation between 3 and 2
     x[2, 3] <- 0.9
     x[3, 2] <- 0.9
@@ -200,5 +203,16 @@ test_that(".group_correlation_matrix works", {
     x[3, 5] <- 0.9
     x[5, 3] <- 0.9
     res <- .group_correlation_matrix(x, threshold = 0.9)
-    expect_equal(res, c(3, 2, 2, 1, 1))    
+    expect_equal(res, c(3, 2, 2, 1, 1))
+
+    ## Real data
+    load(system.file("extdata/cors.RData", package = "CompMetaboTools"))
+    res <- .group_correlation_matrix(cors, threshold = 0.9)
+    expect_equal(res, c(3, 2, 2, 1, 1, 4, 1))
+
+    res <- .group_correlation_matrix(cors, threshold = 0.8)
+    expect_equal(res, c(2, 1, 1, 1, 1, 3, 1))
+
+    res <- .group_correlation_matrix(cors, threshold = 0.7)
+    expect_equal(res, c(2, 1, 1, 1, 1, 1, 1))
 })

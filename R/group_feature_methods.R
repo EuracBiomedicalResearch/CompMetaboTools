@@ -731,3 +731,7 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
     plot(3, 3, pch = NA, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab)
     lines(xy, type = type, col = col, pch = pch)
 }
+
+## featureGroupSpectra: create pseudo spectra for each feature group:
+## - from sample with max signal (maxo or into): take feature mzmed and
+##   maxo/into and retention time being median of rt or all features.

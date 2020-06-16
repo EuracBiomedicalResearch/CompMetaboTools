@@ -1,5 +1,10 @@
 # CompMetaboTools 0.1
 
+## CompMetaboTools 0.0.8
+
+- Fix issue in `.group_correlation_matrix` that would not group elements even if
+  their correlation is larger than the threshold in some special cases.
+
 ## CompMetaboTools 0.0.7
 
 - Add `matchRtMz` function to match features based on retention time and m/z 
