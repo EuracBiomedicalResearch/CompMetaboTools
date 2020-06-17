@@ -4,6 +4,9 @@
 
 - Fix issue in `.group_correlation_matrix` that would not group elements even if
   their correlation is larger than the threshold in some special cases.
+- Add `featureGroupSpectra` function to extract a spectrum for each feature
+  group which can be either a *pseudo spectrum* or a full scan MS1 spectrum.
+
 
 ## CompMetaboTools 0.0.7
 

@@ -13,5 +13,7 @@ xod <- findChromPeaks(
                               prefilter = c(3, 10000)))
 pdp <- PeakDensityParam(sampleGroups = c(1, 1, 2))
 xodg <- groupChromPeaks(xod, param = pdp)
+xodgg <- groupFeatures(xodg, param = SimilarRtimeParam(4))
+xodgg <- groupFeatures(xodgg, param = AbundanceCorrelationParam(threshold = 0.3))
 
 test_check("CompMetaboTools")

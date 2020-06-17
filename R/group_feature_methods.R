@@ -735,3 +735,253 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 ## featureGroupSpectra: create pseudo spectra for each feature group:
 ## - from sample with max signal (maxo or into): take feature mzmed and
 ##   maxo/into and retention time being median of rt or all features.
+
+#' @title Extract spectra for feature groups
+#'
+#' @description
+#'
+#' `featureGroupSpectra` allows to extract a `Spectrum` object for each feature
+#' group in `x`. Based on the specifyed function `FUN` different *types* of
+#' spectra can be returned:
+#' 
+#' - `featureGroupPseudoSpectrum` creates a *pseudo* spectrum based on the
+#'   feature values (defined by `value`) of all features within a feature group
+#'   (i.e. each feature is represented as a mass peak in the resulting
+#'   spectrum). The reported m/z values will be the `"mzmed"` of the respective
+#'   feature from the [featureDefinitions()] data frame. The associated
+#'   intensity is calculated from the values of the features from the feature
+#'   group: by default, for each feature, the median intensity across all
+#'   samples part of `subset` is reported. Parameters `value` and `filled` are
+#'   passed to the internal call to [featureValues()] that returns the features'
+#'   values which are used in these calculations. Parameter `n` allows to
+#'   further restrict the samples being considered in the calculations: for each
+#'   feature group samples are first ordered by the sum of signal of the
+#'   features of the group and then only the *top n* samples are used in the
+#'   calculations.
+#'
+#'   Examples:
+#'   To report the mean intensity of each feature in the 10 samples with the
+#'   highest signal for the feature group use `n = 10` and
+#'   `intensityFun = mean`. The m/z values reported in the `Spectrum` object
+#'   of a feature group will be the `"mzmed"` of the features, the intensity
+#'   values the mean intensity (`value = "maxo"`) across the 10 samples with
+#'   the highest signal for that feature group.
+#'
+#'   To report the maximal intensity (`value = "maxo"` of each feature in
+#'   samples 1, 4, 8 and 10 use `subset = c(1, 4, 8, 10)` and
+#'   `intensityFun = max`. More examples in the examples section.
+#'
+#' - `featureGroupFullScan`: reports the full MS1 spectrum (full scan) in the
+#'   sample with the highest total signal (defined by `value`) for the feature
+#'   group at the retention time closest to the median `"rtmed"` across all
+#'   features of the feature group.
+#' 
+#' @param x [XCMSnExp()] object with available `featureGroups()`.
+#'
+#' @param featureGroup `character` with the IDs of the feature group(s) for
+#'     which the spectra should be returned. Defaults to all feature groups
+#'     defined in `x`. Only `featureGroupSpectra` supports
+#'     `length(featureGroup)` to be of length > 1.
+#'
+#' @param filled for `featureGroupPseudoSpectra`: `logical(1)` whether
+#'     filled-in values should also be considered. See [featureValues()] for
+#'     details.
+#'
+#' @param FUN `function` to be used to define the spectrum for each feature
+#'     group. Can be `featureGroupPseudoSpectrum`, `featureGroupFullScan` or
+#'     any function taking parameters `featureGroup`, `x`, `fvals`.
+#'
+#' @param fvals for `featureGroupPseudoSpectra` and `featureGroupFullScan`:
+#'     `matrix` with feature values (rows being features and columns samples)
+#'     such as returned by [featureValues()].
+#' 
+#' @param intensityFun for `featureGroupPseudoSpectra`: `function` that should
+#'     be applied across samples (defined by `subset`) of the feature value
+#'     matrix to calculate the intensity for each mass peak of the returned
+#'     pseudo spectrum. By default (`intensityFun = median`) the median
+#'     intensity of a feature across all samples (defined by `subset` and `n`)
+#'     is used. See description section for examples.
+#' 
+#' @param n for `featureGroupPseudoSpectra`: `integer(1)` defining the *top n*
+#'     samples (in `subset`) on which spectra should be defined. Samples are
+#'     ordered based on the sum of signal (defined by parameter `value`) from
+#'     the features of each feature group. See description section for more
+#'     details.
+#'
+#' @param subset `integer` with indices of specific samples if spectra should
+#'     only be defined on a subset of samples. See description section for
+#'     details.
+#'
+#' @param value `character(1)` specifying the column in `chromPeaks` matrix to
+#'     be used as *feature values* for each feature. This parameter is passed
+#'     to the [featureValues()] call.
+#'
+#' @param ... additional parameters passed down to the function specifyed with
+#'     `FUN`.
+#' 
+#' @return for `featureGroupSpectra`: `Spectra` object of length equal to the
+#'     number of feature groups in `x` and each element being one spectrum.
+#'     For all other functions: a `Spectrum` object.
+#'
+#' @author Johannes Rainer
+#'
+#' @importMethodsFrom xcms filterFile hasAdjustedRtime hasFeatures rtime
+#'
+#' @importFrom xcms applyAdjustedRtime
+#' 
+#' @importFrom S4Vectors DataFrame
+#'
+#' @importFrom IRanges CharacterList
+#'
+#' @importFrom MSnbase Spectra
+#'
+#' @importFrom stats median
+#' 
+#' @export
+#'
+#' @examples
+#'
+#' ## Load test data set from xcms
+#' library(xcms)
+#' data(faahko_sub)
+#' ## Update the path to the files for the local system
+#' dirname(faahko_sub) <- system.file("cdf/KO", package = "faahKO")
+#'
+#' ## Perform correspondence analysis
+#' xdata <- groupChromPeaks(faahko_sub,
+#'     param = PeakDensityParam(sampleGroup = rep(1, 3)))
+#'
+#' ## Group features
+#' xdata <- groupFeatures(xdata, param = SimilarRtimeParam(4))
+#' xdata <- groupFeatures(xdata, param = AbundanceCorrelationParam(threshold = 0.3))
+#'
+#' sort(table(featureGroups(xdata)))
+#'
+#' ################
+#' ## featureGroupSpectra
+#' ##
+#'
+#' ## Get a pseudo spectrum for each feature group
+#' res <- featureGroupSpectra(xdata)
+#' res
+#'
+#' ## Get a full scan spectrum for a subset of the feature groups
+#' ## considering only the subset of the last two samples
+#' res <- featureGroupSpectra(xdata,
+#'     featureGroup = unique(featureGroups(xdata))[1:4],
+#'     FUN = featureGroupFullScan, subset = 2:3)
+#' res
+#' 
+#' ################
+#' ## Pseudo Spectrum
+#' ##
+#' 
+#' ## Get the pseudo spectrum for one feature group reporting the per-feature
+#' ## maximal "maxo" value across samples as the spectrum's intensities
+#' res <- featureGroupPseudoSpectrum(featureGroup = "FG.01.1", xdata,
+#'     fvals = featureValues(xdata, value = "maxo"), intensityFun = max)
+#'
+#' intensity(res)
+#' mz(res)
+#'
+#' ## Get the pseudo spectrum using the values in the one sample with the
+#' ## highest total sum of signal ("maxo") for the feature group.
+#' res <- featureGroupPseudoSpectrum(featureGroup = "FG.01.1", xdata,
+#'     fvals = featureValues(xdata, value = "maxo"), n = 1)
+#'
+#' intensity(res)
+#' mz(res)
+#'
+#' 
+#' ################
+#' ## Full Scan Spectrum
+#' ##
+#'
+#' ## Get the full MS1 spectrum from the sample with the highest total signal
+#' ## of one specific feature group
+#' res <- featureGroupFullScan(featureGroup = "FG.01.1", xdata,
+#'     fvals = featureValues(xdata, value = "maxo"))
+#'
+#' plot(mz(res), intensity(res), type = "h", xlab = "m/z", ylab = "intensity")
+#' ## Highlight the peaks for the features of the group.
+#' idx <- which(featureGroups(xdata) == "FG.01.1")
+#' points(x = featureDefinitions(xdata)$mzmed[idx],
+#'     y = rep(0, length(idx)), pch = 4, col = "red")
+featureGroupSpectra <- function(x, featureGroup = featureGroups(x),
+                                FUN = featureGroupPseudoSpectrum,
+                                value = "maxo", filled = TRUE,
+                                subset = seq_along(fileNames(x)),
+                                ...) {
+    if (!all(subset %in% seq_along(fileNames(x))))
+        stop("'subset' is expected to be an integer vector with values ",
+             "between 1 and ", length(fileNames(x)))
+    if (!hasFeatures(x))
+        stop("No feature definitions present. Please run 'groupChromPeaks' first")
+    featureGroup <- unique(featureGroup)
+    featureGroup <- featureGroup[!is.na(featureGroup)]
+    if (!length(featureGroup))
+        stop("No feature groups present. Please run 'groupFeatures' first")
+    if (!all(featureGroup %in% featureGroups(x)))
+        stop("Not all feature groups defined with parameter 'featureGroup' ",
+             "found in 'featureGroups(x)'")
+    x <- filterFile(x, subset, keepFeatures = TRUE)
+    fvals <- featureValues(x, method = "maxint", intensity = value,
+                           value = value, filled = filled)
+    res <- lapply(featureGroup, FUN, x = x, fvals = fvals, ...)
+    fids <- split(rownames(featureDefinitions(x)), featureGroups(x))
+    MSnbase::Spectra(res, elementMetadata = DataFrame(
+                              feature_group = featureGroup,
+                              feature_id = CharacterList(fids[featureGroup],
+                                                         compress = FALSE)))
+}
+
+#' @rdname featureGroupSpectra
+#'
+#' @importClassesFrom MSnbase Spectrum Spectrum1 Spectrum2 Spectra
+#'
+#' @importMethodsFrom MSnbase polarity
+#' 
+#' @export
+featureGroupPseudoSpectrum <- function(featureGroup = character(), x,
+                                       fvals = featureValues(x),
+                                       n = ncol(fvals),
+                                       intensityFun = median, ...) {
+    if (n < 1 || n > ncol(fvals))
+        stop("'n' has to be an integer between 1 and ", ncol(fvals))
+    ft_idx <- which(featureGroups(x) == featureGroup)
+    ft_fvals <- fvals[ft_idx, , drop = FALSE]
+    ordr <- order(colSums(ft_fvals, na.rm = TRUE), decreasing = TRUE)
+    ft_fvals <- ft_fvals[, ordr, drop = FALSE][, 1:n, drop = FALSE]
+    ft_fdef <- extractROWS(featureDefinitions(x), ft_idx)
+    if (any(colnames(ft_fdef) == "ms_level") && all(ft_fdef$ms_level == 1))
+        cls <- "Spectrum1"
+    else cls <- "Spectrum2"
+    sp <- new(cls)
+    sp@rt <- median(ft_fdef$rtmed)
+    sp@mz <- ft_fdef$mzmed
+    sp@intensity <- apply(ft_fvals, MARGIN = 1, FUN = intensityFun, na.rm = TRUE)
+    sp@peaksCount <- length(ft_idx)
+    sp@centroided <- TRUE
+    sp@polarity <- polarity(x)[1]
+    sp
+}
+
+#' @rdname featureGroupSpectra
+#'
+#' @importFrom S4Vectors extractROWS
+#' 
+#' @export
+featureGroupFullScan <- function(featureGroup = character(), x,
+                                 fvals = featureValues(x), ...) {
+    ft_idx <- which(featureGroups(x) == featureGroup)
+    ft_fvals <- fvals[ft_idx, , drop = FALSE]
+    samp_idx <- which.max(colSums(ft_fvals, na.rm = TRUE))
+    ft_fdef <- extractROWS(featureDefinitions(x), ft_idx)
+    if (hasAdjustedRtime(x))
+        x <- applyAdjustedRtime(x)
+    x <- filterFile(as(x, "OnDiskMSnExp"), samp_idx)
+    rtmed <- median(ft_fdef$rtmed)
+    sp <- x[[which.min(abs(rtime(x) - rtmed))]]
+    sp@fromFile <- samp_idx
+    sp
+}
