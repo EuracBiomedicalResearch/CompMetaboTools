@@ -75,7 +75,7 @@ for details on and options for feature grouping." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
       </span>
     </div>
 
@@ -122,21 +122,21 @@ for details on and options for feature grouping." />
     <div class="ref-description">
     <p><code>plotFeatureGroups</code> visualizes defined feature groups in the m/z by
 retention time space. Features are indicated by points with features from
-the same feature group being connected by a line. See <code><a href='feature-grouping.html'>featureGroups()</a></code>
+the same feature group being connected by a line. See <code>featureGroups()</code>
 for details on and options for feature grouping.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plotFeatureGroups</span>(
-  <span class='no'>x</span>,
-  <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(),
-  <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(),
-  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"retention time"</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"m/z"</span>,
-  <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>4</span>,
-  <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"#00000060"</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"o"</span>,
-  <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Feature groups"</span>,
-  <span class='kw'>featureGroups</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>()
+  <span class='kw'>x</span>,
+  xlim = <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(),
+  ylim = <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span>(),
+  xlab = <span class='st'>"retention time"</span>,
+  ylab = <span class='st'>"m/z"</span>,
+  pch = <span class='fl'>4</span>,
+  col = <span class='st'>"#00000060"</span>,
+  type = <span class='st'>"o"</span>,
+  main = <span class='st'>"Feature groups"</span>,
+  featureGroups = <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>()
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -144,8 +144,8 @@ for details on and options for feature grouping.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p><code>XCMSnExp()</code> object with grouped features (i.e. after calling
-<code><a href='hidden_aliases.html'>groupFeatures()</a></code>.</p></td>
+      <td><p><code><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-class.html'>XCMSnExp()</a></code> object with grouped features (i.e. after calling
+<code>groupFeatures()</code>.</p></td>
     </tr>
     <tr>
       <th>xlim</th>

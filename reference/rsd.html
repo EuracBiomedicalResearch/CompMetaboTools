@@ -83,7 +83,7 @@ or for rows of a numerical matrix, respectively." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
       </span>
     </div>
 
@@ -138,9 +138,9 @@ standard deviation (i.e. coefficient of variation) of a numerical vector
 or for rows of a numerical matrix, respectively.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rsd</span>(<span class='no'>x</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="usage"><span class='fu'>rsd</span>(<span class='kw'>x</span>, na.rm = <span class='fl'>TRUE</span>)
 
-<span class='fu'>rowRsd</span>(<span class='no'>x</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+<span class='fu'>rowRsd</span>(<span class='kw'>x</span>, na.rm = <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,10 +162,10 @@ prior to the calculations.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>a</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4.3</span>, <span class='fl'>4.5</span>, <span class='fl'>3.6</span>, <span class='fl'>5.3</span>)
-<span class='fu'>rsd</span>(<span class='no'>a</span>)</div><div class='output co'>#&gt; [1] 0.1580575</div><div class='input'>
-<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='no'>a</span>, <span class='no'>a</span>, <span class='no'>a</span>)
-<span class='fu'>rowRsd</span>(<span class='no'>A</span>)</div><div class='output co'>#&gt;         a         a         a 
+<span class='kw'>a</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4.3</span>, <span class='fl'>4.5</span>, <span class='fl'>3.6</span>, <span class='fl'>5.3</span>)
+<span class='fu'>rsd</span>(<span class='kw'>a</span>)</div><div class='output co'>#&gt; [1] 0.1580575</div><div class='input'>
+<span class='kw'>A</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='kw'>a</span>, <span class='kw'>a</span>, <span class='kw'>a</span>)
+<span class='fu'>rowRsd</span>(<span class='kw'>A</span>)</div><div class='output co'>#&gt;         a         a         a 
 #&gt; 0.1580575 0.1580575 0.1580575 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

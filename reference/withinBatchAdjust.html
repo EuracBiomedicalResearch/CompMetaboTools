@@ -10,7 +10,7 @@
 
 <code>withinBatchAdjust</code> adjusts feature abundances within each batch based
 on the model provided with parameter <code>models</code> (which are fitted using the
-<code><a href='withinBatchFit.html'>withinBatchFit()</a></code> function. — withinBatchAdjust • CompMetaboTools</title>
+<code>withinBatchFit()</code> function. — withinBatchAdjust • CompMetaboTools</title>
 
 
 <!-- jquery -->
@@ -47,7 +47,7 @@ on the model provided with parameter <code>models</code> (which are fitted using
 
 <code>withinBatchAdjust</code> adjusts feature abundances within each batch based
 on the model provided with parameter <code>models</code> (which are fitted using the
-<code><a href='withinBatchFit.html'>withinBatchFit()</a></code> function. — withinBatchAdjust" />
+<code>withinBatchFit()</code> function. — withinBatchAdjust" />
 <meta property="og:description" content="Apply per-batch model adjustment of feature abundances
 withinBatchAdjust adjusts feature abundances within each batch based
 on the model provided with parameter models (which are fitted using the
@@ -83,7 +83,7 @@ withinBatchFit() function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
       </span>
     </div>
 
@@ -126,7 +126,7 @@ withinBatchFit() function." />
 
 <code>withinBatchAdjust</code> adjusts feature abundances within each batch based
 on the model provided with parameter <code>models</code> (which are fitted using the
-<code><a href='withinBatchFit.html'>withinBatchFit()</a></code> function.</h1>
+<code>withinBatchFit()</code> function.</h1>
     <small class="dont-index">Source: <a href='https://github.com/EuracBiomedicalResearch/CompMetaboTools/blob/master/R/withinBatchAdjust.R'><code>R/withinBatchAdjust.R</code></a></small>
     <div class="hidden name"><code>withinBatchAdjust.Rd</code></div>
     </div>
@@ -135,16 +135,16 @@ on the model provided with parameter <code>models</code> (which are fitted using
     <p>Apply per-batch model adjustment of feature abundances</p>
 <p><code>withinBatchAdjust</code> adjusts feature abundances within each batch based
 on the model provided with parameter <code>models</code> (which are fitted using the
-<code><a href='withinBatchFit.html'>withinBatchFit()</a></code> function.</p>
+<code>withinBatchFit()</code> function.</p>
     </div>
 
     <pre class="usage"><span class='fu'>withinBatchAdjust</span>(
-  <span class='no'>x</span>,
-  <span class='no'>models</span>,
-  <span class='kw'>batch</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>batch</span>,
-  <span class='kw'>assay</span> <span class='kw'>=</span> <span class='st'>"norm"</span>,
-  <span class='kw'>log.transform</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+  <span class='kw'>x</span>,
+  <span class='kw'>models</span>,
+  batch = <span class='kw'>x</span><span class='op'>$</span><span class='kw'>batch</span>,
+  assay = <span class='st'>"norm"</span>,
+  log.transform = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -158,7 +158,7 @@ adjusted.</p></td>
     <tr>
       <th>models</th>
       <td><p><code>list</code> of per-batch feature-wise model fits as returned by
-<code><a href='withinBatchFit.html'>withinBatchFit()</a></code>.</p></td>
+<code>withinBatchFit()</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>

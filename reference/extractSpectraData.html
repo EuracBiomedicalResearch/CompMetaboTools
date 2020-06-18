@@ -77,7 +77,7 @@ package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
       </span>
     </div>
 
@@ -130,7 +130,7 @@ to convert data from the <em>old</em> <code>MSnbase</code> package to the newer 
 package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>extractSpectraData</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>extractSpectraData</span>(<span class='kw'>x</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,18 +154,18 @@ object.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'>## Read an mzML file with MSnbase</span>
-<span class='no'>fl</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"TripleTOF-SWATH"</span>, <span class='st'>"PestMix1_SWATH.mzML"</span>,
-    <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"msdata"</span>)
-<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>MSnbase</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MSnbase/man/MSnExp-class.html'>filterRt</a></span>(<span class='kw pkg'>MSnbase</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MSnbase/man/readMSData.html'>readMSData</a></span>(<span class='no'>fl</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"onDisk"</span>),
-    <span class='kw'>rt</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>6</span>))
+<span class='kw'>fl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"TripleTOF-SWATH"</span>, <span class='st'>"PestMix1_SWATH.mzML"</span>,
+    package = <span class='st'>"msdata"</span>)
+<span class='kw'>data</span> <span class='op'>&lt;-</span> <span class='kw'>MSnbase</span>::<span class='fu'><a href='https://rdrr.io/pkg/MSnbase/man/MSnExp-class.html'>filterRt</a></span>(<span class='kw'>MSnbase</span>::<span class='fu'><a href='https://rdrr.io/pkg/MSnbase/man/readMSData.html'>readMSData</a></span>(<span class='kw'>fl</span>, mode = <span class='st'>"onDisk"</span>),
+    rt = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>6</span>))
 
 <span class='co'>## Extract the data as a DataFrame</span>
-<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>extractSpectraData</span>(<span class='no'>data</span>)
+<span class='kw'>res</span> <span class='op'>&lt;-</span> <span class='fu'>extractSpectraData</span>(<span class='kw'>data</span>)
 
 <span class='co'>## This can be used as an input for the Spectra constructor of the</span>
 <span class='co'>## Spectra package.</span>
-<span class='no'>sps</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>Spectra</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/Spectra/man/Spectra.html'>Spectra</a></span>(<span class='no'>res</span>)
-<span class='no'>sps</span></div><div class='output co'>#&gt; MSn data (Spectra) with 50 spectra in a MsBackendDataFrame backend:
+<span class='kw'>sps</span> <span class='op'>&lt;-</span> <span class='kw'>Spectra</span>::<span class='fu'><a href='https://rdrr.io/pkg/Spectra/man/Spectra.html'>Spectra</a></span>(<span class='kw'>res</span>)
+<span class='kw'>sps</span></div><div class='output co'>#&gt; MSn data (Spectra) with 50 spectra in a MsBackendDataFrame backend:
 #&gt;            msLevel     rtime scanIndex
 #&gt;          &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;
 #&gt; F1.S0010         2        NA        NA

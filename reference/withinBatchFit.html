@@ -74,7 +74,7 @@ a per-batch-separate estimation of injection order dependent signal drifts." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
       </span>
     </div>
 
@@ -125,13 +125,13 @@ a per-batch-separate estimation of injection order dependent signal drifts.</p>
     </div>
 
     <pre class="usage"><span class='fu'>withinBatchFit</span>(
-  <span class='no'>x</span>,
-  <span class='kw'>batch</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>batch</span>,
-  <span class='kw'>assay</span> <span class='kw'>=</span> <span class='st'>"norm"</span>,
-  <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>injection_idx</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"lmrob"</span>,
-  <span class='kw'>minVals</span> <span class='kw'>=</span> <span class='fl'>6</span>,
-  <span class='kw'>log.transform</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>x</span>,
+  batch = <span class='kw'>x</span><span class='op'>$</span><span class='kw'>batch</span>,
+  assay = <span class='st'>"norm"</span>,
+  model = <span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>injection_idx</span>,
+  method = <span class='st'>"lmrob"</span>,
+  minVals = <span class='fl'>6</span>,
+  log.transform = <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
