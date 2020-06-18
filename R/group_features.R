@@ -152,6 +152,8 @@
 #'
 #' .group_correlation_matrix(x, threshold = 0.9)
 #'
+#' .group_correlation_matrix(x, threshold = 0.1)
+#' 
 #' ## In contrast to the "greedy" version that groups all elements together
 #' ## that have a correlation >= 0.9 with any other element in a cluster.
 #' CompMetaboTools:::.group_logic_matrix(x >= 0.9)
@@ -191,9 +193,32 @@
         if (any(nas)) {
             ## at least one of them is not in a group
             if (sum(nas) == 2) {
-                ## none of the two is in a group: create one for them.
-                res[idx_pairs[i, ]] <- grp_id
-                grp_id <- grp_id + 1
+                ## none of the two is in a group yet. Check:
+                ## correlation above threshold for both with any other
+                ## complete group?
+                grps <- unique(res[!is.na(res)])
+                mean_cor_to_grp <- integer(length(grps))
+                names(mean_cor_to_grp) <- grps
+                idx <- idx_pairs[i, ]
+                for (grp in grps) {
+                    idx_grp <- which(res == grp)
+                    cor_to_grp <- x[idx, idx_grp]
+                    if (full)
+                        cor_to_grp <- c(cor_to_grp, x[idx_grp, idx])
+                    if (!(any(is.na(cor_to_grp)) || any(cor_to_grp < threshold)))
+                        mean_cor_to_grp[grp] <- mean(cor_to_grp)
+                }
+                mean_cor_to_grp <- mean_cor_to_grp[mean_cor_to_grp > 0]
+                if (length(mean_cor_to_grp)) {
+                    ## yes: put them into the group with which both have the
+                    ## highest correlation.
+                    res[idx] <- as.integer(
+                        names(sort(mean_cor_to_grp, decreasing = TRUE)))
+                } else {
+                    ## no: add them as new group
+                    res[idx] <- grp_id
+                    grp_id <- grp_id + 1
+                }
             } else {
                 ## One is not in a group. Put that into the group of the
                 ## other if a) no cor is NA and b) cor to all of the group

@@ -110,3 +110,81 @@ test_that(".format_groups works", {
     expect_equal(res, c("01", "02", "03", "04", "05", "06", "07", "08",
                         "09", "10"))
 })
+
+test_that("featureGroupPseudoSpectrum works", {
+    fvals <- featureValues(xodgg, method = "maxint", value = "maxo")
+    ## 3 feature
+    ft_idx <- which(featureGroups(xodgg) == "FG.009.1")
+    res <- featureGroupPseudoSpectrum("FG.009.1", xodgg, fvals = fvals,
+                                      intensityFun = median)
+    expect_true(is(res, "Spectrum1"))
+    expect_true(peaksCount(res) == 3)
+    expect_true(validObject(res))
+    expect_equal(intensity(res), apply(fvals[ft_idx, ], MARGIN = 1,
+                                       median, na.rm = TRUE))
+    expect_equal(mz(res), featureDefinitions(xodgg)$mzmed[ft_idx])
+    expect_equal(rtime(res), median(featureDefinitions(xodgg)$rtmed[ft_idx]))
+    
+    ## 1 feature
+    res <- featureGroupPseudoSpectrum("FG.009.2", xodgg, fvals = fvals,
+                                      intensityFun = median)
+    ft_idx <- which(featureGroups(xodgg) == "FG.009.2")
+    expect_true(is(res, "Spectrum1"))
+    expect_true(peaksCount(res) == 1)
+    expect_true(validObject(res))
+    expect_equal(unname(intensity(res)),
+                 unname(median(fvals[ft_idx, ], na.rm = TRUE)))
+    expect_equal(mz(res), featureDefinitions(xodgg)$mzmed[ft_idx])
+    expect_equal(rtime(res), median(featureDefinitions(xodgg)$rtmed[ft_idx]))
+
+    expect_error(
+        featureGroupPseudoSpectrum("FG.009.1", xodgg, fvals = fvals, n = 12),
+        "has to be an integer")
+})
+
+test_that("featureGroupFullScan works", {
+    fvals <- featureValues(xodgg, method = "maxint", value = "maxo")
+    ## 3 feature
+    res <- featureGroupFullScan("FG.009.1", xodgg, fvals = fvals)
+    ft_idx <- which(featureGroups(xodgg) == "FG.009.1")
+    expect_true(is(res, "Spectrum1"))
+    expect_true(
+        abs(rtime(res) -
+            median(featureDefinitions(xodgg)[ft_idx, "rtmed"])) < 0.1)
+    expect_true(all(featureDefinitions(xodgg)[ft_idx, "mzmed"] %in% mz(res)))
+
+    ## 1 feature
+    res <- featureGroupFullScan("FG.009.2", xodgg, fvals = fvals)
+    ft_idx <- which(featureGroups(xodgg) == "FG.009.2")
+    expect_true(is(res, "Spectrum1"))
+    expect_true(
+        abs(rtime(res) -
+            median(featureDefinitions(xodgg)[ft_idx, "rtmed"])) < 0.8)
+    expect_true(all(featureDefinitions(xodgg)[ft_idx, "mzmed"] %in% mz(res)))
+})
+
+test_that("featureGroupSpectra works", {
+    ## Errors
+    expect_error(featureGroupSpectra(xodgg, subset = 1:5), "an integer")
+    expect_error(featureGroupSpectra(xod), "feature definitions")
+    expect_error(featureGroupSpectra(xodgg, featureGroup = c("a")), "all feature")
+    
+    ## Get all of them
+    res_all <- featureGroupSpectra(xodgg)
+    expect_true(is(res_all, "Spectra"))
+    expect_equal(mcols(res_all)$feature_group, unique(featureGroups(xodgg)))
+    expect_equal(unname(peaksCount(res_all)),
+                 unname(lengths(mcols(res_all)$feature_id)))
+    
+    ## Get them in a subset
+    res_sub <- featureGroupSpectra(xodgg, subset = c(1, 3))
+    expect_true(sum(is.na(rtime(res_sub))) == 59)
+    
+    ## Get only selected ones
+    res <- featureGroupSpectra(xodgg, featureGroup = c("FG.009.1", "FG.009.2"))
+    expect_true(length(res) == 2)
+    expect_equal(mcols(res)$feature_group, c("FG.009.1", "FG.009.2"))
+    idx <- which(mcols(res_all)$feature_group %in% c("FG.009.1", "FG.009.2"))
+    expect_equal(res[[1]], res_all[[idx[1]]])
+    expect_equal(res[[2]], res_all[[idx[2]]])
+})
