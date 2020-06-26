@@ -196,6 +196,7 @@ jobs:
           local_deps <- remotes::local_package_deps(dependencies = TRUE)
           deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
           BiocManager::install(local_deps[local_deps %in% deps$package[deps$diff != 0]])
+          BiocManager::install("RforMassSpectrometry/Spectra")
 
           ## Pass #2 at installing dependencies
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
@@ -206,7 +207,6 @@ jobs:
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           remotes::install_cran("rcmdcheck")
           BiocManager::install("BiocCheck")
-          remotes::install_github("RforMassSpectrometry/Spectra")
         shell: Rscript {0}
 
       - name: Session info
@@ -396,6 +396,7 @@ jobs:
           local_deps <- remotes::local_package_deps(dependencies = TRUE)
           deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
           BiocManager::install(local_deps[local_deps %in% deps$package[deps$diff != 0]])
+          BiocManager::install("RforMassSpectrometry/Spectra")
 
           ## Pass #2 at installing dependencies
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
@@ -406,7 +407,6 @@ jobs:
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           remotes::install_cran("rcmdcheck")
           BiocManager::install("BiocCheck")
-          remotes::install_github("RforMassSpectrometry/Spectra")
         shell: Rscript {0}
 
       - name: Session info
