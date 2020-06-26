@@ -1,5 +1,11 @@
 # CompMetaboTools 0.1
 
+## CompMetaboTools 0.1.0
+
+- Change from `Chromatograms` to `MChromatograms` and from `Spectra` to
+  `MSpectra` following the changes introduced in `MSnbase` 2.15.3.
+
+
 ## CompMetaboTools 0.0.8
 
 - Fix issue in `.group_correlation_matrix` that would not group elements even if

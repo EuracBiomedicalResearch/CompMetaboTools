@@ -77,7 +77,7 @@ intensity of a feature across all samples (defined by \code{subset} and \code{n}
 is used. See description section for examples.}
 }
 \value{
-for \code{featureGroupSpectra}: \code{Spectra} object of length equal to the
+for \code{featureGroupSpectra}: \code{MSpectra} object of length equal to the
 number of feature groups in \code{x} and each element being one spectrum.
 For all other functions: a \code{Spectrum} object.
 }

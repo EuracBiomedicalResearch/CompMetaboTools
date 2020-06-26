@@ -1,4 +1,4 @@
-## I can rbind Chromatograms, get then a `matrix` back. which would be OK
+## I can rbind MChromatograms, get then a `matrix` back. which would be OK
 ## in this case. But note that this only works if we have the same number of
 ## columns!
 
@@ -6,7 +6,7 @@
 #'
 #' @description
 #'
-#' rbind Chromatograms assuming that the same columns are present!
+#' rbind MChromatograms assuming that the same columns are present!
 #'
 #' @importMethodsFrom Biobase AnnotatedDataFrame fData
 #'
@@ -15,7 +15,7 @@
     lst <- list(...)
     if (length(lst) == 1L)
         lst <- lst[[1L]]
-    if (inherits(lst, "Chromatograms"))
+    if (inherits(lst, "MChromatograms"))
         return(lst)
     ## If that fails we're in trouble
     dta <- do.call(rbind, lapply(lst, function(z) z@.Data))
@@ -25,7 +25,7 @@
         fd <- AnnotatedDataFrame(data.frame(matrix(ncol = 0, nrow = nrow(dta))))
     rownames(dta) <- rownames(fd)
     colnames(dta) <- rownames(pd)
-    res <- new("Chromatograms")
+    res <- new("MChromatograms")
     res@.Data <- dta
     res@phenoData <- pd
     res@featureData <- fd
@@ -33,35 +33,35 @@
     res
 }
 
-#' @title Combine Chromatograms objects
+#' @title Combine MChromatograms objects
 #'
 #' @description
 #'
-#' [Chromatograms()] objects can be concatenated (row-wise) with the `c`
-#' function resulting in a `Chromatograms` object with the same number of
+#' [MChromatograms()] objects can be concatenated (row-wise) with the `c`
+#' function resulting in a `MChromatograms` object with the same number of
 #' samples (columns).
 #'
-#' @param x `Chromatograms` object.
+#' @param x `MChromatograms` object.
 #'
-#' @param ... `Chromatograms` object that should be appended to `x`.
+#' @param ... `MChromatograms` object that should be appended to `x`.
 #' 
 #' @note
 #'
 #' The `c` function for `XChromatograms` objects (defined in the `xcms` package)
 #' is not supported.
 #' 
-#' @return `Chromatograms` object.
+#' @return `MChromatograms` object.
 #'
-#' @rdname c-Chromatograms
+#' @rdname c-MChromatograms
 #' 
 #' @author Johannes Rainer
 #'
 #' @export
-setMethod("c", "Chromatograms", function(x, ...) {
+setMethod("c", "MChromatograms", function(x, ...) {
     .bind_rows_chromatograms(unname(c(list(x), list(...))))
 })
 
-#' @rdname c-Chromatograms
+#' @rdname c-MChromatograms
 #'
 #' @export
 setMethod("c", "XChromatograms", function(x, ...) {
@@ -75,11 +75,11 @@ setMethod("c", "XChromatograms", function(x, ...) {
 #' `plotOverlay` draws chromatographic peak data from multiple (different)
 #' extracted ion chromatograms (EICs) into the same plot. This allows to
 #' directly compare the peak shape of these EICs in the same sample. In
-#' contrast to the `plot` function for [Chromatograms()] object, which draws
+#' contrast to the `plot` function for [MChromatograms()] object, which draws
 #' the data from the same EIC across multiple samples in the same plot, this
 #' function draws the different EICs from the same sample into the same plot.
 #'
-#' @param x [Chromatograms()] object with the EICs to draw.
+#' @param x [MChromatograms()] object with the EICs to draw.
 #'
 #' @param col color representation. Should be either of length 1 (to use the
 #'     same color for each EIC) or equal to `nrow(x)` to use a different color
@@ -105,8 +105,8 @@ setMethod("c", "XChromatograms", function(x, ...) {
 #' @export
 plotOverlay <- function(x, col = "#00000060", type = "l", main = NULL,
                         xlab = "rtime", ylab = "intensity", ...) {
-    if (!inherits(x, "Chromatograms"))
-        stop("'x' is supposed to be a 'Chromatograms' object")
+    if (!inherits(x, "MChromatograms"))
+        stop("'x' is supposed to be a 'MChromatograms' object")
     nc <- ncol(x)
     nr <- nrow(x)
     if (nc > 1)
@@ -134,8 +134,8 @@ plotOverlay <- function(x, col = "#00000060", type = "l", main = NULL,
     }
 }
 
-## split a Chromatograms object.
+## split a MChromatograms object.
 
-## take a list of Chromatogram objects of a single column Chromatograms and
+## take a list of Chromatogram objects of a single column MChromatograms and
 ## combine the provided Chromatogram objects into a single one.
 ## combineChromatograms

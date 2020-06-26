@@ -405,7 +405,7 @@ setMethod(
                     if (param@clean)
                         eics <- removeIntensity(eics, which = "outside_chromPeak")
                     res <- groupEicCorrelation(
-                        as(eics, "Chromatograms"), aggregationFun = ffun,
+                        as(eics, "MChromatograms"), aggregationFun = ffun,
                         threshold = param@threshold, greedy = param@greedy)
                 } else res <- factor(1)
                 f_new[idx] <- paste0(fg, ".", .format_groups(res))
@@ -732,10 +732,6 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
     lines(xy, type = type, col = col, pch = pch)
 }
 
-## featureGroupSpectra: create pseudo spectra for each feature group:
-## - from sample with max signal (maxo or into): take feature mzmed and
-##   maxo/into and retention time being median of rt or all features.
-
 #' @title Extract spectra for feature groups
 #'
 #' @description
@@ -819,7 +815,7 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 #' @param ... additional parameters passed down to the function specifyed with
 #'     `FUN`.
 #' 
-#' @return for `featureGroupSpectra`: `Spectra` object of length equal to the
+#' @return for `featureGroupSpectra`: `MSpectra` object of length equal to the
 #'     number of feature groups in `x` and each element being one spectrum.
 #'     For all other functions: a `Spectrum` object.
 #'
@@ -833,7 +829,7 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 #'
 #' @importFrom IRanges CharacterList
 #'
-#' @importFrom MSnbase Spectra
+#' @importFrom MSnbase MSpectra
 #'
 #' @importFrom stats median
 #' 
@@ -929,7 +925,7 @@ featureGroupSpectra <- function(x, featureGroup = featureGroups(x),
                            value = value, filled = filled)
     res <- lapply(featureGroup, FUN, x = x, fvals = fvals, ...)
     fids <- split(rownames(featureDefinitions(x)), featureGroups(x))
-    MSnbase::Spectra(res, elementMetadata = DataFrame(
+    MSnbase::MSpectra(res, elementMetadata = DataFrame(
                               feature_group = featureGroup,
                               feature_id = CharacterList(fids[featureGroup],
                                                          compress = FALSE)))
@@ -937,7 +933,7 @@ featureGroupSpectra <- function(x, featureGroup = featureGroups(x),
 
 #' @rdname featureGroupSpectra
 #'
-#' @importClassesFrom MSnbase Spectrum Spectrum1 Spectrum2 Spectra
+#' @importClassesFrom MSnbase Spectrum Spectrum1 Spectrum2 MSpectra
 #'
 #' @importMethodsFrom MSnbase polarity
 #' 
