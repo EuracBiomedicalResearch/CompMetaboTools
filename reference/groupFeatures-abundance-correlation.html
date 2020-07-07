@@ -80,7 +80,7 @@ xcms::fillChromPeaks() was called." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -94,6 +94,18 @@ xcms::fillChromPeaks() was called." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/LC-MS-feature-grouping.html">LC-MS feature grouping</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -238,8 +250,7 @@ should be grouped.</p></td>
 
 <span class='kw'>od</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/MSnbase/man/readMSData.html'>readMSData</a></span>(<span class='kw'>fls</span>, mode = <span class='st'>"onDisk"</span>)</div><div class='output co'>#&gt; <span class='message'>Polarity can not be extracted from netCDF files, please set manually the polarity with the 'polarity' method.</span></div><div class='input'><span class='kw'>xod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xcms/man/chromatographic-peak-detection.html'>findChromPeaks</a></span>(
     <span class='kw'>od</span>, param = <span class='fu'><a href='https://rdrr.io/pkg/xcms/man/findChromPeaks-centWave.html'>CentWaveParam</a></span>(noise = <span class='fl'>10000</span>, snthresh = <span class='fl'>40</span>,
-                              prefilter = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>10000</span>)))
-<span class='kw'>pdp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xcms/man/groupChromPeaks-density.html'>PeakDensityParam</a></span>(sampleGroups = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span>))
+                              prefilter = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>10000</span>)))</div><div class='output co'>#&gt; <span class='message'>Detecting mass traces at 25 ppm ... </span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Detecting chromatographic peaks in 937 regions of interest ...</span></div><div class='output co'>#&gt; <span class='message'> OK: 87 found.</span></div><div class='output co'>#&gt; <span class='message'>Detecting mass traces at 25 ppm ... </span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Detecting chromatographic peaks in 1025 regions of interest ...</span></div><div class='output co'>#&gt; <span class='message'> OK: 100 found.</span></div><div class='output co'>#&gt; <span class='message'>Detecting mass traces at 25 ppm ... </span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Detecting chromatographic peaks in 623 regions of interest ...</span></div><div class='output co'>#&gt; <span class='message'> OK: 71 found.</span></div><div class='input'><span class='kw'>pdp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xcms/man/groupChromPeaks-density.html'>PeakDensityParam</a></span>(sampleGroups = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span>))
 <span class='kw'>xodg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xcms/man/groupChromPeaks.html'>groupChromPeaks</a></span>(<span class='kw'>xod</span>, param = <span class='kw'>pdp</span>)</div><div class='output co'>#&gt; <span class='message'>Processing 2867 mz slices ... </span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
 <span class='co'>## Group features based on correlation of feature values (integrated</span>
 <span class='co'>## peak area) across samples. Note that there are many missing values</span>

@@ -6,11 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply per-batch model adjustment of feature abundances
-
-<code>withinBatchAdjust</code> adjusts feature abundances within each batch based
-on the model provided with parameter <code>models</code> (which are fitted using the
-<code>withinBatchFit()</code> function. — withinBatchAdjust • CompMetaboTools</title>
+<title>Combine MChromatograms objects — c,MChromatograms-method • CompMetaboTools</title>
 
 
 <!-- jquery -->
@@ -43,15 +39,10 @@ on the model provided with parameter <code>models</code> (which are fitted using
 
 
 
-<meta property="og:title" content="Apply per-batch model adjustment of feature abundances
-
-<code>withinBatchAdjust</code> adjusts feature abundances within each batch based
-on the model provided with parameter <code>models</code> (which are fitted using the
-<code>withinBatchFit()</code> function. — withinBatchAdjust" />
-<meta property="og:description" content="Apply per-batch model adjustment of feature abundances
-withinBatchAdjust adjusts feature abundances within each batch based
-on the model provided with parameter models (which are fitted using the
-withinBatchFit() function." />
+<meta property="og:title" content="Combine MChromatograms objects — c,MChromatograms-method" />
+<meta property="og:description" content="MChromatograms() objects can be concatenated (row-wise) with the c
+function resulting in a MChromatograms object with the same number of
+samples (columns)." />
 
 
 
@@ -134,71 +125,43 @@ withinBatchFit() function." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply per-batch model adjustment of feature abundances
-
-<code>withinBatchAdjust</code> adjusts feature abundances within each batch based
-on the model provided with parameter <code>models</code> (which are fitted using the
-<code>withinBatchFit()</code> function.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/EuracBiomedicalResearch/CompMetaboTools/blob/master/R/withinBatchAdjust.R'><code>R/withinBatchAdjust.R</code></a></small>
-    <div class="hidden name"><code>withinBatchAdjust.Rd</code></div>
+    <h1>Combine MChromatograms objects</h1>
+    <small class="dont-index">Source: <a href='https://github.com/EuracBiomedicalResearch/CompMetaboTools/blob/master/R/MChromatograms.R'><code>R/MChromatograms.R</code></a></small>
+    <div class="hidden name"><code>c-MChromatograms.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Apply per-batch model adjustment of feature abundances</p>
-<p><code>withinBatchAdjust</code> adjusts feature abundances within each batch based
-on the model provided with parameter <code>models</code> (which are fitted using the
-<code>withinBatchFit()</code> function.</p>
+    <p><code>MChromatograms()</code> objects can be concatenated (row-wise) with the <code>c</code>
+function resulting in a <code>MChromatograms</code> object with the same number of
+samples (columns).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>withinBatchAdjust</span>(
-  <span class='kw'>x</span>,
-  <span class='kw'>models</span>,
-  batch = <span class='kw'>x</span><span class='op'>$</span><span class='kw'>batch</span>,
-  assay = <span class='st'>"norm"</span>,
-  log.transform = <span class='fl'>TRUE</span>,
-  <span class='kw'>...</span>
-)</pre>
+    <pre class="usage"><span class='co'># S4 method for MChromatograms</span>
+<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+
+<span class='co'># S4 method for XChromatograms</span>
+<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p><code>SummarizedExperiment</code> with the feature abundances that should be
-adjusted.</p></td>
-    </tr>
-    <tr>
-      <th>models</th>
-      <td><p><code>list</code> of per-batch feature-wise model fits as returned by
-<code>withinBatchFit()</code>.</p></td>
-    </tr>
-    <tr>
-      <th>batch</th>
-      <td><p><code>factor</code> defining the batch assignment of samples in <code>x</code>.</p></td>
-    </tr>
-    <tr>
-      <th>assay</th>
-      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> with the name of the assay matrix in <code>x</code> that
-should be adjusted. Defaults to <code>"norm"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>log.transform</th>
-      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> defining whether the model fit has been
-performed in log scale and the adjustment is also to be performed in
-log scale. Note that even if <code>log.transform</code> is <code>TRUE</code> adjusted feature
-abundances are returned in natural scale.</p></td>
+      <td><p><code>MChromatograms</code> object.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments to be passed to
-<code>xcms:::applyModelAdjustment</code>.</p></td>
+      <td><p><code>MChromatograms</code> object that should be appended to <code>x</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>SummarizedExperiment</code> (input object <code>x</code>) with the feature abundances
-of assay <code>assay</code> adjusted based on the provided models <code>models</code>.</p>
+    <p><code>MChromatograms</code> object.</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>The <code>c</code> function for <code>XChromatograms</code> objects (defined in the <code>xcms</code> package)
+is not supported.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Johannes Rainer</p>

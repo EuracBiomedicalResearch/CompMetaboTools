@@ -6,11 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply per-batch model adjustment of feature abundances
-
-<code>withinBatchAdjust</code> adjusts feature abundances within each batch based
-on the model provided with parameter <code>models</code> (which are fitted using the
-<code>withinBatchFit()</code> function. — withinBatchAdjust • CompMetaboTools</title>
+<title>Articles • CompMetaboTools</title>
 
 
 <!-- jquery -->
@@ -43,15 +39,7 @@ on the model provided with parameter <code>models</code> (which are fitted using
 
 
 
-<meta property="og:title" content="Apply per-batch model adjustment of feature abundances
-
-<code>withinBatchAdjust</code> adjusts feature abundances within each batch based
-on the model provided with parameter <code>models</code> (which are fitted using the
-<code>withinBatchFit()</code> function. — withinBatchAdjust" />
-<meta property="og:description" content="Apply per-batch model adjustment of feature abundances
-withinBatchAdjust adjusts feature abundances within each batch based
-on the model provided with parameter models (which are fitted using the
-withinBatchFit() function." />
+<meta property="og:title" content="Articles" />
 
 
 
@@ -70,7 +58,7 @@ withinBatchFit() function." />
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-article-index">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -134,80 +122,18 @@ withinBatchFit() function." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply per-batch model adjustment of feature abundances
-
-<code>withinBatchAdjust</code> adjusts feature abundances within each batch based
-on the model provided with parameter <code>models</code> (which are fitted using the
-<code>withinBatchFit()</code> function.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/EuracBiomedicalResearch/CompMetaboTools/blob/master/R/withinBatchAdjust.R'><code>R/withinBatchAdjust.R</code></a></small>
-    <div class="hidden name"><code>withinBatchAdjust.Rd</code></div>
+      <h1>Articles</h1>
     </div>
 
-    <div class="ref-description">
-    <p>Apply per-batch model adjustment of feature abundances</p>
-<p><code>withinBatchAdjust</code> adjusts feature abundances within each batch based
-on the model provided with parameter <code>models</code> (which are fitted using the
-<code>withinBatchFit()</code> function.</p>
+    <div class="section ">
+      <h3>All vignettes</h3>
+      <p class="section-desc"></p>
+
+      <dl>
+        <dt><a href="LC-MS-feature-grouping.html">LC-MS feature grouping</a></dt>
+        <dd></dt>
+      </dl>
     </div>
-
-    <pre class="usage"><span class='fu'>withinBatchAdjust</span>(
-  <span class='kw'>x</span>,
-  <span class='kw'>models</span>,
-  batch = <span class='kw'>x</span><span class='op'>$</span><span class='kw'>batch</span>,
-  assay = <span class='st'>"norm"</span>,
-  log.transform = <span class='fl'>TRUE</span>,
-  <span class='kw'>...</span>
-)</pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p><code>SummarizedExperiment</code> with the feature abundances that should be
-adjusted.</p></td>
-    </tr>
-    <tr>
-      <th>models</th>
-      <td><p><code>list</code> of per-batch feature-wise model fits as returned by
-<code>withinBatchFit()</code>.</p></td>
-    </tr>
-    <tr>
-      <th>batch</th>
-      <td><p><code>factor</code> defining the batch assignment of samples in <code>x</code>.</p></td>
-    </tr>
-    <tr>
-      <th>assay</th>
-      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> with the name of the assay matrix in <code>x</code> that
-should be adjusted. Defaults to <code>"norm"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>log.transform</th>
-      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> defining whether the model fit has been
-performed in log scale and the adjustment is also to be performed in
-log scale. Note that even if <code>log.transform</code> is <code>TRUE</code> adjusted feature
-abundances are returned in natural scale.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>additional arguments to be passed to
-<code>xcms:::applyModelAdjustment</code>.</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p><code>SummarizedExperiment</code> (input object <code>x</code>) with the feature abundances
-of assay <code>assay</code> adjusted based on the provided models <code>models</code>.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Johannes Rainer</p>
-
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <nav id="toc" data-toggle="toc" class="sticky-top">
-      <h2 data-toc-skip>Contents</h2>
-    </nav>
   </div>
 </div>
 
