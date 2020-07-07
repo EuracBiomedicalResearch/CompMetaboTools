@@ -243,7 +243,7 @@ setMethod(
 #' 
 #' @param n `numeric(1)` defining the total number of samples per feature group
 #'     on which this correlation should be performed. This value is rounded up
-#'     to the next larger integer value (i.e.  
+#'     to the next larger integer value.
 #' 
 #' @param object [XCMSnExp()] object containing also correspondence results.
 #' 
