@@ -36,6 +36,7 @@ Suggests:
     faahKO,
     Spectra,
     BiocStyle,
+    pheatmap,
     knitr
 Remotes:
     RforMassSpectrometry/MsCoreUtils,
