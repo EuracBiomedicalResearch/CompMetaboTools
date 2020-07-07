@@ -737,7 +737,7 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 #' @description
 #'
 #' `featureGroupSpectra` allows to extract a `Spectrum` object for each feature
-#' group in `x`. Based on the specifyed function `FUN` different *types* of
+#' group in `x`. Based on the specified function `FUN` different *types* of
 #' spectra can be returned:
 #' 
 #' - `featureGroupPseudoSpectrum` creates a *pseudo* spectrum based on the
@@ -841,7 +841,7 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 #' library(xcms)
 #' data(faahko_sub)
 #' ## Update the path to the files for the local system
-#' dirname(faahko_sub) <- system.file("cdf/KO", package = "faahKO")
+#' dirname(faahko_sub) <- system.file("cdf/KO/", package = "faahKO")
 #'
 #' ## Perform correspondence analysis
 #' xdata <- groupChromPeaks(faahko_sub,
