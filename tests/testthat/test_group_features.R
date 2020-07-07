@@ -95,13 +95,13 @@ test_that("groupEicCorrelation works", {
                          intensity = c(80, 50, 20, 10, 9, 4, 3, 4, 1, 3))
     chr3 <- MSnbase::Chromatogram(rtime = 3:9 + rnorm(7, sd = 0.3),
                          intensity = c(53, 80, 130, 15, 5, 3, 2))
-    chrs <- MSnbase::Chromatograms(list(chr1, chr2, chr3))
+    chrs <- MSnbase::MChromatograms(list(chr1, chr2, chr3))
 
     res <- groupEicCorrelation(chrs)
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 1L)))
 
-    chrs <- MSnbase::Chromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3,
+    chrs <- MSnbase::MChromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3,
                                         chr2, chr3, chr1), ncol = 3)
     res <- groupEicCorrelation(chrs)
     expect_true(is.factor(res))

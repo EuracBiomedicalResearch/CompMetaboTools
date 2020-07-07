@@ -419,10 +419,10 @@ groupByCorrelation <- function(x, method = "pearson",
 #' their correlation with each other. If this correlation is `>=` than the
 #' provided `threshold` they are grouped.
 #'
-#' If `x` is a [Chromatograms()] object with more than one column (sample),
+#' If `x` is a [MChromatograms()] object with more than one column (sample),
 #' pairwise correlations between EICs are first calculated for each column
 #' (sample) of `x` separately and subsequently aggregated across samples using
-#' `aggregationFun`. If `x` is a `Chromatograms` with 4 rows (EICs) and 3
+#' `aggregationFun`. If `x` is a `MChromatograms` with 4 rows (EICs) and 3
 #' columns (samples), pairwise correlations are first calculated between all
 #' 4 EICs in each of the 3 columns resulting in 3 correlation matrices (of
 #' dimension 4x4). These correlation matrices are combined into a single matrix
@@ -447,7 +447,7 @@ groupByCorrelation <- function(x, method = "pearson",
 #'
 #' For more information see [groupByCorrelation()].
 #' 
-#' @param x [Chromatograms()] object of `list` of [Chromatogram()] objects.
+#' @param x [MChromatograms()] object of `list` of [Chromatogram()] objects.
 #'
 #' @param aggregationFun `function` to combine the correlation values between
 #'     pairs of EICs across samples (columns). See description for details.
@@ -459,16 +459,16 @@ groupByCorrelation <- function(x, method = "pearson",
 #' @param threshold `numeric(1)` with the threshold for correlation above which
 #'     EICs are grouped together.
 #'
-#' @param ... parameters for the [correlate()] function for [Chromatograms()]
+#' @param ... parameters for the [correlate()] function for [MChromatograms()]
 #'     objects.
 #'
-#' @return `factor` same length as `nrow(x)` (if `x` is a `Chromatograms`
+#' @return `factor` same length as `nrow(x)` (if `x` is a `MChromatograms`
 #'     object) or `length(x)` (if `x` is a `list`) with the group each EIC
 #'     is assigned to.
 #' 
 #' @importMethodsFrom xcms correlate
 #'
-#' @importFrom MSnbase Chromatograms
+#' @importFrom MSnbase MChromatograms
 #' 
 #' @family grouping operations
 #'
@@ -486,13 +486,13 @@ groupByCorrelation <- function(x, method = "pearson",
 #'     intensity = c(80, 50, 20, 10, 9, 4, 3, 4, 1, 3))
 #' chr3 <- Chromatogram(rtime = 3:9 + rnorm(7, sd = 0.3),
 #'     intensity = c(53, 80, 130, 15, 5, 3, 2))
-#' chrs <- Chromatograms(list(chr1, chr2, chr3))
+#' chrs <- MChromatograms(list(chr1, chr2, chr3))
 #'
 #' groupEicCorrelation(chrs)
 #'
-#' ## With a Chromatograms with two columns, use the maximal correlation
+#' ## With a MChromatograms with two columns, use the maximal correlation
 #' ## coefficient found in each of the columns
-#' chrs <- Chromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3), ncol = 2)
+#' chrs <- MChromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3), ncol = 2)
 #' groupEicCorrelation(chrs, aggregationFun = max)
 groupEicCorrelation <- function(x, aggregationFun = mean,
                                 threshold = 0.8, greedy = FALSE, ...) {

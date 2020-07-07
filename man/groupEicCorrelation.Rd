@@ -13,7 +13,7 @@ groupEicCorrelation(
 )
 }
 \arguments{
-\item{x}{\code{\link[=Chromatograms]{Chromatograms()}} object of \code{list} of \code{\link[=Chromatogram]{Chromatogram()}} objects.}
+\item{x}{\code{\link[=MChromatograms]{MChromatograms()}} object of \code{list} of \code{\link[=Chromatogram]{Chromatogram()}} objects.}
 
 \item{aggregationFun}{\code{function} to combine the correlation values between
 pairs of EICs across samples (columns). See description for details.}
@@ -25,11 +25,11 @@ EICs are grouped together.}
 be used that leads to larger, more loosely correlated, groups. The
 default is \code{greedy = FALSE}. See description for more information.}
 
-\item{...}{parameters for the \code{\link[=correlate]{correlate()}} function for \code{\link[=Chromatograms]{Chromatograms()}}
+\item{...}{parameters for the \code{\link[=correlate]{correlate()}} function for \code{\link[=MChromatograms]{MChromatograms()}}
 objects.}
 }
 \value{
-\code{factor} same length as \code{nrow(x)} (if \code{x} is a \code{Chromatograms}
+\code{factor} same length as \code{nrow(x)} (if \code{x} is a \code{MChromatograms}
 object) or \code{length(x)} (if \code{x} is a \code{list}) with the group each EIC
 is assigned to.
 }
@@ -38,10 +38,10 @@ is assigned to.
 their correlation with each other. If this correlation is \code{>=} than the
 provided \code{threshold} they are grouped.
 
-If \code{x} is a \code{\link[=Chromatograms]{Chromatograms()}} object with more than one column (sample),
+If \code{x} is a \code{\link[=MChromatograms]{MChromatograms()}} object with more than one column (sample),
 pairwise correlations between EICs are first calculated for each column
 (sample) of \code{x} separately and subsequently aggregated across samples using
-\code{aggregationFun}. If \code{x} is a \code{Chromatograms} with 4 rows (EICs) and 3
+\code{aggregationFun}. If \code{x} is a \code{MChromatograms} with 4 rows (EICs) and 3
 columns (samples), pairwise correlations are first calculated between all
 4 EICs in each of the 3 columns resulting in 3 correlation matrices (of
 dimension 4x4). These correlation matrices are combined into a single matrix
@@ -77,13 +77,13 @@ chr2 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
     intensity = c(80, 50, 20, 10, 9, 4, 3, 4, 1, 3))
 chr3 <- Chromatogram(rtime = 3:9 + rnorm(7, sd = 0.3),
     intensity = c(53, 80, 130, 15, 5, 3, 2))
-chrs <- Chromatograms(list(chr1, chr2, chr3))
+chrs <- MChromatograms(list(chr1, chr2, chr3))
 
 groupEicCorrelation(chrs)
 
-## With a Chromatograms with two columns, use the maximal correlation
+## With a MChromatograms with two columns, use the maximal correlation
 ## coefficient found in each of the columns
-chrs <- Chromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3), ncol = 2)
+chrs <- MChromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3), ncol = 2)
 groupEicCorrelation(chrs, aggregationFun = max)
 }
 \seealso{

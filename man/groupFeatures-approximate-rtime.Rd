@@ -36,7 +36,7 @@ used as an initial \emph{crude} grouping of features based on the median retenti
 time of all their chromatographic peaks. All features with a difference in
 their retention time which is \code{<=} parameter \code{diffRt} of the parameter object
 are grouped together. If a column \code{"feature_group"} is found in
-\code{\link[xcms:featureDefinitions]{xcms::featureDefinitions()}} this is further sub-grouped by this method.
+\code{\link[xcms:XCMSnExp-class]{xcms::featureDefinitions()}} this is further sub-grouped by this method.
 
 Two different grouping methods are available:
 \itemize{

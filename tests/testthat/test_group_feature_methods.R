@@ -171,7 +171,7 @@ test_that("featureGroupSpectra works", {
     
     ## Get all of them
     res_all <- featureGroupSpectra(xodgg)
-    expect_true(is(res_all, "Spectra"))
+    expect_true(is(res_all, "MSpectra"))
     expect_equal(mcols(res_all)$feature_group, unique(featureGroups(xodgg)))
     expect_equal(unname(peaksCount(res_all)),
                  unname(lengths(mcols(res_all)$feature_id)))

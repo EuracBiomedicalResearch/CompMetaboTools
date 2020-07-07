@@ -7,17 +7,17 @@
 extractSpectraData(x)
 }
 \arguments{
-\item{x}{a \code{list} of \link[MSnbase:Spectrum]{MSnbase::Spectrum} objects or an object extending
-\link[MSnbase:MSnExp]{MSnbase::MSnExp} (such as also the \link[xcms:XCMSnExp]{xcms::XCMSnExp} object).}
+\item{x}{a \code{list} of \link[MSnbase:Spectrum-class]{MSnbase::Spectrum} objects or an object extending
+\link[MSnbase:MSnExp-class]{MSnbase::MSnExp} (such as also the \link[xcms:XCMSnExp-class]{xcms::XCMSnExp} object).}
 }
 \value{
-\link[S4Vectors:DataFrame]{S4Vectors::DataFrame} with the full spectrum data that can be
+\link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame} with the full spectrum data that can be
 passed along to the \code{\link[Spectra:Spectra]{Spectra::Spectra()}} function to create such an
 object.
 }
 \description{
 \code{extractSpectraData} extracts the spectra data (m/z and intensity values
-including metadata) from \link[MSnbase:Spectrum1]{MSnbase::Spectrum1} or \link[MSnbase:Spectrum2]{MSnbase::Spectrum2} objects
+including metadata) from \link[MSnbase:Spectrum1-class]{MSnbase::Spectrum1} or \link[MSnbase:Spectrum2-class]{MSnbase::Spectrum2} objects
 (or \code{list} of such objects) and returns these as a \code{DataFrame} that can
 be used to create a \link[Spectra:Spectra]{Spectra::Spectra} object. This function enables thus
 to convert data from the \emph{old} \code{MSnbase} package to the newer \code{Spectra}

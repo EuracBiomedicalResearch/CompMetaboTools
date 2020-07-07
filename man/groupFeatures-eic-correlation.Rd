@@ -22,7 +22,7 @@ coefficient to group featues.}
 
 \item{n}{\code{numeric(1)} defining the total number of samples per feature group
 on which this correlation should be performed. This value is rounded up
-to the next larger integer value (i.e.}
+to the next larger integer value.}
 
 \item{clean}{\code{logical(1)} whether the correlation should be performed only
 on the signals within the identified chromatographic peaks
