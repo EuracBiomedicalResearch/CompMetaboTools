@@ -911,6 +911,7 @@ featureGroupSpectra <- function(x, featureGroup = featureGroups(x),
     if (!all(subset %in% seq_along(fileNames(x))))
         stop("'subset' is expected to be an integer vector with values ",
              "between 1 and ", length(fileNames(x)))
+    subset <- unique(subset)
     if (!hasFeatures(x))
         stop("No feature definitions present. Please run 'groupChromPeaks' first")
     featureGroup <- unique(featureGroup)
@@ -920,7 +921,8 @@ featureGroupSpectra <- function(x, featureGroup = featureGroups(x),
     if (!all(featureGroup %in% featureGroups(x)))
         stop("Not all feature groups defined with parameter 'featureGroup' ",
              "found in 'featureGroups(x)'")
-    x <- filterFile(x, subset, keepFeatures = TRUE)
+    if (length(subset) < length(fileNames(x)))
+        x <- filterFile(x, subset, keepFeatures = TRUE)
     fvals <- featureValues(x, method = "maxint", intensity = value,
                            value = value, filled = filled)
     res <- lapply(featureGroup, FUN, x = x, fvals = fvals, ...)
