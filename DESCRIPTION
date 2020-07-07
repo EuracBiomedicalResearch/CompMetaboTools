@@ -64,3 +64,4 @@ Collate:
     'sync_files.R'
     'withinBatchAdjust.R'
     'withinBatchFit.R'
+    'xdata.R'
