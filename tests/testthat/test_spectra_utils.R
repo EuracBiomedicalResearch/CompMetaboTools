@@ -28,7 +28,7 @@ test_that("extractSpectraData works", {
     expect_equal(Spectra::msLevel(res), unname(MSnbase::msLevel(data)))
 
     spctra <- MSnbase::MSpectra(sps)
-    spctra$new_col <- "a"
+    mcols(spctra)$new_col <- "a"
     res <- extractSpectraData(sps)
     expect_true(all(res$new_col == "a"))
 })
