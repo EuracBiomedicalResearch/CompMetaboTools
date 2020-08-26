@@ -25,5 +25,10 @@ test_that("extractSpectraData works", {
 
     res <- Spectra::Spectra(res)
     expect_true(is(res, "Spectra"))
-    expect_equal(Spectra::msLevel(res), unname(MSnbase::msLevel(data)))    
+    expect_equal(Spectra::msLevel(res), unname(MSnbase::msLevel(data)))
+
+    spctra <- MSnbase::MSpectra(sps)
+    spctra$new_col <- "a"
+    res <- extractSpectraData(sps)
+    expect_true(all(res$new_col == "a"))
 })
