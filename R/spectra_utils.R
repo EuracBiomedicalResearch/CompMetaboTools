@@ -45,7 +45,7 @@
 extractSpectraData <- function(x) {
     if (inherits(x, "MSpectra")) {
         df <- DataFrame(do.call(rbind, lapply(x, MSnbase:::.spectrum_header)))
-        df <- cbind(df, mcols(x))
+        df <- cbind(df, MSnbase::mcols(x))
         df$mz <- NumericList(lapply(x, function(z) z@mz))
         df$intensity <- NumericList(lapply(x, function(z) z@intensity))
     } else if (is(x, "list") || inherits(x, "SimpleList")) {
