@@ -10,7 +10,8 @@
 #' package.
 #'
 #' @param x a `list` of [MSnbase::Spectrum] objects or an object extending
-#'     [MSnbase::MSnExp] (such as also the [xcms::XCMSnExp] object).
+#'     [MSnbase::MSnExp] (such as also the [xcms::XCMSnExp] object) or a
+#'     [MSnbase::MSpectra] object.
 #'
 #' @return [S4Vectors::DataFrame] with the full spectrum data that can be
 #'     passed along to the [Spectra::Spectra()] function to create such an
@@ -42,7 +43,12 @@
 #' sps <- Spectra::Spectra(res)
 #' sps
 extractSpectraData <- function(x) {
-    if (is(x, "list")) {
+    if (inherits(x, "MSpectra")) {
+        df <- DataFrame(do.call(rbind, lapply(x, MSnbase:::.spectrum_header)))
+        df <- cbind(df, MSnbase::mcols(x))
+        df$mz <- NumericList(lapply(x, function(z) z@mz))
+        df$intensity <- NumericList(lapply(x, function(z) z@intensity))
+    } else if (is(x, "list") || inherits(x, "SimpleList")) {
         df <- DataFrame(do.call(rbind, lapply(x, MSnbase:::.spectrum_header)))
         df$mz <- NumericList(lapply(x, function(z) z@mz))
         df$intensity <- NumericList(lapply(x, function(z) z@intensity))
@@ -51,6 +57,6 @@ extractSpectraData <- function(x) {
         df$mz <- NumericList(MSnbase::mz(x))
         df$intensity <- NumericList(MSnbase::intensity(x))
     } else stop("'x' should be either a 'list' of 'Spectrum' objects or an ",
-                "object extending 'MSnExp'")
+                "object extending 'MSnExp' or 'MSpectra'.")
     df
 }

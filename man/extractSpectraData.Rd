@@ -8,7 +8,8 @@ extractSpectraData(x)
 }
 \arguments{
 \item{x}{a \code{list} of \link[MSnbase:Spectrum-class]{MSnbase::Spectrum} objects or an object extending
-\link[MSnbase:MSnExp-class]{MSnbase::MSnExp} (such as also the \link[xcms:XCMSnExp-class]{xcms::XCMSnExp} object).}
+\link[MSnbase:MSnExp-class]{MSnbase::MSnExp} (such as also the \link[xcms:XCMSnExp-class]{xcms::XCMSnExp} object) or a
+\link[MSnbase:MSpectra]{MSnbase::MSpectra} object.}
 }
 \value{
 \link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame} with the full spectrum data that can be

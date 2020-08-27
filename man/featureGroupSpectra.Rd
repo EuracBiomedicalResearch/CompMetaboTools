@@ -83,7 +83,7 @@ For all other functions: a \code{Spectrum} object.
 }
 \description{
 \code{featureGroupSpectra} allows to extract a \code{Spectrum} object for each feature
-group in \code{x}. Based on the specifyed function \code{FUN} different \emph{types} of
+group in \code{x}. Based on the specified function \code{FUN} different \emph{types} of
 spectra can be returned:
 \itemize{
 \item \code{featureGroupPseudoSpectrum} creates a \emph{pseudo} spectrum based on the
@@ -124,7 +124,7 @@ features of the feature group.
 library(xcms)
 data(faahko_sub)
 ## Update the path to the files for the local system
-dirname(faahko_sub) <- system.file("cdf/KO", package = "faahKO")
+dirname(faahko_sub) <- system.file("cdf/KO/", package = "faahKO")
 
 ## Perform correspondence analysis
 xdata <- groupChromPeaks(faahko_sub,
