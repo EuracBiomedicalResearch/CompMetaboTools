@@ -8,7 +8,7 @@
 
 <title>Calculate relative standard deviations
 
-<code>rsd</code> and <code>rowRsd</code> are convenience functions to calculate the relative
+rsd and rowRsd are convenience functions to calculate the relative
 standard deviation (i.e. coefficient of variation) of a numerical vector
 or for rows of a numerical matrix, respectively. — rsd • CompMetaboTools</title>
 
@@ -45,7 +45,7 @@ or for rows of a numerical matrix, respectively. — rsd • CompMetaboTools</ti
 
 <meta property="og:title" content="Calculate relative standard deviations
 
-<code>rsd</code> and <code>rowRsd</code> are convenience functions to calculate the relative
+rsd and rowRsd are convenience functions to calculate the relative
 standard deviation (i.e. coefficient of variation) of a numerical vector
 or for rows of a numerical matrix, respectively. — rsd" />
 <meta property="og:description" content="Calculate relative standard deviations
@@ -83,7 +83,7 @@ or for rows of a numerical matrix, respectively." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -175,9 +175,11 @@ prior to the calculations.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='kw'>a</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4.3</span>, <span class='fl'>4.5</span>, <span class='fl'>3.6</span>, <span class='fl'>5.3</span>)
-<span class='fu'>rsd</span>(<span class='kw'>a</span>)</div><div class='output co'>#&gt; [1] 0.1580575</div><div class='input'>
+<span class='fu'>rsd</span>(<span class='kw'>a</span>)
+</div><div class='output co'>#&gt; [1] 0.1580575</div><div class='input'>
 <span class='kw'>A</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='kw'>a</span>, <span class='kw'>a</span>, <span class='kw'>a</span>)
-<span class='fu'>rowRsd</span>(<span class='kw'>A</span>)</div><div class='output co'>#&gt;         a         a         a 
+<span class='fu'>rowRsd</span>(<span class='kw'>A</span>)
+</div><div class='output co'>#&gt;         a         a         a 
 #&gt; 0.1580575 0.1580575 0.1580575 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

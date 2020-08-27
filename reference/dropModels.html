@@ -8,10 +8,10 @@
 
 <title>Remove model fits based on specified criteria
 
-The <code>dropModels</code> function takes model fits such as the ones returned by
-<code>xcms:::rowFitModel</code> or <code>withinBatchFit()</code> and removes models idenfified by
-function <code>FLAG_FUN</code>. This function can be one of the <code>flag_*</code> functions (such
-as <code>flag_model_residual()</code>) that take a linear model fit as input and return
+The dropModels function takes model fits such as the ones returned by
+xcms:::rowFitModel or withinBatchFit() and removes models idenfified by
+function FLAG_FUN. This function can be one of the flag_* functions (such
+as flag_model_residual()) that take a linear model fit as input and return
 a logical indicating whether the model fit is problematic or not. — dropModels • CompMetaboTools</title>
 
 
@@ -47,10 +47,10 @@ a logical indicating whether the model fit is problematic or not. — dropModels
 
 <meta property="og:title" content="Remove model fits based on specified criteria
 
-The <code>dropModels</code> function takes model fits such as the ones returned by
-<code>xcms:::rowFitModel</code> or <code>withinBatchFit()</code> and removes models idenfified by
-function <code>FLAG_FUN</code>. This function can be one of the <code>flag_*</code> functions (such
-as <code>flag_model_residual()</code>) that take a linear model fit as input and return
+The dropModels function takes model fits such as the ones returned by
+xcms:::rowFitModel or withinBatchFit() and removes models idenfified by
+function FLAG_FUN. This function can be one of the flag_* functions (such
+as flag_model_residual()) that take a linear model fit as input and return
 a logical indicating whether the model fit is problematic or not. — dropModels" />
 <meta property="og:description" content="Remove model fits based on specified criteria
 The dropModels function takes model fits such as the ones returned by
@@ -89,7 +89,7 @@ a logical indicating whether the model fit is problematic or not." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -143,9 +143,9 @@ a logical indicating whether the model fit is problematic or not." />
     <h1>Remove model fits based on specified criteria
 
 The <code>dropModels</code> function takes model fits such as the ones returned by
-<code>xcms:::rowFitModel</code> or <code>withinBatchFit()</code> and removes models idenfified by
+<code>xcms:::rowFitModel</code> or <code><a href='withinBatchFit.html'>withinBatchFit()</a></code> and removes models idenfified by
 function <code>FLAG_FUN</code>. This function can be one of the <code>flag_*</code> functions (such
-as <code>flag_model_residual()</code>) that take a linear model fit as input and return
+as <code><a href='flag_model_residual.html'>flag_model_residual()</a></code>) that take a linear model fit as input and return
 a logical indicating whether the model fit is problematic or not.</h1>
     <small class="dont-index">Source: <a href='https://github.com/EuracBiomedicalResearch/CompMetaboTools/blob/master/R/dropModels.R'><code>R/dropModels.R</code></a></small>
     <div class="hidden name"><code>dropModels.Rd</code></div>
@@ -154,9 +154,9 @@ a logical indicating whether the model fit is problematic or not.</h1>
     <div class="ref-description">
     <p>Remove model fits based on specified criteria</p>
 <p>The <code>dropModels</code> function takes model fits such as the ones returned by
-<code>xcms:::rowFitModel</code> or <code>withinBatchFit()</code> and removes models idenfified by
+<code>xcms:::rowFitModel</code> or <code><a href='withinBatchFit.html'>withinBatchFit()</a></code> and removes models idenfified by
 function <code>FLAG_FUN</code>. This function can be one of the <code>flag_*</code> functions (such
-as <code>flag_model_residual()</code>) that take a linear model fit as input and return
+as <code><a href='flag_model_residual.html'>flag_model_residual()</a></code>) that take a linear model fit as input and return
 a logical indicating whether the model fit is problematic or not.</p>
     </div>
 
@@ -168,12 +168,12 @@ a logical indicating whether the model fit is problematic or not.</p>
     <tr>
       <th>x</th>
       <td><p><code>list</code> of linear models such as returned by <code>xcms:::rowFitModel</code> or
-<code>withinBatchFit()</code>.</p></td>
+<code><a href='withinBatchFit.html'>withinBatchFit()</a></code>.</p></td>
     </tr>
     <tr>
       <th>FLAG_FUN</th>
       <td><p><code>function</code> to test whether the model fit is problematic or not,
-such as <code>flag_model_residual()</code>. The funciton has to take a linear model
+such as <code><a href='flag_model_residual.html'>flag_model_residual()</a></code>. The funciton has to take a linear model
 object (as generated by <code><a href='https://rdrr.io/r/stats/lm.html'>lm()</a></code>) as input and return <code>TRUE</code> if the model
 should be removed or <code>FALSE</code> otherwise.</p></td>
     </tr>

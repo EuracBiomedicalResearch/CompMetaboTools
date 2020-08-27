@@ -100,7 +100,7 @@ For more information see groupByCorrelation()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -185,7 +185,7 @@ rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
 all 3 are grouped into the same group (i.e. rows 1, 3 <strong>and</strong> 5).</p></li>
 </ul>
 
-<p>For more information see <code>groupByCorrelation()</code>.</p>
+<p>For more information see <code><a href='groupByCorrelation.html'>groupByCorrelation()</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>groupEicCorrelation</span>(
@@ -234,9 +234,9 @@ is assigned to.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other grouping operations: 
-<code>groupByCorrelation()</code>,
-<code>groupClosest()</code>,
-<code>groupToSinglePolarityPairs()</code></p></div>
+<code><a href='groupByCorrelation.html'>groupByCorrelation</a>()</code>,
+<code><a href='groupClosest.html'>groupClosest</a>()</code>,
+<code><a href='groupToSinglePolarityPairs.html'>groupToSinglePolarityPairs</a>()</code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Johannes Rainer</p>
@@ -253,12 +253,14 @@ is assigned to.</p>
     intensity = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>53</span>, <span class='fl'>80</span>, <span class='fl'>130</span>, <span class='fl'>15</span>, <span class='fl'>5</span>, <span class='fl'>3</span>, <span class='fl'>2</span>))
 <span class='kw'>chrs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/MSnbase/man/MChromatograms-class.html'>MChromatograms</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>chr1</span>, <span class='kw'>chr2</span>, <span class='kw'>chr3</span>))
 
-<span class='fu'>groupEicCorrelation</span>(<span class='kw'>chrs</span>)</div><div class='output co'>#&gt; [1] 1 2 1
+<span class='fu'>groupEicCorrelation</span>(<span class='kw'>chrs</span>)
+</div><div class='output co'>#&gt; [1] 1 2 1
 #&gt; Levels: 1 2</div><div class='input'>
 <span class='co'>## With a MChromatograms with two columns, use the maximal correlation</span>
 <span class='co'>## coefficient found in each of the columns</span>
 <span class='kw'>chrs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/MSnbase/man/MChromatograms-class.html'>MChromatograms</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>chr1</span>, <span class='kw'>chr2</span>, <span class='kw'>chr3</span>, <span class='kw'>chr1</span>, <span class='kw'>chr2</span>, <span class='kw'>chr3</span>), ncol = <span class='fl'>2</span>)
-<span class='fu'>groupEicCorrelation</span>(<span class='kw'>chrs</span>, aggregationFun = <span class='kw'>max</span>)</div><div class='output co'>#&gt; [1] 1 2 1
+<span class='fu'>groupEicCorrelation</span>(<span class='kw'>chrs</span>, aggregationFun = <span class='kw'>max</span>)
+</div><div class='output co'>#&gt; [1] 1 2 1
 #&gt; Levels: 1 2</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

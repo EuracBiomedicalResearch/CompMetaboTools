@@ -79,7 +79,7 @@ positive and negative polarity." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -176,9 +176,9 @@ a single positive/negative pair.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other grouping operations: 
-<code>groupByCorrelation()</code>,
-<code>groupClosest()</code>,
-<code>groupEicCorrelation()</code></p></div>
+<code><a href='groupByCorrelation.html'>groupByCorrelation</a>()</code>,
+<code><a href='groupClosest.html'>groupClosest</a>()</code>,
+<code><a href='groupEicCorrelation.html'>groupEicCorrelation</a>()</code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Johannes Rainer</p>
@@ -197,8 +197,9 @@ a single positive/negative pair.</p>
     <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>4</span>, <span class='fl'>4</span>, <span class='fl'>9</span>))
 
 <span class='co'>## Determin the expected grouping by correlation</span>
-<span class='kw'>grp</span> <span class='op'>&lt;-</span> <span class='fu'>groupByCorrelation</span>(<span class='kw'>x</span>)
-<span class='kw'>grp</span></div><div class='output co'>#&gt; [1] 1 1 1 1 2 2 2
+<span class='kw'>grp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='groupByCorrelation.html'>groupByCorrelation</a></span>(<span class='kw'>x</span>)
+<span class='kw'>grp</span>
+</div><div class='output co'>#&gt; [1] 1 1 1 1 2 2 2
 #&gt; Levels: 1 2</div><div class='input'>
 <span class='co'>## Each second row represents however a feature measured in a different</span>
 <span class='co'>## polarity. From another grouping (e.g. based on EIC correlation) we know</span>
@@ -207,7 +208,8 @@ a single positive/negative pair.</p>
 <span class='co'>## keeping only single positive/negative pairs in each group of `grp`.</span>
 <span class='kw'>pol</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"NEG"</span>, <span class='st'>"POS"</span>, <span class='st'>"NEG"</span>, <span class='st'>"POS"</span>, <span class='st'>"NEG"</span>, <span class='st'>"POS"</span>, <span class='st'>"NEG"</span>)
 
-<span class='fu'>groupToSinglePolarityPairs</span>(<span class='kw'>grp</span>, <span class='kw'>pol</span>, <span class='kw'>x</span>)</div><div class='output co'>#&gt; [1] 1.2 1.2 1.1 1.1 2.1 2.1 2.2
+<span class='fu'>groupToSinglePolarityPairs</span>(<span class='kw'>grp</span>, <span class='kw'>pol</span>, <span class='kw'>x</span>)
+</div><div class='output co'>#&gt; [1] 1.2 1.2 1.1 1.1 2.1 2.1 2.2
 #&gt; Levels: 1.1 1.2 2.1 2.2</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
