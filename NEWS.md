@@ -1,3 +1,10 @@
+# CompMetaboTools 0.2
+
+## CompMetaboTools 0.2.2
+
+- Remove the `extractSpectraData` function as it was added to `MSnbase`.
+
+
 # CompMetaboTools 0.1
 
 ## CompMetaboTools 0.1.0
