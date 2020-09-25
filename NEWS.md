@@ -1,5 +1,10 @@
 # CompMetaboTools 0.2
 
+## CompMetaboTools 0.2.3
+
+- Add `joyPlot` to plot stacked (partially overlapping) chromatograms.
+
+
 ## CompMetaboTools 0.2.2
 
 - Remove the `extractSpectraData` function as it was added to `MSnbase`.
