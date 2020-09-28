@@ -201,14 +201,14 @@ setMethod("joyPlot", "XCMSnExp",
     if (any(is.na(mzs))) {
         mzs <- seq_len(nrx)
     } else mzs <- rowMeans(mzs)
+    ymaxs <- vapply(x, function(z)
+        suppressWarnings(max(intensity(z), na.rm = TRUE)), numeric(1))
     if (length(ylim)) {
         ylim <- range(ylim)
         maxint <- ylim[2]
         minint <- ylim[1]
     } else {
-        maxint <- max(vapply(
-            x, function(z) suppressWarnings(max(intensity(z), na.rm = TRUE)),
-            numeric(1)), na.rm = TRUE)
+        maxint <- max(ymaxs, na.rm = TRUE)
         minint <- 0
     }
     yoffset <- maxint * yoffset
@@ -226,7 +226,7 @@ setMethod("joyPlot", "XCMSnExp",
     dev.hold()
     on.exit(dev.flush())
     plot.new()
-    plot.window(xlim = xlim, ylim = c(0, maxint + max(ypos)))
+    plot.window(xlim = xlim, ylim = c(minint, max(ypos + ymaxs, na.rm = TRUE)))
     axis(side = 1, ...)
     title(xlab = xlab, ylab = ylab, ...)
     ## plot(3, 3, pch = NA, xlim = xlim, ylim = c(0, maxint + max(ypos)),
