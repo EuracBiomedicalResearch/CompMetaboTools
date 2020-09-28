@@ -77,19 +77,13 @@ function draws the different EICs from the same sample into the same plot." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -137,27 +131,27 @@ function draws the different EICs from the same sample into the same plot." />
     <p><code>plotOverlay</code> draws chromatographic peak data from multiple (different)
 extracted ion chromatograms (EICs) into the same plot. This allows to
 directly compare the peak shape of these EICs in the same sample. In
-contrast to the <code>plot</code> function for <code><a href='https://rdrr.io/pkg/MSnbase/man/MChromatograms-class.html'>MChromatograms()</a></code> object, which draws
+contrast to the <code>plot</code> function for <code><a href='https://lgatto.github.io/MSnbase/reference/MChromatograms-class.html'>MChromatograms()</a></code> object, which draws
 the data from the same EIC across multiple samples in the same plot, this
 function draws the different EICs from the same sample into the same plot.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotOverlay</span>(
-  <span class='kw'>x</span>,
-  col = <span class='st'>"#00000060"</span>,
-  type = <span class='st'>"l"</span>,
-  main = <span class='kw'>NULL</span>,
-  xlab = <span class='st'>"rtime"</span>,
-  ylab = <span class='st'>"intensity"</span>,
-  <span class='kw'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>plotOverlay</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  col <span class='op'>=</span> <span class='st'>"#00000060"</span>,
+  type <span class='op'>=</span> <span class='st'>"l"</span>,
+  main <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xlab <span class='op'>=</span> <span class='st'>"rtime"</span>,
+  ylab <span class='op'>=</span> <span class='st'>"intensity"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p><code><a href='https://rdrr.io/pkg/MSnbase/man/MChromatograms-class.html'>MChromatograms()</a></code> object with the EICs to draw.</p></td>
+      <td><p><code><a href='https://lgatto.github.io/MSnbase/reference/MChromatograms-class.html'>MChromatograms()</a></code> object with the EICs to draw.</p></td>
     </tr>
     <tr>
       <th>col</th>
