@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.12/xcms">xcms</a></em><br><strong>Authors</strong>: Johannes Rainer, Mar Garcia-Aloy<br><strong>Modified</strong>: 2020-09-28 16:41:40<br><strong>Compiled</strong>: Mon Sep 28 17:19:38 2020</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.12/xcms">xcms</a></em><br><strong>Authors</strong>: Johannes Rainer, Mar Garcia-Aloy<br><strong>Modified</strong>: 2020-09-29 06:25:12<br><strong>Compiled</strong>: Tue Sep 29 06:36:24 2020</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="co">## Silently loading all packages</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Bioconductor/BiocStyle">BiocStyle</a></span><span class="op">)</span>
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"xdata"</span><span class="op">)</span>
 <span class="co">## Update the path to the files for the local system</span>
 <span class="fu"><a href="https://rdrr.io/pkg/xcms/man/dirname.html">dirname</a></span><span class="op">(</span><span class="va">xdata</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"cdf/"</span>, package <span class="op">=</span> <span class="st">"faahKO"</span><span class="op">)</span>,
-                         <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KO/"</span>, <span class="st">"WT/"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></pre></div>
+                         <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"/KO/"</span>, <span class="st">"/WT/"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p>Before performing the feature grouping we inspect the result object. With <code>featureDefinitions</code> we can extract the results from the correspondence analysis.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/pkg/xcms/man/XCMSnExp-class.html">featureDefinitions</a></span><span class="op">(</span><span class="va">xdata</span><span class="op">)</span></pre></div>
@@ -766,14 +766,14 @@ EICs of features from feature group FG.030.01, colors label different feature su
 ## [33] cpp11_0.2.1                 tibble_3.0.3               
 ## [35] farver_2.0.3                IRanges_2.23.10            
 ## [37] ggplot2_3.3.2               ellipsis_0.3.1             
-## [39] SummarizedExperiment_1.19.6 MassSpecWavelet_1.55.0     
+## [39] SummarizedExperiment_1.19.7 MassSpecWavelet_1.55.0     
 ## [41] magrittr_1.5                crayon_1.3.4               
 ## [43] memoise_1.1.0               evaluate_0.14              
 ## [45] fs_1.5.0                    ncdf4_1.17                 
 ## [47] doParallel_1.0.15           MASS_7.3-53                
 ## [49] tools_4.0.2                 lifecycle_0.2.0            
 ## [51] matrixStats_0.57.0          stringr_1.4.0              
-## [53] munsell_0.5.0               DelayedArray_0.15.9        
+## [53] munsell_0.5.0               DelayedArray_0.15.10       
 ## [55] pcaMethods_1.81.0           compiler_4.0.2             
 ## [57] pkgdown_1.6.1.9000          GenomeInfoDb_1.25.11       
 ## [59] mzID_1.27.0                 systemfonts_0.3.1          
