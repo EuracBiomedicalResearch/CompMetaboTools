@@ -1,5 +1,11 @@
 # CompMetaboTools 0.2
 
+## CompMetaboTools 0.2.4
+
+- Add `moreAreValidThan` to test for proportion of non-missing values in rows
+  of a matrix.
+
+
 ## CompMetaboTools 0.2.3
 
 - Add `joyPlot` to plot stacked (partially overlapping) chromatograms.
