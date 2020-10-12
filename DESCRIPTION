@@ -1,6 +1,6 @@
 Package: CompMetaboTools
 Title: Utility Functions from the Eurac Research Computational Metabolomics Team
-Version: 0.2.3
+Version: 0.2.4
 Description: Utility functions used frequently in analyses of the
     Computational Metabolomics Team of the Eurac Research, Institute for
     Biomedicine.
@@ -58,6 +58,7 @@ Collate:
     'joyPlot.R'
     'matching.R'
     'model_flagging.R'
+    'moreAreValidThan.R'
     'ms_file_utils.R'
     'plotting.R'
     'rsd.R'
