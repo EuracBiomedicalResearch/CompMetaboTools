@@ -9,15 +9,19 @@
 standard deviation (i.e. coefficient of variation) of a numerical vector
 or for rows of a numerical matrix, respectively.}
 \usage{
-rsd(x, na.rm = TRUE)
+rsd(x, na.rm = TRUE, mad = FALSE)
 
-rowRsd(x, na.rm = TRUE)
+rowRsd(x, na.rm = TRUE, mad = FALSE)
 }
 \arguments{
 \item{x}{for \code{rsd} a \code{numeric}, for \code{rowRsd} a numerical \code{matrix}.}
 
 \item{na.rm}{\code{logical(1)} whether missing values (\code{NA}) should be removed
 prior to the calculations.}
+
+\item{mad}{\code{logical(1)} whether the \emph{Median Absolute Deviation} (MAD) should
+be used instead of the standard deviation. This is suggested for
+non-gaussian distributed data.}
 }
 \description{
 Calculate relative standard deviations

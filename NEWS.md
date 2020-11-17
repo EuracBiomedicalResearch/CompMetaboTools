@@ -1,5 +1,11 @@
 # CompMetaboTools 0.2
 
+## CompMetaboTools 0.2.5
+
+- Add parameter `mad` to `rsd` and `rowRsd` allowing to base the RSD calculation
+  on the median absolute deviation instead of the standard deviation.
+
+
 ## CompMetaboTools 0.2.4
 
 - Add `moreAreValidThan` to test for proportion of non-missing values in rows
