@@ -501,7 +501,7 @@ groupEicCorrelation <- function(x, aggregationFun = mean,
     res <- array(NA_real_, dim = c(nr, nr, nc))
     ## For performance issues it would also be possible to run with full = FALSE
     for (i in seq_len(nc)) {
-        res[, , i] <- correlate(x[, i], ...)
+        res[, , i] <- correlate(x[, i], align = "none", ...)
     }
     res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE) > threshold
     ## Ensure diagonal is always TRUE to not drop any features!
