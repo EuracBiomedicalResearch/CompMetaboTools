@@ -97,25 +97,30 @@ test_that("groupEicCorrelation works", {
                          intensity = c(53, 80, 130, 15, 5, 3, 2))
     chrs <- MSnbase::MChromatograms(list(chr1, chr2, chr3))
 
-    res <- groupEicCorrelation(chrs)
+    res <- groupEicCorrelation(chrs, align = "matchRtime")
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 1L)))
-
+    res <- groupEicCorrelation(chrs, align = "none")
+    expect_equal(res, factor(c(1L, 2L, 3L)))
+    
     chrs <- MSnbase::MChromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3,
                                         chr2, chr3, chr1), ncol = 3)
     res <- groupEicCorrelation(chrs)
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 3L)))
 
-    res <- groupEicCorrelation(chrs, aggregationFun = max, greedy = TRUE)
+    res <- groupEicCorrelation(chrs, aggregationFun = max, greedy = TRUE,
+                               align = "matchRtime")
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 1L, 1L)))
 
-    res <- groupEicCorrelation(chrs, aggregationFun = max, greedy = FALSE)
+    res <- groupEicCorrelation(chrs, aggregationFun = max, greedy = FALSE,
+                               align = "matchRtime")
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 1L)))
 
-    res <- groupEicCorrelation(chrs, aggregationFun = median)
+    res <- groupEicCorrelation(chrs, aggregationFun = median,
+                               align = "matchRtime")
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 1L)))
 })

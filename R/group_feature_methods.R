@@ -1,12 +1,6 @@
 #' @include hidden_aliases.R
 NULL
 
-#' @rdname hidden_aliases
-#'
-#' @exportMethod groupFeatures
-setGeneric("groupFeatures", function(object, param, ...)
-    standardGeneric("groupFeatures"))
-
 #' @title Group features based on approximate retention times
 #'
 #' @name groupFeatures-approximate-rtime
@@ -61,10 +55,14 @@ setGeneric("groupFeatures", function(object, param, ...)
 #'
 #' @rdname groupFeatures-approximate-rtime
 #'
-#' @importClassesFrom xcms Param
+#' @importClassesFrom ProtGenerics Param
 #'
 #' @importFrom MsFeatures groupClosest
+#'
+#' @importMethodsFrom MsFeatures groupFeatures
 #' 
+#' @importFrom MsFeatures groupSimilarityMatrix
+#'
 #' @exportClass SimilarRtimeParam
 #'
 #' @author Johannes Rainer
@@ -133,6 +131,8 @@ SimilarRtimeParam <- function(diffRt = 1, method = c("groupClosest", "greedy")) 
 #' @importMethodsFrom xcms hasFeatures featureDefinitions featureDefinitions<-
 #'
 #' @importFrom MsCoreUtils group
+#'
+#' @exportMethod groupFeatures
 #' 
 #' @importClassesFrom xcms XCMSnExp XProcessHistory
 setMethod(

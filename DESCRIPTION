@@ -26,6 +26,7 @@ Imports:
     MSnbase (>= 2.15.3),
     xcms (>= 3.13.3),
     MsCoreUtils (>= 1.1.0),
+    ProtGenerics (>= 1.23.4),
     MsFeatures,
     stats
 Suggests:

@@ -60,6 +60,7 @@ the current machine.
 ```{r load-data}
 library(xcms)
 library(faahKO)
+library(MsFeatures)
 library(CompMetaboTools)
 
 data("xdata")

@@ -295,7 +295,7 @@ groupByCorrelation <- function(x, method = "pearson",
 #'     is assigned to.
 #' 
 #' @importMethodsFrom xcms correlate
-#'
+#' 
 #' @importFrom MSnbase MChromatograms
 #' 
 #' @family grouping operations
@@ -323,20 +323,20 @@ groupByCorrelation <- function(x, method = "pearson",
 #' chrs <- MChromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3), ncol = 2)
 #' groupEicCorrelation(chrs, aggregationFun = max)
 groupEicCorrelation <- function(x, aggregationFun = mean,
-                                threshold = 0.8, greedy = FALSE, ...) {
+                                threshold = 0.8, greedy = FALSE,
+                                align = "none", ...) {
     nr <- nrow(x)
     nc <- ncol(x)
     res <- array(NA_real_, dim = c(nr, nr, nc))
     ## For performance issues it would also be possible to run with full = FALSE
-    for (i in seq_len(nc)) {
-        res[, , i] <- correlate(x[, i], align = "none", ...)
-    }
+    for (i in seq_len(nc))
+        res[, , i] <- correlate(x[, i], align = align, ...)
     res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE) > threshold
     ## Ensure diagonal is always TRUE to not drop any features!
     res[cbind(1:nr, 1:nr)] <- TRUE
     if (greedy)
         .index_list_to_factor(.group_logic_matrix(res))
-    else as.factor(.group_correlation_matrix(res, threshold = threshold))
+    else as.factor(groupSimilarityMatrix(res, threshold = threshold))
 }
 
 #' @title Sub-group allowing only single positive/polarity pairs per group

@@ -9,6 +9,7 @@ groupEicCorrelation(
   aggregationFun = mean,
   threshold = 0.8,
   greedy = FALSE,
+  align = "none",
   ...
 )
 }
