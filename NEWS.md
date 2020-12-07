@@ -1,3 +1,10 @@
+# CompMetaboTools 0.3
+
+## CompMetaboTools 0.3.0
+
+- Move `groupClosest` and `groupSimilarityMatrix` to the `MsFeatures` package.
+
+
 # CompMetaboTools 0.2
 
 ## CompMetaboTools 0.2.5

@@ -62,6 +62,8 @@ setGeneric("groupFeatures", function(object, param, ...)
 #' @rdname groupFeatures-approximate-rtime
 #'
 #' @importClassesFrom xcms Param
+#'
+#' @importFrom MsFeatures groupClosest
 #' 
 #' @exportClass SimilarRtimeParam
 #'
