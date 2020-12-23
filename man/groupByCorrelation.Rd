@@ -10,7 +10,7 @@ groupByCorrelation(
   use = "pairwise.complete.obs",
   threshold = 0.9,
   f = NULL,
-  greedy = FALSE
+  inclusive = FALSE
 )
 }
 \arguments{
@@ -30,9 +30,9 @@ rows are considered to be correlated and hence grouped.}
 of rows in \code{x} that should be further sub-grouped. See description for
 details.}
 
-\item{greedy}{\code{logical(1)} whether a version of the grouping algorithm should
-be used that leads to larger, more loosely correlated, groups. The
-default is \code{greedy = FALSE}. See description for more information.}
+\item{inclusive}{\code{logical(1)} whether a version of the grouping algorithm
+should be used that leads to larger, more loosely correlated, groups. The
+default is \code{inclusive = FALSE}. See description for more information.}
 }
 \value{
 \code{factor} with same length than \code{nrow(x)} with the group each row
@@ -44,12 +44,12 @@ their correlation with each other.
 
 Two types of groupings are available:
 \itemize{
-\item \code{greedy = FALSE} (the default): the algorithm creates small groups of
+\item \code{inclusive = FALSE} (the default): the algorithm creates small groups of
 highly correlated members, all of which have a correlation with each other
 that are \verb{>= threshold}. Note that with this algorithm, rows in \code{x} could
 still have a correlation \verb{>= threshold} with one or more elements of a
 group they are not part of. See notes below for more information.
-\item \code{greedy = TRUE}: the algorithm creates large groups containing rows that
+\item \code{inclusive = TRUE}: the algorithm creates large groups containing rows that
 have a correlation \verb{>= threshold} with at least one element of that group.
 For example, if row 1 and 3 have a correlation above the threshold and
 rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
@@ -106,7 +106,6 @@ groupByCorrelation(x, f = f)
 }
 \seealso{
 Other grouping operations: 
-\code{\link{groupClosest}()},
 \code{\link{groupEicCorrelation}()},
 \code{\link{groupToSinglePolarityPairs}()}
 }

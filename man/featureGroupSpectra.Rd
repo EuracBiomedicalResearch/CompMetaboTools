@@ -132,7 +132,8 @@ xdata <- groupChromPeaks(faahko_sub,
 
 ## Group features
 xdata <- groupFeatures(xdata, param = SimilarRtimeParam(4))
-xdata <- groupFeatures(xdata, param = AbundanceCorrelationParam(threshold = 0.3))
+xdata <- groupFeatures(xdata,
+    param = AbundanceCorrelationParam(threshold = 0.3))
 
 sort(table(featureGroups(xdata)))
 
@@ -157,7 +158,7 @@ res
 
 ## Get the pseudo spectrum for one feature group reporting the per-feature
 ## maximal "maxo" value across samples as the spectrum's intensities
-res <- featureGroupPseudoSpectrum(featureGroup = "FG.01.1", xdata,
+res <- featureGroupPseudoSpectrum(featureGroup = "FG.010.001", xdata,
     fvals = featureValues(xdata, value = "maxo"), intensityFun = max)
 
 intensity(res)
@@ -165,7 +166,7 @@ mz(res)
 
 ## Get the pseudo spectrum using the values in the one sample with the
 ## highest total sum of signal ("maxo") for the feature group.
-res <- featureGroupPseudoSpectrum(featureGroup = "FG.01.1", xdata,
+res <- featureGroupPseudoSpectrum(featureGroup = "FG.010.001", xdata,
     fvals = featureValues(xdata, value = "maxo"), n = 1)
 
 intensity(res)
@@ -178,12 +179,12 @@ mz(res)
 
 ## Get the full MS1 spectrum from the sample with the highest total signal
 ## of one specific feature group
-res <- featureGroupFullScan(featureGroup = "FG.01.1", xdata,
+res <- featureGroupFullScan(featureGroup = "FG.010.001", xdata,
     fvals = featureValues(xdata, value = "maxo"))
 
 plot(mz(res), intensity(res), type = "h", xlab = "m/z", ylab = "intensity")
 ## Highlight the peaks for the features of the group.
-idx <- which(featureGroups(xdata) == "FG.01.1")
+idx <- which(featureGroups(xdata) == "FG.001.001")
 points(x = featureDefinitions(xdata)$mzmed[idx],
     y = rep(0, length(idx)), pch = 4, col = "red")
 }

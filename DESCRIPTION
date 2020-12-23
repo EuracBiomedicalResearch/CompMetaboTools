@@ -1,6 +1,6 @@
 Package: CompMetaboTools
 Title: Utility Functions from the Eurac Research Computational Metabolomics Team
-Version: 0.2.4
+Version: 0.3.1
 Description: Utility functions used frequently in analyses of the
     Computational Metabolomics Team of the Eurac Research, Institute for
     Biomedicine.
@@ -15,7 +15,8 @@ Authors@R: c(person(given = "Johannes", family = "Rainer",
 Author: Mar Garcia-Aloy and Johannes Rainer.
 Maintainer: Johannes Rainer <johannes.rainer@eurac.edu>
 Depends:
-    R (>= 3.6.0)
+    R (>= 3.6.0),
+    MsFeatures (>= 0.0.3)
 Imports:
     BiocParallel,
     SummarizedExperiment,
@@ -23,9 +24,10 @@ Imports:
     S4Vectors,
     IRanges,
     methods,
-    MSnbase (>= 2.15.3),
-    xcms (>= 3.11.4),
+    MSnbase (>= 2.17.3),
+    xcms (>= 3.13.3),
     MsCoreUtils (>= 1.1.0),
+    ProtGenerics (>= 1.23.4),
     stats
 Suggests:
     testthat,
@@ -39,8 +41,7 @@ Suggests:
     pheatmap,
     knitr
 Remotes:
-    RforMassSpectrometry/MsCoreUtils,
-    RforMassSpectrometry/Spectra,
+    RforMassSpectrometry/MsFeatures
 License: Artistic-2.0
 LazyData: yes
 VignetteBuilder: knitr

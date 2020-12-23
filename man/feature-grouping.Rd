@@ -2,23 +2,36 @@
 % Please edit documentation in R/group_feature_methods.R
 \name{feature-grouping}
 \alias{feature-grouping}
-\alias{featureGroups}
-\title{Grouping of features}
+\alias{featureGroups,XCMSnExp-method}
+\alias{featureGroups<-,XCMSnExp-method}
+\title{Grouping of LC-MS features}
 \usage{
-featureGroups(object)
+\S4method{featureGroups}{XCMSnExp}(object)
+
+\S4method{featureGroups}{XCMSnExp}(object) <- value
 }
 \arguments{
 \item{object}{an \code{\link[=XCMSnExp]{XCMSnExp()}} object.}
+
+\item{value}{for \verb{featureGroups<-}: replacement for the feature groups in
+\code{object}. Has to be of length 1 or length equal to the number of features
+in \code{object}.}
 }
 \description{
 After correspondence analysis (\code{\link[xcms:groupChromPeaks]{xcms::groupChromPeaks()}}) the identified
-features can be further grouped based on different criteria into
-\emph{feature groups} which can ideally group features representing signals from
+LC-MS features can be further grouped based on different criteria into
+\emph{feature groups} which contain ideally features representing
 ions (adducts, isotopes) of the same compound/metabolite.
 
-The available options for the \code{groupFeatures} method are:
+See \code{\link[MsFeatures:groupFeatures]{MsFeatures::groupFeatures()}} for an overview on the general feature
+grouping concept as well as details on the individual settings and
+parameters.
+
+The available options for \code{groupFeatures} on \code{xcms} preprocessing results
+(i.e. on \code{XCMSnExp} objects after correspondence analysis with
+\code{\link[=groupChromPeaks]{groupChromPeaks()}}) are:
 \itemize{
-\item Grouping by similar retention times: \code{\link[=SimilarRtimeParam]{SimilarRtimeParam()}}.
+\item Grouping by similar retention times: \code{\link[=groupFeatures-similar-rtime]{groupFeatures-similar-rtime()}}.
 \item Grouping by similar feature values across samples:
 \code{\link[=AbundanceCorrelationParam]{AbundanceCorrelationParam()}}.
 \item Grouping by similar peak shape of extracted ion chromatograms:
@@ -27,6 +40,8 @@ The available options for the \code{groupFeatures} method are:
 
 An ideal workflow grouping features should sequentially perform the above
 methods (in the listed order).
+
+Feature groups can be accessed with the \code{featureGroups} function.
 }
 \seealso{
 \code{\link[=plotFeatureGroups]{plotFeatureGroups()}} for visualization of grouped features.

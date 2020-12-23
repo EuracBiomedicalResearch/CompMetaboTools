@@ -8,7 +8,8 @@ groupEicCorrelation(
   x,
   aggregationFun = mean,
   threshold = 0.8,
-  greedy = FALSE,
+  align = "closest",
+  inclusive = FALSE,
   ...
 )
 }
@@ -21,12 +22,21 @@ pairs of EICs across samples (columns). See description for details.}
 \item{threshold}{\code{numeric(1)} with the threshold for correlation above which
 EICs are grouped together.}
 
-\item{greedy}{\code{logical(1)} whether a version of the grouping algorithm should
-be used that leads to larger, more loosely correlated, groups. The
-default is \code{greedy = FALSE}. See description for more information.}
+\item{align}{\code{character(1)} defining the method how chromatograms should be
+aligned prior correlation. Defaults to \code{align = "closest"}. See
+\code{\link[=alignRt]{alignRt()}} for more details.}
+
+\item{inclusive}{\code{logical(1)} defining the grouping approach. With
+\code{inclusive = FALSE} (the default) small groups of highly correlated
+features are created using the \code{\link[=groupSimilarityMatrix]{groupSimilarityMatrix()}} function. With
+\code{inclusive = TRUE} groups are created with features that have at least
+one correlation with any other member of the group which is higher than
+\code{threshold}.}
 
 \item{...}{parameters for the \code{\link[=correlate]{correlate()}} function for \code{\link[=MChromatograms]{MChromatograms()}}
-objects.}
+objects, such as \code{tolerance} to allow specifying the maximal acceptable
+difference in retention times between objects. See also \code{\link[=alignRt]{alignRt()}} for
+more information.}
 }
 \value{
 \code{factor} same length as \code{nrow(x)} (if \code{x} is a \code{MChromatograms}
@@ -53,12 +63,12 @@ correlation coefficient is larger than \code{threshold}.
 
 Two types of groupings are available:
 \itemize{
-\item \code{greedy = FALSE} (the default): the algorithm creates small groups of
+\item \code{inclusive = FALSE} (the default): the algorithm creates small groups of
 highly correlated members, all of which have a correlation with each other
 that are \verb{>= threshold}. Note that with this algorithm, rows in \code{x} could
 still have a correlation \verb{>= threshold} with one or more elements of a
 group they are not part of. See notes below for more information.
-\item \code{greedy = TRUE}: the algorithm creates large groups containing rows that
+\item \code{inclusive = TRUE}: the algorithm creates large groups containing rows that
 have a correlation \verb{>= threshold} with at least one element of that group.
 For example, if row 1 and 3 have a correlation above the threshold and
 rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
@@ -66,6 +76,10 @@ all 3 are grouped into the same group (i.e. rows 1, 3 \strong{and} 5).
 }
 
 For more information see \code{\link[=groupByCorrelation]{groupByCorrelation()}}.
+
+Note that it might be useful to set \code{tolerance = 0} if chromatograms from
+the \strong{same} sample are compared. This forces retention times of the compared
+chromatograms' intensities to be identical.
 }
 \examples{
 
@@ -89,7 +103,6 @@ groupEicCorrelation(chrs, aggregationFun = max)
 \seealso{
 Other grouping operations: 
 \code{\link{groupByCorrelation}()},
-\code{\link{groupClosest}()},
 \code{\link{groupToSinglePolarityPairs}()}
 }
 \author{

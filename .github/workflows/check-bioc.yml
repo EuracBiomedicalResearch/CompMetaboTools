@@ -203,6 +203,10 @@ jobs:
           deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
           BiocManager::install(deps$package[deps$diff != 0])
 
+          BiocManager::install("RforMassSpectrometry/MsFeatures")
+          BiocManager::install("lgatto/ProtGenerics")
+          BiocManager::install("lgatto/MSnbase")
+          BiocManager::install("sneumann/xcms")
           ## For running the checks
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           remotes::install_cran("rcmdcheck")
@@ -404,6 +408,10 @@ jobs:
           deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
           BiocManager::install(deps$package[deps$diff != 0])
 
+          BiocManager::install("RforMassSpectrometry/MsFeatures")
+          BiocManager::install("lgatto/ProtGenerics")
+          BiocManager::install("lgatto/MSnbase")
+          BiocManager::install("sneumann/xcms")
           ## For running the checks
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           remotes::install_cran("rcmdcheck")

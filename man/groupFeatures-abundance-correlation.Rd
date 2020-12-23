@@ -13,7 +13,7 @@ AbundanceCorrelationParam(
   intensity = "maxo",
   filled = TRUE,
   subset = integer(),
-  greedy = FALSE,
+  inclusive = FALSE,
   transform = log2
 )
 
@@ -38,11 +38,12 @@ the correlation analysis. Defaults to \code{filled = TRUE}.}
 \item{subset}{\code{integer} or \code{logical} defining a subset of samples (at least
 2) on which the correlation should be performed.}
 
-\item{greedy}{\code{logical(1)} which grouping algorithm should be used: one that
-creates small groups of highly correlated features (\code{greedy = FALSE}, the
-default) or whether features should be grouped that have at least one
-correlation with any other member of the group in common
-(\code{greedy = TRUE}). See \code{\link[=groupByCorrelation]{groupByCorrelation()}} for details.}
+\item{inclusive}{\code{logical(1)} defining the grouping approach. With
+\code{inclusive = FALSE} (the default) small groups of highly correlated
+features are created using the \code{\link[=groupSimilarityMatrix]{groupSimilarityMatrix()}} function. With
+\code{inclusive = TRUE} groups are created with features that have at least
+one correlation with any other member of the group which is higher than
+\code{threshold}. See also \code{\link[=groupByCorrelation]{groupByCorrelation()}}.}
 
 \item{transform}{\code{function} to be applied to the feature intensities prior
 correlation. Defaults to \code{transform = log2}, i.e. log2 transforms the
@@ -104,8 +105,8 @@ table(featureDefinitions(xodg_grp)$feature_group)
 feature-grouping for a general overview.
 
 Other feature grouping methods: 
-\code{\link{groupFeatures-approximate-rtime}},
-\code{\link{groupFeatures-eic-correlation}}
+\code{\link{groupFeatures-eic-correlation}},
+\code{\link{groupFeatures-similar-rtime}}
 }
 \author{
 Johannes Rainer
