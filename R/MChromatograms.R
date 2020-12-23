@@ -125,9 +125,11 @@ plotOverlay <- function(x, col = "#00000060", type = "l", main = NULL,
             data <- lapply(x[, i], function(z)
                 data.frame(rtime = z@rtime, intensity = z@intensity))
         xl <- vapply(data, function(z) range(z$rtime, na.rm = TRUE), numeric(2))
-        yl <- vapply(data, function(z) range(z$intensity, na.rm = TRUE), numeric(2))
-        plot(3, 3, pch = NA, xlim = range(xl), ylim = range(yl),
-             main = main[i], xlab = xlab, ylab = ylab, ...)
+        yl <- vapply(data, function(z) range(z$intensity, na.rm = TRUE),
+                     numeric(2))
+        plot(3, 3, pch = NA, xlim = range(xl, na.rm = TRUE, finite = TRUE),
+             ylim = range(yl, na.rm = TRUE, finite = TRUE), main = main[i],
+             xlab = xlab, ylab = ylab, ...)
         for (j in seq_along(data))
             points(data[[j]]$rtime, data[[j]]$intensity, col = col[j],
                    type = type, ...)
