@@ -43,12 +43,12 @@
 <meta property="og:description" content="The groupByCorrelation allows to group rows in a numeric matrix based on
 their correlation with each other.
 Two types of groupings are available:
-greedy = FALSE (the default): the algorithm creates small groups of
+inclusive = FALSE (the default): the algorithm creates small groups of
 highly correlated members, all of which have a correlation with each other
 that are &amp;gt;= threshold. Note that with this algorithm, rows in x could
 still have a correlation &amp;gt;= threshold with one or more elements of a
 group they are not part of. See notes below for more information.
-greedy = TRUE: the algorithm creates large groups containing rows that
+inclusive = TRUE: the algorithm creates large groups containing rows that
 have a correlation &amp;gt;= threshold with at least one element of that group.
 For example, if row 1 and 3 have a correlation above the threshold and
 rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
@@ -93,7 +93,7 @@ is then f with the additional subgroup appended (and separated with a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -121,7 +121,7 @@ is then f with the additional subgroup appended (and separated with a
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/EuracBiomedicalResearch/CompMetaboTools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -147,12 +147,12 @@ is then f with the additional subgroup appended (and separated with a
     <p>The <code>groupByCorrelation</code> allows to group rows in a numeric matrix based on
 their correlation with each other.</p>
 <p>Two types of groupings are available:</p><ul>
-<li><p><code>greedy = FALSE</code> (the default): the algorithm creates small groups of
+<li><p><code>inclusive = FALSE</code> (the default): the algorithm creates small groups of
 highly correlated members, all of which have a correlation with each other
 that are <code>&gt;= threshold</code>. Note that with this algorithm, rows in <code>x</code> could
 still have a correlation <code>&gt;= threshold</code> with one or more elements of a
 group they are not part of. See notes below for more information.</p></li>
-<li><p><code>greedy = TRUE</code>: the algorithm creates large groups containing rows that
+<li><p><code>inclusive = TRUE</code>: the algorithm creates large groups containing rows that
 have a correlation <code>&gt;= threshold</code> with at least one element of that group.
 For example, if row 1 and 3 have a correlation above the threshold and
 rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
@@ -174,7 +174,7 @@ is then <code>f</code> with the additional subgroup appended (and separated with
   use <span class='op'>=</span> <span class='st'>"pairwise.complete.obs"</span>,
   threshold <span class='op'>=</span> <span class='fl'>0.9</span>,
   f <span class='op'>=</span> <span class='cn'>NULL</span>,
-  greedy <span class='op'>=</span> <span class='cn'>FALSE</span>
+  inclusive <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -207,10 +207,10 @@ of rows in <code>x</code> that should be further sub-grouped. See description fo
 details.</p></td>
     </tr>
     <tr>
-      <th>greedy</th>
-      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether a version of the grouping algorithm should
-be used that leads to larger, more loosely correlated, groups. The
-default is <code>greedy = FALSE</code>. See description for more information.</p></td>
+      <th>inclusive</th>
+      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether a version of the grouping algorithm
+should be used that leads to larger, more loosely correlated, groups. The
+default is <code>inclusive = FALSE</code>. See description for more information.</p></td>
     </tr>
     </table>
 
@@ -241,7 +241,6 @@ same group is maximized.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other grouping operations: 
-<code><a href='groupClosest.html'>groupClosest</a>()</code>,
 <code><a href='groupEicCorrelation.html'>groupEicCorrelation</a>()</code>,
 <code><a href='groupToSinglePolarityPairs.html'>groupToSinglePolarityPairs</a>()</code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
@@ -267,8 +266,8 @@ same group is maximized.</p>
 <span class='co'>## based on pairwise correlation.</span>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>
 <span class='fu'>groupByCorrelation</span><span class='op'>(</span><span class='va'>x</span>, f <span class='op'>=</span> <span class='va'>f</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 1.1 2.1 2.2 1.1 1.2 2.1 2.1
-#&gt; Levels: 1.1 1.2 2.1 2.2</div></pre>
+</div><div class='output co'>#&gt; [1] 1.001 2.001 2.002 1.001 1.002 2.001 2.001
+#&gt; Levels: 1.001 1.002 2.001 2.002</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

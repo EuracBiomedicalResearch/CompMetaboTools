@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Grouping of features — feature-grouping • CompMetaboTools</title>
+<title>Grouping of LC-MS features — feature-grouping • CompMetaboTools</title>
 
 
 <!-- jquery -->
@@ -39,13 +39,18 @@
 
 
 
-<meta property="og:title" content="Grouping of features — feature-grouping" />
+<meta property="og:title" content="Grouping of LC-MS features — feature-grouping" />
 <meta property="og:description" content="After correspondence analysis (xcms::groupChromPeaks()) the identified
-features can be further grouped based on different criteria into
-feature groups which can ideally group features representing signals from
+LC-MS features can be further grouped based on different criteria into
+feature groups which contain ideally features representing
 ions (adducts, isotopes) of the same compound/metabolite.
-The available options for the groupFeatures method are:
-Grouping by similar retention times: SimilarRtimeParam().
+See MsFeatures::groupFeatures() for an overview on the general feature
+grouping concept as well as details on the individual settings and
+parameters.
+The available options for groupFeatures on xcms preprocessing results
+(i.e. on XCMSnExp objects after correspondence analysis with
+groupChromPeaks()) are:
+Grouping by similar retention times: groupFeatures-similar-rtime().
 Grouping by similar feature values across samples:
 AbundanceCorrelationParam().
 Grouping by similar peak shape of extracted ion chromatograms:
@@ -53,7 +58,8 @@ EicCorrelationParam().
 
 
 An ideal workflow grouping features should sequentially perform the above
-methods (in the listed order)." />
+methods (in the listed order).
+Feature groups can be accessed with the featureGroups function." />
 
 
 
@@ -85,7 +91,7 @@ methods (in the listed order)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -113,7 +119,7 @@ methods (in the listed order)." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/EuracBiomedicalResearch/CompMetaboTools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -130,18 +136,23 @@ methods (in the listed order)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Grouping of features</h1>
+    <h1>Grouping of LC-MS features</h1>
     <small class="dont-index">Source: <a href='https://github.com/EuracBiomedicalResearch/CompMetaboTools/blob/master/R/group_feature_methods.R'><code>R/group_feature_methods.R</code></a></small>
     <div class="hidden name"><code>feature-grouping.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>After correspondence analysis (<code><a href='https://rdrr.io/pkg/xcms/man/groupChromPeaks.html'>xcms::groupChromPeaks()</a></code>) the identified
-features can be further grouped based on different criteria into
-<em>feature groups</em> which can ideally group features representing signals from
+LC-MS features can be further grouped based on different criteria into
+<em>feature groups</em> which contain ideally features representing
 ions (adducts, isotopes) of the same compound/metabolite.</p>
-<p>The available options for the <code>groupFeatures</code> method are:</p><ul>
-<li><p>Grouping by similar retention times: <code><a href='groupFeatures-approximate-rtime.html'>SimilarRtimeParam()</a></code>.</p></li>
+<p>See <code><a href='https://rdrr.io/pkg/MsFeatures/man/groupFeatures.html'>MsFeatures::groupFeatures()</a></code> for an overview on the general feature
+grouping concept as well as details on the individual settings and
+parameters.</p>
+<p>The available options for <code>groupFeatures</code> on <code>xcms</code> preprocessing results
+(i.e. on <code>XCMSnExp</code> objects after correspondence analysis with
+<code>groupChromPeaks()</code>) are:</p><ul>
+<li><p>Grouping by similar retention times: <code><a href='groupFeatures-similar-rtime.html'>groupFeatures-similar-rtime()</a></code>.</p></li>
 <li><p>Grouping by similar feature values across samples:
 <code><a href='groupFeatures-abundance-correlation.html'>AbundanceCorrelationParam()</a></code>.</p></li>
 <li><p>Grouping by similar peak shape of extracted ion chromatograms:
@@ -150,9 +161,14 @@ ions (adducts, isotopes) of the same compound/metabolite.</p>
 
 <p>An ideal workflow grouping features should sequentially perform the above
 methods (in the listed order).</p>
+<p>Feature groups can be accessed with the <code>featureGroups</code> function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>featureGroups</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S4 method for XCMSnExp</span>
+<span class='fu'>featureGroups</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
+
+<span class='co'># S4 method for XCMSnExp</span>
+<span class='fu'>featureGroups</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>value</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,6 +176,12 @@ methods (in the listed order).</p>
     <tr>
       <th>object</th>
       <td><p>an <code>XCMSnExp()</code> object.</p></td>
+    </tr>
+    <tr>
+      <th>value</th>
+      <td><p>for <code>featureGroups&lt;-</code>: replacement for the feature groups in
+<code>object</code>. Has to be of length 1 or length equal to the number of features
+in <code>object</code>.</p></td>
     </tr>
     </table>
 

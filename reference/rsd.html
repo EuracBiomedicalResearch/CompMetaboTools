@@ -83,7 +83,7 @@ or for rows of a numerical matrix, respectively." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -111,7 +111,7 @@ or for rows of a numerical matrix, respectively." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/EuracBiomedicalResearch/CompMetaboTools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -144,9 +144,9 @@ standard deviation (i.e. coefficient of variation) of a numerical vector
 or for rows of a numerical matrix, respectively.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rsd</span><span class='op'>(</span><span class='va'>x</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>rsd</span><span class='op'>(</span><span class='va'>x</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, mad <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='fu'>rowRsd</span><span class='op'>(</span><span class='va'>x</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+<span class='fu'>rowRsd</span><span class='op'>(</span><span class='va'>x</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, mad <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,6 +159,12 @@ or for rows of a numerical matrix, respectively.</p>
       <th>na.rm</th>
       <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether missing values (<code>NA</code>) should be removed
 prior to the calculations.</p></td>
+    </tr>
+    <tr>
+      <th>mad</th>
+      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether the <em>Median Absolute Deviation</em> (MAD) should
+be used instead of the standard deviation. This is suggested for
+non-gaussian distributed data.</p></td>
     </tr>
     </table>
 

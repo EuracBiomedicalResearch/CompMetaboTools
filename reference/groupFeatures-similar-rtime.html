@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Group features based on correlation of abundances across samples — groupFeatures-abundance-correlation • CompMetaboTools</title>
+<title>Group features based on similar retention times — groupFeatures-similar-rtime • CompMetaboTools</title>
 
 
 <!-- jquery -->
@@ -39,16 +39,14 @@
 
 
 
-<meta property="og:title" content="Group features based on correlation of abundances across samples — groupFeatures-abundance-correlation" />
-<meta property="og:description" content="This methods groups features based on correlation of abundances (i.e.
-feature values) across samples. Parameter subset allows to define a sub
-set of samples on which this correlation should be correlated. It might for
-example be better to exclude QC samples from this correlation analysis
-because values of all features are supposed to be constant in these samples
-and including these could bias the correlation estimation. Also, it might
-be better to perform the correlation including also gap filled values which
-is possible with parameter filled = TRUE on an object on which also
-xcms::fillChromPeaks() was called." />
+<meta property="og:title" content="Group features based on similar retention times — groupFeatures-similar-rtime" />
+<meta property="og:description" content="Group features based on similar retention time. This method is supposed to be
+used as an initial crude grouping of features based on the median retention
+time of all their chromatographic peaks. All features with a difference in
+their retention time which is &amp;lt;= parameter diffRt of the parameter object
+are grouped together. If a column &quot;feature_group&quot; is found in
+xcms::featureDefinitions() this is further sub-grouped by this method.
+See MsFeatures::SimilarRtimeParam() in MsFeatures for more details." />
 
 
 
@@ -125,99 +123,44 @@ xcms::fillChromPeaks() was called." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Group features based on correlation of abundances across samples</h1>
+    <h1>Group features based on similar retention times</h1>
     <small class="dont-index">Source: <a href='https://github.com/EuracBiomedicalResearch/CompMetaboTools/blob/master/R/group_feature_methods.R'><code>R/group_feature_methods.R</code></a></small>
-    <div class="hidden name"><code>groupFeatures-abundance-correlation.Rd</code></div>
+    <div class="hidden name"><code>groupFeatures-similar-rtime.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This methods groups features based on correlation of abundances (i.e.
-<em>feature values</em>) across samples. Parameter <code>subset</code> allows to define a sub
-set of samples on which this correlation should be correlated. It might for
-example be better to exclude QC samples from this correlation analysis
-because values of all features are supposed to be constant in these samples
-and including these could bias the correlation estimation. Also, it might
-be better to perform the correlation including also <em>gap filled</em> values which
-is possible with parameter <code>filled = TRUE</code> on an <code>object</code> on which also
-<code><a href='https://rdrr.io/pkg/xcms/man/fillChromPeaks.html'>xcms::fillChromPeaks()</a></code> was called.</p>
+    <p>Group features based on similar retention time. This method is supposed to be
+used as an initial <em>crude</em> grouping of features based on the median retention
+time of all their chromatographic peaks. All features with a difference in
+their retention time which is <code>&lt;=</code> parameter <code>diffRt</code> of the parameter object
+are grouped together. If a column <code>"feature_group"</code> is found in
+<code><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-class.html'>xcms::featureDefinitions()</a></code> this is further sub-grouped by this method.</p>
+<p>See <code><a href='https://rdrr.io/pkg/MsFeatures/man/groupFeatures-similar-rtime.html'>MsFeatures::SimilarRtimeParam()</a></code> in <code>MsFeatures</code> for more details.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>AbundanceCorrelationParam</span><span class='op'>(</span>
-  threshold <span class='op'>=</span> <span class='fl'>0.9</span>,
-  value <span class='op'>=</span> <span class='st'>"into"</span>,
-  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"maxint"</span>, <span class='st'>"medret"</span>, <span class='st'>"sum"</span><span class='op'>)</span>,
-  intensity <span class='op'>=</span> <span class='st'>"maxo"</span>,
-  filled <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  subset <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span><span class='op'>(</span><span class='op'>)</span>,
-  inclusive <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  transform <span class='op'>=</span> <span class='va'>log2</span>
-<span class='op'>)</span>
-
-<span class='co'># S4 method for XCMSnExp,AbundanceCorrelationParam</span>
-<span class='fu'>groupFeatures</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>param</span>, msLevel <span class='op'>=</span> <span class='fl'>1L</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S4 method for XCMSnExp,SimilarRtimeParam</span>
+<span class='fu'>groupFeatures</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>param</span>, msLevel <span class='op'>=</span> <span class='fl'>1L</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>threshold</th>
-      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> with the minimal required correlation
-coefficient to group featues.</p></td>
-    </tr>
-    <tr>
-      <th>value</th>
-      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> passed to the <code>featureValues</code> call. See
-<code><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-peak-grouping-results.html'>featureValues()</a></code> for details. Defaults to <code>value = "into"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>method</th>
-      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> passed to the <code>featureValues</code> call. See
-<code><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-peak-grouping-results.html'>featureValues()</a></code> for details. Defaults to <code>method = "maxint"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>intensity</th>
-      <td><p><code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code> passed to the <code>featureValues</code> call. See
-<code><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-peak-grouping-results.html'>featureValues()</a></code> for details. Defaults to <code>intensity = "maxo"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>filled</th>
-      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> whether filled-in values should be included in
-the correlation analysis. Defaults to <code>filled = TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>subset</th>
-      <td><p><code>integer</code> or <code>logical</code> defining a subset of samples (at least
-2) on which the correlation should be performed.</p></td>
-    </tr>
-    <tr>
-      <th>inclusive</th>
-      <td><p><code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code> defining the grouping approach. With
-<code>inclusive = FALSE</code> (the default) small groups of highly correlated
-features are created using the <code>groupSimilarityMatrix()</code> function. With
-<code>inclusive = TRUE</code> groups are created with features that have at least
-one correlation with any other member of the group which is higher than
-<code>threshold</code>. See also <code><a href='groupByCorrelation.html'>groupByCorrelation()</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>transform</th>
-      <td><p><code>function</code> to be applied to the feature intensities prior
-correlation. Defaults to <code>transform = log2</code>, i.e. log2 transforms the
-data before correlation. To use the values <em>as-is</em> use
-<code>transform = identity</code>.</p></td>
-    </tr>
     <tr>
       <th>object</th>
       <td><p><code><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-class.html'>XCMSnExp()</a></code> object containing also correspondence results.</p></td>
     </tr>
     <tr>
       <th>param</th>
-      <td><p><code>AbudanceCorrelationParam</code> object with the settings for the
-method.</p></td>
+      <td><p><code>SimilarRtimeParam</code> object with the settings for the method. See
+<code><a href='https://rdrr.io/pkg/MsFeatures/man/groupFeatures-similar-rtime.html'>MsFeatures::SimilarRtimeParam()</a></code> for details and options.</p></td>
     </tr>
     <tr>
       <th>msLevel</th>
       <td><p><code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code> defining the MS level on which the features
 should be grouped.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>passed to the <code>groupFeatures</code> function on numeric values.</p></td>
     </tr>
     </table>
 
@@ -227,10 +170,9 @@ should be grouped.</p></td>
 <code>"feature_group"</code> of its <code>featureDefinitions</code> data frame.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>feature-grouping for a general overview.</p>
-<p>Other feature grouping methods: 
-<code><a href='groupFeatures-eic-correlation.html'>groupFeatures-eic-correlation</a></code>,
-<code><a href='groupFeatures-similar-rtime.html'>groupFeatures-similar-rtime</a></code></p></div>
+    <div class='dont-index'><p>Other feature grouping methods: 
+<code><a href='groupFeatures-abundance-correlation.html'>groupFeatures-abundance-correlation</a></code>,
+<code><a href='groupFeatures-eic-correlation.html'>groupFeatures-eic-correlation</a></code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Johannes Rainer</p>
@@ -250,22 +192,22 @@ should be grouped.</p></td>
 </div><div class='output co'>#&gt; <span class='message'>Detecting mass traces at 25 ppm ... </span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Detecting chromatographic peaks in 937 regions of interest ...</span></div><div class='output co'>#&gt; <span class='message'> OK: 87 found.</span></div><div class='output co'>#&gt; <span class='message'>Detecting mass traces at 25 ppm ... </span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Detecting chromatographic peaks in 1025 regions of interest ...</span></div><div class='output co'>#&gt; <span class='message'> OK: 100 found.</span></div><div class='output co'>#&gt; <span class='message'>Detecting mass traces at 25 ppm ... </span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='output co'>#&gt; <span class='message'>Detecting chromatographic peaks in 623 regions of interest ...</span></div><div class='output co'>#&gt; <span class='message'> OK: 71 found.</span></div><div class='input'><span class='va'>pdp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xcms/man/groupChromPeaks-density.html'>PeakDensityParam</a></span><span class='op'>(</span>sampleGroups <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>xodg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xcms/man/groupChromPeaks.html'>groupChromPeaks</a></span><span class='op'>(</span><span class='va'>xod</span>, param <span class='op'>=</span> <span class='va'>pdp</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Processing 2867 mz slices ... </span></div><div class='output co'>#&gt; <span class='message'>OK</span></div><div class='input'>
-<span class='co'>## Group features based on correlation of feature values (integrated</span>
-<span class='co'>## peak area) across samples. Note that there are many missing values</span>
-<span class='co'>## in the feature value which influence grouping of features in the present</span>
-<span class='co'>## data set.</span>
-<span class='va'>xodg_grp</span> <span class='op'>&lt;-</span> <span class='fu'>groupFeatures</span><span class='op'>(</span><span class='va'>xodg</span>,
-    param <span class='op'>=</span> <span class='fu'>AbundanceCorrelationParam</span><span class='op'>(</span>threshold <span class='op'>=</span> <span class='fl'>0.8</span><span class='op'>)</span><span class='op'>)</span>
+<span class='co'>## Group features based on similar retention time (i.e. difference &lt;= 2 seconds)</span>
+<span class='va'>xodg_grp</span> <span class='op'>&lt;-</span> <span class='fu'>groupFeatures</span><span class='op'>(</span><span class='va'>xodg</span>, param <span class='op'>=</span> <span class='fu'>SimilarRtimeParam</span><span class='op'>(</span>diffRt <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'>## Feature grouping get added to the featureDefinitions in column "feature_group"</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-class.html'>featureDefinitions</a></span><span class='op'>(</span><span class='va'>xodg_grp</span><span class='op'>)</span><span class='op'>$</span><span class='va'>feature_group</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "FG.001" "FG.035" "FG.027" "FG.036" "FG.037" "FG.030"</div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-class.html'>featureDefinitions</a></span><span class='op'>(</span><span class='va'>xodg_grp</span><span class='op'>)</span><span class='op'>$</span><span class='va'>feature_group</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
 #&gt; FG.001 FG.002 FG.003 FG.004 FG.005 FG.006 FG.007 FG.008 FG.009 FG.010 FG.011 
-#&gt;      2      8     15      4      4      6      1      1      1      1      1 
+#&gt;      3      3      2      2      4      2      3      2      2      4      3 
 #&gt; FG.012 FG.013 FG.014 FG.015 FG.016 FG.017 FG.018 FG.019 FG.020 FG.021 FG.022 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
+#&gt;      3      2      2      2      2      3      3      2      2      2      3 
 #&gt; FG.023 FG.024 FG.025 FG.026 FG.027 FG.028 FG.029 FG.030 FG.031 FG.032 FG.033 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
+#&gt;      2      2      2      2      2      2      2      2      2      2      2 
 #&gt; FG.034 FG.035 FG.036 FG.037 FG.038 FG.039 FG.040 FG.041 FG.042 FG.043 FG.044 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
+#&gt;      2      1      1      1      1      1      1      1      1      1      1 
 #&gt; FG.045 FG.046 FG.047 FG.048 FG.049 FG.050 FG.051 FG.052 FG.053 FG.054 FG.055 
 #&gt;      1      1      1      1      1      1      1      1      1      1      1 
 #&gt; FG.056 FG.057 FG.058 FG.059 FG.060 FG.061 FG.062 FG.063 FG.064 FG.065 FG.066 
@@ -277,40 +219,14 @@ should be grouped.</p></td>
 #&gt; FG.089 FG.090 FG.091 FG.092 FG.093 FG.094 FG.095 FG.096 FG.097 FG.098 FG.099 
 #&gt;      1      1      1      1      1      1      1      1      1      1      1 
 #&gt; FG.100 FG.101 FG.102 FG.103 FG.104 FG.105 FG.106 FG.107 FG.108 FG.109 FG.110 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.111 FG.112 FG.113 FG.114 FG.115 FG.116 FG.117 FG.118 FG.119 FG.120 FG.121 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.122 FG.123 
-#&gt;      1      1 </div><div class='input'>
-<span class='co'>## Group based on the maximal peak intensity per feature</span>
+#&gt;      1      1      1      1      1      1      1      1      1      1      1 </div><div class='input'><span class='fu'><a href='https://lgatto.github.io/MSnbase/reference/pSet-class.html'>length</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-class.html'>featureDefinitions</a></span><span class='op'>(</span><span class='va'>xodg_grp</span><span class='op'>)</span><span class='op'>$</span><span class='va'>feature_group</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 110</div><div class='input'>
+<span class='co'>## Using an alternative groupiing method that creates larger groups</span>
 <span class='va'>xodg_grp</span> <span class='op'>&lt;-</span> <span class='fu'>groupFeatures</span><span class='op'>(</span><span class='va'>xodg</span>,
-    param <span class='op'>=</span> <span class='fu'>AbundanceCorrelationParam</span><span class='op'>(</span>threshold <span class='op'>=</span> <span class='fl'>0.8</span>, value <span class='op'>=</span> <span class='st'>"maxo"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-class.html'>featureDefinitions</a></span><span class='op'>(</span><span class='va'>xodg_grp</span><span class='op'>)</span><span class='op'>$</span><span class='va'>feature_group</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 
-#&gt; FG.001 FG.002 FG.003 FG.004 FG.005 FG.006 FG.007 FG.008 FG.009 FG.010 FG.011 
-#&gt;      6      4     22      5      2      1      1      1      1      1      1 
-#&gt; FG.012 FG.013 FG.014 FG.015 FG.016 FG.017 FG.018 FG.019 FG.020 FG.021 FG.022 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.023 FG.024 FG.025 FG.026 FG.027 FG.028 FG.029 FG.030 FG.031 FG.032 FG.033 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.034 FG.035 FG.036 FG.037 FG.038 FG.039 FG.040 FG.041 FG.042 FG.043 FG.044 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.045 FG.046 FG.047 FG.048 FG.049 FG.050 FG.051 FG.052 FG.053 FG.054 FG.055 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.056 FG.057 FG.058 FG.059 FG.060 FG.061 FG.062 FG.063 FG.064 FG.065 FG.066 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.067 FG.068 FG.069 FG.070 FG.071 FG.072 FG.073 FG.074 FG.075 FG.076 FG.077 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.078 FG.079 FG.080 FG.081 FG.082 FG.083 FG.084 FG.085 FG.086 FG.087 FG.088 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.089 FG.090 FG.091 FG.092 FG.093 FG.094 FG.095 FG.096 FG.097 FG.098 FG.099 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.100 FG.101 FG.102 FG.103 FG.104 FG.105 FG.106 FG.107 FG.108 FG.109 FG.110 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.111 FG.112 FG.113 FG.114 FG.115 FG.116 FG.117 FG.118 FG.119 FG.120 FG.121 
-#&gt;      1      1      1      1      1      1      1      1      1      1      1 
-#&gt; FG.122 
-#&gt;      1 </div></pre>
+    param <span class='op'>=</span> <span class='fu'>SimilarRtimeParam</span><span class='op'>(</span>diffRt <span class='op'>=</span> <span class='fl'>2</span>, groupFun <span class='op'>=</span> <span class='fu'>MsCoreUtils</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/MsCoreUtils/man/group.html'>group</a></span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://lgatto.github.io/MSnbase/reference/pSet-class.html'>length</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/xcms/man/XCMSnExp-class.html'>featureDefinitions</a></span><span class='op'>(</span><span class='va'>xodg_grp</span><span class='op'>)</span><span class='op'>$</span><span class='va'>feature_group</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 103</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
