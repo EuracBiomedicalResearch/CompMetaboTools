@@ -267,18 +267,19 @@ table(featureGroups(xdata))
 
 Many of the larger retention time-based feature groups have been splitted into
 two or more sub-groups based on the correlation of their feature abundances. We
-evaluate this for one specific feature group `"FG.025"` by plotting their
+evaluate this for one specific feature group `"FG.040"` by plotting their
 pairwise correlation.
 
-```{r abundance-correlation-fg025, fig.width = 8, fig.height = 8, fig.cap = "Pairwise correlation plot for all features initially grouped into the feature group FG.025."}
-fts <- grep("FG.025", featureGroups(xdata))
-pairs(t(fvals[fts, ]), gap = 0.1, main = "FG.025")
+```{r abundance-correlation-fg040, fig.width = 8, fig.height = 8, fig.cap = "Pairwise correlation plot for all features initially grouped into the feature group FG.040."}
+fts <- grep("FG.040", featureGroups(xdata))
+pairs(t(fvals[fts, ]), gap = 0.1, main = "FG.040")
 ```
 
 Indeed, correlations can be seen only between some of the features in this
-retention time feature group, e.g. between *FT034* and *FG036*. Note however
-that this abundance correlation suffers from relatively few samples (8 in
-total), and a relatively small variance in abundances across these samples.
+retention time feature group, e.g. between *FT117* and *FT120* and between
+*FT195* and *FT200*. Note however that this abundance correlation suffers from
+relatively few samples (8 in total), and a relatively small variance in
+abundances across these samples.
 
 After feature grouping by abundance correlation, the 
 `r nrow(featureDefinitions(xdata))` features have been grouped into 
@@ -334,14 +335,14 @@ feature group. With `n = 1` we specify to extract the EIC only from the
 sample with the highest intensity.
 
 ```{r}
-fts <- grep("FG.007.02", featureGroups(xdata))
+fts <- grep("FG.008.001", featureGroups(xdata))
 eics <- featureChromatograms(xdata, features = fts,
                              filled = TRUE, n = 1)
 ```
 
 Next we plot the EICs using a different color for each of the subgroups.
 
-```{r example-1-eic, fig.width = 8, fig.height = 6, fig.cap = "EICs of features from feature group FG.007.02, colors label different feature sub-groups. Shown are the actual intensities (left) and intensities normalized to 1 (right)."}
+```{r example-1-eic, fig.width = 8, fig.height = 6, fig.cap = "EICs of features from feature group FG.008.001, colors label different feature sub-groups. Shown are the actual intensities (left) and intensities normalized to 1 (right)."}
 cols <- c("#ff000080", "#00ff0080")
 names(cols) <- unique(featureGroups(xdata)[fts])
 
@@ -364,14 +365,14 @@ that this feature might be indeed be from a different compound.
 We evaluate next the sub-grouping in another feature group.
 
 ```{r}
-fts <- grep("FG.030.01", featureGroups(xdata))
+fts <- grep("FG.068.001", featureGroups(xdata))
 eics <- featureChromatograms(xdata, features = fts,
                              filled = TRUE, n = 1)
 ```
 
 Next we plot the EICs using a different color for each of the subgroups.
 
-```{r example-2-eic, fig.width = 8, fig.height = 6, fig.cap = "EICs of features from feature group FG.030.01, colors label different feature sub-groups. Shown are the actual intensities (left) and intensities normalized to 1 (right)."}
+```{r example-2-eic, fig.width = 8, fig.height = 6, fig.cap = "EICs of features from feature group FG.068.001, colors label different feature sub-groups. Shown are the actual intensities (left) and intensities normalized to 1 (right)."}
 cols <- c("#ff000080", "#00ff0080")
 names(cols) <- unique(featureGroups(xdata)[fts])
 
@@ -381,9 +382,8 @@ plotOverlay(normalize(eics), col = cols[featureGroups(xdata)[fts]], lwd = 2)
 
 ```
 
-Based on the EIC correlation, the initial feature group *FG.030.01* was grouped
-into two separate sub-groups, each consisting of two features, one with a single
-peak and one with a double peak.
+Based on the EIC correlation, the initial feature group *FG.068.001* was grouped
+into two separate sub-groups.
 
 The grouping based on EIC correlation on the pre-defined feature groups from the
 previous sections grouped the `r nrow(featureDefinitions(xdata))` features into

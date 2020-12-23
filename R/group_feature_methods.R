@@ -1,9 +1,80 @@
 #' @include hidden_aliases.R
 NULL
 
-#' @title Group features based on approximate retention times
+#' @title Grouping of LC-MS features
 #'
-#' @name groupFeatures-approximate-rtime
+#' @name feature-grouping
+#' 
+#' @description
+#'
+#' After correspondence analysis ([xcms::groupChromPeaks()]) the identified
+#' LC-MS features can be further grouped based on different criteria into
+#' *feature groups* which contain ideally features representing
+#' ions (adducts, isotopes) of the same compound/metabolite.
+#'
+#' See [MsFeatures::groupFeatures()] for an overview on the general feature
+#' grouping concept as well as details on the individual settings and
+#' parameters.
+#' 
+#' The available options for `groupFeatures` on `xcms` preprocessing results
+#' (i.e. on `XCMSnExp` objects after correspondence analysis with
+#' [groupChromPeaks()]) are:
+#'
+#' - Grouping by similar retention times: [groupFeatures-similar-rtime()].
+#'
+#' - Grouping by similar feature values across samples:
+#'   [AbundanceCorrelationParam()].
+#'
+#' - Grouping by similar peak shape of extracted ion chromatograms:
+#'   [EicCorrelationParam()].
+#'
+#' An ideal workflow grouping features should sequentially perform the above
+#' methods (in the listed order).
+#'
+#' Feature groups can be accessed with the `featureGroups` function.
+#' 
+#' @param object an [XCMSnExp()] object.
+#'
+#' @param value for `featureGroups<-`: replacement for the feature groups in
+#'     `object`. Has to be of length 1 or length equal to the number of features
+#'     in `object`.
+#' 
+#' @author Johannes Rainer, Mar Garcia-Aloy, Vinicius Veri Hernandes
+#'
+#' @seealso [plotFeatureGroups()] for visualization of grouped features.
+NULL
+
+#' @rdname feature-grouping
+#'
+#' @export
+setMethod("featureGroups", "XCMSnExp", function(object) {
+    if (!hasFeatures(object))
+        stop("No feature definitions present. Please run 'groupChromPeak'",
+             call. = FALSE)
+    if (any(colnames(featureDefinitions(object)) == "feature_group"))
+        as.character(featureDefinitions(object)$feature_group)
+    else rep(NA_character_, nrow(featureDefinitions(object)))
+})
+
+#' @rdname feature-grouping
+#'
+#' @export
+setReplaceMethod("featureGroups", "XCMSnExp", function(object, value) {
+    if (!hasFeatures(object))
+        stop("No feature definitions present. Please run 'groupChromPeak'",
+             call. = FALSE)
+    if (!(length(value) == 1 |
+          length(value) == nrow(featureDefinitions(object))))
+        stop("'value' has to be either of length 1 or equal to the number ",
+             "of features in object")
+    featureDefinitions(object)$feature_group <- as.character(value)
+    object
+})
+
+
+#' @title Group features based on similar retention times
+#'
+#' @name groupFeatures-similar-rtime
 #'
 #' @description
 #'
@@ -14,57 +85,33 @@ NULL
 #' are grouped together. If a column `"feature_group"` is found in
 #' [xcms::featureDefinitions()] this is further sub-grouped by this method.
 #'
-#' Two different grouping methods are available:
+#' See [MsFeatures::SimilarRtimeParam()] in `MsFeatures` for more details.
 #'
-#' - `method = "greedy"`: this approach consecutively groups elements together
-#'   if their difference in retention time is smaller than `diffRt`. If two
-#'   features are grouped into one group, also all other features with a
-#'   retention time within the defined window to any of the two features are
-#'   also included into the feature group. This grouping is recursively
-#'   expanded which can lead, depending on `diffRt` to very large feature
-#'   groups spanning a large retention time window.
-#'
-#' - `method = "groupClosest"`: this approach uses the [groupClosest()] function
-#'   that groups values together if their difference is smaller than `diffRt`.
-#'   If the difference of a feature to more than one group is smaller `diffRt`
-#'   it is assigned to the group to which its retention time is closest (most
-#'   similar) to the mean retention time of that group. This leads to smaller
-#'   group sizes. See [groupClosest()] for details and examples.
-#'
-#' @param diffRt `numeric(1)` defining the retention time window within which
-#'     features should be grouped. All features with a rtime difference
-#'     smaller or equal than `diffRt` are grouped.
-#'
-#' @param method `character(1)` defining which grouping approach should be
-#'     taken. Allowed values are `method = "groupClosest"` (the default) and
-#'     `method = "greedy"`. See description for details.
-#' 
 #' @param msLevel `integer(1)` defining the MS level on which the features
 #'     should be grouped.
 #' 
 #' @param object [XCMSnExp()] object containing also correspondence results.
 #' 
-#' @param param `SimilarRtimeParam` object with the settings for the method.
+#' @param param `SimilarRtimeParam` object with the settings for the method. See
+#'     [MsFeatures::SimilarRtimeParam()] for details and options.
 #'
+#' @param ... passed to the `groupFeatures` function on numeric values.
+#' 
 #' @return input `XCMSnExp` with feature groups added (i.e. in column
 #'     `"feature_group"` of its `featureDefinitions` data frame. 
 #'
 #' @family feature grouping methods
 #' 
-#' @seealso feature-grouping for a general overview.
-#'
-#' @rdname groupFeatures-approximate-rtime
+#' @rdname groupFeatures-similar-rtime
 #'
 #' @importClassesFrom ProtGenerics Param
 #'
-#' @importFrom MsFeatures groupClosest
+#' @importFrom MsFeatures SimilarRtimeParam
 #'
-#' @importMethodsFrom MsFeatures groupFeatures
+#' @importClassesFrom MsFeatures SimilarRtimeParam
+#'
+#' @importMethodsFrom MsFeatures groupFeatures featureGroups featureGroups<-
 #' 
-#' @importFrom MsFeatures groupSimilarityMatrix
-#'
-#' @exportClass SimilarRtimeParam
-#'
 #' @author Johannes Rainer
 #'
 #' @examples
@@ -91,42 +138,14 @@ NULL
 #' table(featureDefinitions(xodg_grp)$feature_group)
 #' length(unique(featureDefinitions(xodg_grp)$feature_group))
 #'
-#' ## Using the "greedy" method to create larger groups
+#' ## Using an alternative groupiing method that creates larger groups
 #' xodg_grp <- groupFeatures(xodg,
-#'     param = SimilarRtimeParam(diffRt = 2, method = "greedy"))
+#'     param = SimilarRtimeParam(diffRt = 2, groupFun = MsCoreUtils::group))
 #' 
 #' length(unique(featureDefinitions(xodg_grp)$feature_group))
 NULL
 
-setClass("SimilarRtimeParam",
-         slots = c(diffRt = "numeric",
-                   method = "character"),
-         contains = "Param",
-         prototype = prototype(
-             diffRt = 1,
-             method = "groupClosest"
-         ),
-         validity = function(object) {
-             msg <- NULL
-             if (length(object@diffRt) != 1 || object@diffRt < 0)
-                 msg <- c("'diffRt' has to be a positive numeric of length 1")
-             if (length(object@method) != 1 || !object@method %in%
-                 c("greedy", "groupClosest"))
-                 msg <- c(
-                     msg,
-                     "'method' should be either \"groupClosest\" or \"greedy\"")
-             msg
-         })
-
-#' @rdname groupFeatures-approximate-rtime
-#'
-#' @export
-SimilarRtimeParam <- function(diffRt = 1, method = c("groupClosest", "greedy")) {
-    method <- match.arg(method)
-    new("SimilarRtimeParam", diffRt = diffRt, method = method)
-}
-
-#' @rdname groupFeatures-approximate-rtime
+#' @rdname groupFeatures-similar-rtime
 #'
 #' @importMethodsFrom xcms hasFeatures featureDefinitions featureDefinitions<-
 #'
@@ -138,44 +157,28 @@ SimilarRtimeParam <- function(diffRt = 1, method = c("groupClosest", "greedy")) 
 setMethod(
     "groupFeatures",
     signature(object = "XCMSnExp", param = "SimilarRtimeParam"),
-    function(object, param, msLevel = 1L) {
-        if (!hasFeatures(object))
-            stop("No feature definitions present. Please run ",
-                 "first 'groupChromPeaks'")
+    function(object, param, msLevel = 1L, ...) {
+        fgs <- featureGroups(object)
         if (length(msLevel) > 1)
             stop("Currently only grouping of features from a single MS level",
-                 " is supported.")
+                 " is supported.", call. = FALSE)
         if (any(colnames(featureDefinitions(object)) == "ms_level"))
             is_msLevel <- featureDefinitions(object)$ms_level == msLevel
         else is_msLevel <- rep(TRUE, nrow(featureDefinitions(object)))
-        if (any(colnames(featureDefinitions(object)) == "feature_group")) {
-            f <- featureDefinitions(object)$feature_group
-            f_new <- as.character(f)
-        } else {
-            f <- rep("FG", nrow(featureDefinitions(object)))
-            f_new <- rep(NA_character_, length(f))
-        }
-        f[!is_msLevel] <- NA
-        if (is.factor(f))
-            f <- droplevels(f)
-        else
-            f <- factor(f, levels = unique(f))
-        for (fg in levels(f)) {
-            idx <- which(f == fg)
-            idxl <- length(idx)
-            if (idxl > 1) {
-                if (param@method == "greedy")
-                    fids <- group(featureDefinitions(object)$rtmed[idx],
-                                  tolerance = param@diffRt)
-                if (param@method == "groupClosest")
-                    fids <- groupClosest(
-                        featureDefinitions(object)$rtmed[idx],
-                        maxDiff = param@diffRt)
-                f_new[idx] <- paste0(fg, ".", .format_groups(fids))
-            } else
-                f_new[idx] <- paste0(fg, ".1")
-        }
-        featureDefinitions(object)$feature_group <- f_new
+        if (all(is.na(fgs)))
+            fgs <- rep("FG", length(fgs))
+        fgs[!is_msLevel] <- NA
+        nas <- is.na(fgs)
+        fgs <- factor(fgs, levels = unique(fgs))
+        rtl <- split(featureDefinitions(object)$rtmed, fgs)
+        res <- lapply(
+            rtl, function(z, param)
+                MsFeatures:::.format_id(groupFeatures(z, param = param, ...)),
+            param = param, ...)
+        res <- paste(fgs, unsplit(res, f = fgs), sep = ".")
+        if (any(nas))
+            res[nas] <- NA_character_
+        featureGroups(object) <- res
         xph <- new("XProcessHistory", param = param, date = date(),
                    type = xcms:::.PROCSTEP.FEATURE.GROUPING,
                    fileIndex = 1:length(fileNames(object)),
@@ -184,11 +187,6 @@ setMethod(
         validObject(object)
         object
     })
-
-.format_groups <- function(x) {
-    digits <- ceiling(log10(length(x) + 1L))
-    sprintf(paste0("%0", digits, "d"), as.integer(x))
-}
 
 #' @title Group features based on correlation of extracted ion chromatograms
 #'
@@ -228,17 +226,17 @@ setMethod(
 #'
 #' By default also the signal which is outside identified chromatographic peaks
 #' is excluded from the correlation  (parameter `clean`).
-#' 
+#'
 #' @param clean `logical(1)` whether the correlation should be performed only
 #'     on the signals within the identified chromatographic peaks
 #'     (`clean = TRUE`, default) or all the signal from the extracted ion
 #'     chromatogram.
 #'
-#' @param greedy `logical(1)` which grouping algorithm should be used: one that
-#'     creates small groups of highly correlated features (`greedy = FALSE`, the
+#' @param inclusive `logical(1)` which grouping algorithm should be used: one that
+#'     creates small groups of highly correlated features (`inclusive = FALSE`, the
 #'     default) or whether features should be grouped that have at least one
 #'     correlation with any other member of the group in common
-#'     (`greedy = TRUE`). See [groupByCorrelation()] for more information.
+#'     (`inclusive = TRUE`). See [groupByCorrelation()] for more information.
 #' 
 #' @param msLevel `integer(1)` defining the MS level on which the features
 #'     should be grouped.
@@ -293,7 +291,7 @@ setMethod(
 #' table(featureDefinitions(xodg_grp)$feature_group)
 #'
 #' ## Usually it is better to perform this correlation on pre-grouped features
-#' ## e.g. based on approximate retention time.
+#' ## e.g. based on similar retention time.
 #' xodg_grp <- groupFeatures(xodg, param = SimilarRtimeParam(diffRt = 4))
 #' xodg_grp <- groupFeatures(xodg_grp, param = EicCorrelationParam(n = 1))
 #'
@@ -305,14 +303,14 @@ setClass("EicCorrelationParam",
                    n = "numeric",
                    clean = "logical",
                    value = "character",
-                   greedy = "logical"),
+                   inclusive = "logical"),
          contains = "Param",
          prototype = prototype(
              threshold = 0.9,
              n = 1,
              clean = TRUE,
              value = "maxo",
-             greedy = FALSE
+             inclusive = FALSE
          ),
          validity = function(object) {
              msg <- NULL
@@ -332,10 +330,10 @@ setClass("EicCorrelationParam",
 #'
 #' @export
 EicCorrelationParam <- function(threshold = 0.9, n = 1, clean = TRUE,
-                                value = c("maxo", "into"), greedy = FALSE) {
+                                value = c("maxo", "into"), inclusive = FALSE) {
     value = match.arg(value)
     new("EicCorrelationParam", threshold = threshold, n = n, clean = clean,
-        value = value, greedy = FALSE)
+        value = value, inclusive = FALSE)
 }
 
 #' @rdname groupFeatures-eic-correlation
@@ -405,17 +403,20 @@ setMethod(
                     eics <- featureChromatograms(
                         obj_sub, features = rownames(fvals)[idx], filled = TRUE)
                     if (param@clean)
-                        eics <- removeIntensity(eics, which = "outside_chromPeak")
+                        eics <- removeIntensity(eics,
+                                                which = "outside_chromPeak")
                     res <- groupEicCorrelation(
                         as(eics, "MChromatograms"), aggregationFun = ffun,
-                        threshold = param@threshold, greedy = param@greedy)
+                        threshold = param@threshold, tolerance = 0,
+                        inclusive = param@inclusive)
                 } else res <- factor(1)
-                f_new[idx] <- paste0(fg, ".", .format_groups(res))
+                f_new[idx] <- paste0(fg, ".", MsFeatures:::.format_id(res))
                 if (length(idx_miss))
                     f_new[idx_miss] <- paste0(
-                        fg, ".", .format_groups(
-                                     seq((length(levels(res)) + 1),
-                                         length.out = length(idx_miss))))
+                        fg, ".", MsFeatures:::.format_id(
+                                                  seq((length(levels(res)) + 1),
+                                                      length.out = length(
+                                                          idx_miss))))
             } else
                 f_new[idx] <- paste0(fg, ".1")
             setTxtProgressBar(pb, counter)
@@ -451,11 +452,12 @@ setMethod(
 #' @param filled `logical(1)` whether filled-in values should be included in
 #'     the correlation analysis. Defaults to `filled = TRUE`.
 #' 
-#' @param greedy `logical(1)` which grouping algorithm should be used: one that
-#'     creates small groups of highly correlated features (`greedy = FALSE`, the
-#'     default) or whether features should be grouped that have at least one
-#'     correlation with any other member of the group in common
-#'     (`greedy = TRUE`). See [groupByCorrelation()] for details.
+#' @param inclusive `logical(1)` defining the grouping approach. With
+#'     `inclusive = FALSE` (the default) small groups of highly correlated
+#'     features are created using the [groupSimilarityMatrix()] function. With
+#'     `inclusive = TRUE` groups are created with features that have at least
+#'     one correlation with any other member of the group which is higher than
+#'     `threshold`. See also [groupByCorrelation()].
 #' 
 #' @param intensity `character(1)` passed to the `featureValues` call. See
 #'     [featureValues()] for details. Defaults to `intensity = "maxo"`.
@@ -534,7 +536,7 @@ setClass("AbundanceCorrelationParam",
                    intensity = "character",
                    filled = "logical",
                    subset = "integer",
-                   greedy = "logical",
+                   inclusive = "logical",
                    transform = "function"),
          contains = "Param",
          prototype = prototype(
@@ -544,7 +546,7 @@ setClass("AbundanceCorrelationParam",
              intensity = "maxo",
              filled = TRUE,
              subset = integer(),
-             greedy = FALSE,
+             inclusive = FALSE,
              transform = log2
          ),
          validity = function(object) {
@@ -558,7 +560,7 @@ setClass("AbundanceCorrelationParam",
 AbundanceCorrelationParam <- function(threshold = 0.9, value = "into",
                                       method = c("maxint", "medret", "sum"),
                                       intensity = "maxo", filled = TRUE,
-                                      subset = integer(), greedy = FALSE,
+                                      subset = integer(), inclusive = FALSE,
                                       transform = log2) {
     method <- match.arg(method)
     if (is.logical(subset))
@@ -569,7 +571,7 @@ AbundanceCorrelationParam <- function(threshold = 0.9, value = "into",
         stop("'subset' has to be either a logical or an integer vector")
     new("AbundanceCorrelationParam", threshold = threshold, value = value,
         method = method, intensity = intensity, filled = filled,
-        subset = subset, greedy = greedy, transform = transform)
+        subset = subset, inclusive = inclusive, transform = transform)
 }
 
 #' @rdname groupFeatures-abundance-correlation
@@ -613,7 +615,7 @@ setMethod(
         res <- groupByCorrelation(
             param@transform(fvals[is_msLevel, ]), method = "pearson",
             use = "pairwise.complete.obs", threshold = param@threshold,
-            f = f[is_msLevel], greedy = param@greedy)
+            f = f[is_msLevel], inclusive = param@inclusive)
         f_new[is_msLevel] <- as.character(res)
         featureDefinitions(object)$feature_group <- f_new
         xph <- new("XProcessHistory", param = param, date = date(),
@@ -625,43 +627,6 @@ setMethod(
         object
     })
 
-#' @title Grouping of features
-#'
-#' @name feature-grouping
-#' 
-#' @description
-#'
-#' After correspondence analysis ([xcms::groupChromPeaks()]) the identified
-#' features can be further grouped based on different criteria into
-#' *feature groups* which can ideally group features representing signals from
-#' ions (adducts, isotopes) of the same compound/metabolite.
-#'
-#' The available options for the `groupFeatures` method are:
-#'
-#' - Grouping by similar retention times: [SimilarRtimeParam()].
-#'
-#' - Grouping by similar feature values across samples:
-#'   [AbundanceCorrelationParam()].
-#'
-#' - Grouping by similar peak shape of extracted ion chromatograms:
-#'   [EicCorrelationParam()].
-#'
-#' An ideal workflow grouping features should sequentially perform the above
-#' methods (in the listed order).
-#'
-#' @param object an [XCMSnExp()] object.
-#' 
-#' @author Johannes Rainer, Mar Garcia-Aloy, Vinicius Veri Hernandes
-#'
-#' @seealso [plotFeatureGroups()] for visualization of grouped features.
-NULL
-
-#' @rdname feature-grouping
-#'
-#' @export
-featureGroups <- function(object) {
-    featureDefinitions(object)$feature_group
-}
 
 #' @title Plot feature groups in the m/z-retention time space
 #'
@@ -851,7 +816,8 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 #'
 #' ## Group features
 #' xdata <- groupFeatures(xdata, param = SimilarRtimeParam(4))
-#' xdata <- groupFeatures(xdata, param = AbundanceCorrelationParam(threshold = 0.3))
+#' xdata <- groupFeatures(xdata,
+#'     param = AbundanceCorrelationParam(threshold = 0.3))
 #'
 #' sort(table(featureGroups(xdata)))
 #'
@@ -876,7 +842,7 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 #' 
 #' ## Get the pseudo spectrum for one feature group reporting the per-feature
 #' ## maximal "maxo" value across samples as the spectrum's intensities
-#' res <- featureGroupPseudoSpectrum(featureGroup = "FG.01.1", xdata,
+#' res <- featureGroupPseudoSpectrum(featureGroup = "FG.010.001", xdata,
 #'     fvals = featureValues(xdata, value = "maxo"), intensityFun = max)
 #'
 #' intensity(res)
@@ -884,7 +850,7 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 #'
 #' ## Get the pseudo spectrum using the values in the one sample with the
 #' ## highest total sum of signal ("maxo") for the feature group.
-#' res <- featureGroupPseudoSpectrum(featureGroup = "FG.01.1", xdata,
+#' res <- featureGroupPseudoSpectrum(featureGroup = "FG.010.001", xdata,
 #'     fvals = featureValues(xdata, value = "maxo"), n = 1)
 #'
 #' intensity(res)
@@ -897,12 +863,12 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 #'
 #' ## Get the full MS1 spectrum from the sample with the highest total signal
 #' ## of one specific feature group
-#' res <- featureGroupFullScan(featureGroup = "FG.01.1", xdata,
+#' res <- featureGroupFullScan(featureGroup = "FG.010.001", xdata,
 #'     fvals = featureValues(xdata, value = "maxo"))
 #'
 #' plot(mz(res), intensity(res), type = "h", xlab = "m/z", ylab = "intensity")
 #' ## Highlight the peaks for the features of the group.
-#' idx <- which(featureGroups(xdata) == "FG.01.1")
+#' idx <- which(featureGroups(xdata) == "FG.001.001")
 #' points(x = featureDefinitions(xdata)$mzmed[idx],
 #'     y = rep(0, length(idx)), pch = 4, col = "red")
 featureGroupSpectra <- function(x, featureGroup = featureGroups(x),

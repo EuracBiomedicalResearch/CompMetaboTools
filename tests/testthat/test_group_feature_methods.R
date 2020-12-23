@@ -1,29 +1,49 @@
+test_that("featureGroups,featureGroups<-,XCMSnExp works", {
+    expect_error(featureGroups(xod), "Please run")
+    res <- featureGroups(xodg)
+    expect_true(all(is.na(res)))
+    tmp <- xodg
+    featureGroups(tmp) <- "a"
+    expect_true(all(featureGroups(tmp) == "a"))
+
+    expect_error(featureGroups(xod) <- "a", "Please run")
+    expect_error(featureGroups(xodg) <- 1:2, "length")
+})
+
 test_that("SimillarRtimeParam works", {
-    res <- SimilarRtimeParam(4)
-    expect_true(res@diffRt == 4)
-
-    expect_error(SimilarRtimeParam(1:2), "positive numeric")
-    expect_error(SimilarRtimeParam(-1), "positive numeric")
-
-    expect_error(SimilarRtimeParam(method = "some"), "should be one")
-    expect_error(new("SimilarRtimeParam", method = c("groupClosest", "greedy")),
-                 "should be either")
-    
     prm <- SimilarRtimeParam(3)
     
     expect_error(groupFeatures(xod, prm), "No feature definitions")
+    expect_error(groupFeatures(xodg, prm, msLevel = 1:2), "single MS")
     res <- groupFeatures(xodg, prm)
     expect_true(any(colnames(featureDefinitions(res)) == "feature_group"))
+    expect_false(any(is.na(featureGroups(res))))
+    expect_true(is.character(featureGroups(res)))
 
-    res <- groupFeatures(res, prm)
+    res2 <- groupFeatures(xodg,
+                          SimilarRtimeParam(3, groupFun = MsCoreUtils::group))
+    expect_true(length(table(featureGroups(res2))) <
+                length(table(featureGroups(res))))
 
+    ## Different MS levels
     tmp <- xodg
-    featureDefinitions(tmp)$ms_level[c(1:3, 5)] <- 2
-    res_2 <- groupFeatures(tmp, prm)
-    fgs_2 <- featureDefinitions(res_2)$feature_group
-    expect_true(all(is.na(fgs_2[c(1:3, 5)])))
+    idx <- c(1:3, 5, 45, 99)
+    featureDefinitions(tmp)$ms_level[idx] <- 2
+    res <- groupFeatures(tmp, prm)
+    expect_true(all(is.na(featureGroups(res))[idx]))
+    expect_false(any(is.na(featureGroups(res))[-idx]))
+    res <- groupFeatures(tmp, prm, msLevel = 2L)
+    expect_false(any(is.na(featureGroups(res))[idx]))
+    expect_true(all(is.na(featureGroups(res))[-idx]))
     
-    expect_error(groupFeatures(res, prm, msLevel = 1:2), "Currently only")
+    ## Pre-defined groups
+    fgs <- rep("AB", nrow(featureDefinitions(xodg)))
+    fgs[idx] <- NA
+    tmp <- xodg
+    featureGroups(tmp) <- fgs
+    res <- groupFeatures(tmp, prm)
+    expect_true(all(is.na(featureGroups(res))[idx]))
+    expect_false(any(is.na(featureGroups(res))[-idx]))
 })
 
 test_that("EicCorrelationParam works", {
@@ -52,7 +72,7 @@ test_that("EicCorrelationParam works", {
     res <- groupFeatures(tmp, param = EicCorrelationParam())
     expect_true(all(is.na(featureDefinitions(res)$feature_group[-idx])))
 
-    expect_true(length(unique(featureDefinitions(res)$feature_group)) < length(idx))
+    expect_true(length(unique(featureGroups(res))) < length(idx))
 
     featureDefinitions(tmp)$feature_group <- NULL
     featureDefinitions(tmp)$ms_level[idx] <- 2
@@ -86,7 +106,7 @@ test_that("AbundanceCorrelationParam works", {
 
     plotFeatureGroups(res_2)
     expect_error(plotFeatureGroups(res_2, featureGroups = "a"), "None of the")
-    expect_error(plotFeatureGroups(xodg), "No feature groups")
+    expect_error(plotFeatureGroups(xodg), "None of the")
     
     ## With pre-defined grps.
     tmp <- xodg
@@ -100,22 +120,13 @@ test_that("AbundanceCorrelationParam works", {
     res_2 <- groupFeatures(tmp, AbundanceCorrelationParam(), msLevel = 2)
     expect_true(all(featureGroups(res_2)[-idx] == "FG.2"))
     expect_true(all(featureGroups(res_2)[idx] != "FG.2"))
-
-})
-
-test_that(".format_groups works", {
-    res <- .format_groups(1:3)
-    expect_equal(res, c("1", "2", "3"))
-    res <- .format_groups(1:10)
-    expect_equal(res, c("01", "02", "03", "04", "05", "06", "07", "08",
-                        "09", "10"))
 })
 
 test_that("featureGroupPseudoSpectrum works", {
     fvals <- featureValues(xodgg, method = "maxint", value = "maxo")
     ## 3 feature
-    ft_idx <- which(featureGroups(xodgg) == "FG.009.1")
-    res <- featureGroupPseudoSpectrum("FG.009.1", xodgg, fvals = fvals,
+    ft_idx <- which(featureGroups(xodgg) == "FG.010.001")
+    res <- featureGroupPseudoSpectrum("FG.010.001", xodgg, fvals = fvals,
                                       intensityFun = median)
     expect_true(is(res, "Spectrum1"))
     expect_true(peaksCount(res) == 3)
@@ -126,9 +137,9 @@ test_that("featureGroupPseudoSpectrum works", {
     expect_equal(rtime(res), median(featureDefinitions(xodgg)$rtmed[ft_idx]))
     
     ## 1 feature
-    res <- featureGroupPseudoSpectrum("FG.009.2", xodgg, fvals = fvals,
+    res <- featureGroupPseudoSpectrum("FG.010.002", xodgg, fvals = fvals,
                                       intensityFun = median)
-    ft_idx <- which(featureGroups(xodgg) == "FG.009.2")
+    ft_idx <- which(featureGroups(xodgg) == "FG.010.002")
     expect_true(is(res, "Spectrum1"))
     expect_true(peaksCount(res) == 1)
     expect_true(validObject(res))
@@ -145,8 +156,8 @@ test_that("featureGroupPseudoSpectrum works", {
 test_that("featureGroupFullScan works", {
     fvals <- featureValues(xodgg, method = "maxint", value = "maxo")
     ## 3 feature
-    res <- featureGroupFullScan("FG.009.1", xodgg, fvals = fvals)
-    ft_idx <- which(featureGroups(xodgg) == "FG.009.1")
+    res <- featureGroupFullScan("FG.010.001", xodgg, fvals = fvals)
+    ft_idx <- which(featureGroups(xodgg) == "FG.010.001")
     expect_true(is(res, "Spectrum1"))
     expect_true(
         abs(rtime(res) -
@@ -154,8 +165,8 @@ test_that("featureGroupFullScan works", {
     expect_true(all(featureDefinitions(xodgg)[ft_idx, "mzmed"] %in% mz(res)))
 
     ## 1 feature
-    res <- featureGroupFullScan("FG.009.2", xodgg, fvals = fvals)
-    ft_idx <- which(featureGroups(xodgg) == "FG.009.2")
+    res <- featureGroupFullScan("FG.010.002", xodgg, fvals = fvals)
+    ft_idx <- which(featureGroups(xodgg) == "FG.010.002")
     expect_true(is(res, "Spectrum1"))
     expect_true(
         abs(rtime(res) -
@@ -181,10 +192,11 @@ test_that("featureGroupSpectra works", {
     expect_true(sum(is.na(rtime(res_sub))) == 59)
     
     ## Get only selected ones
-    res <- featureGroupSpectra(xodgg, featureGroup = c("FG.009.1", "FG.009.2"))
+    res <- featureGroupSpectra(
+        xodgg, featureGroup = c("FG.010.001", "FG.010.002"))
     expect_true(length(res) == 2)
-    expect_equal(mcols(res)$feature_group, c("FG.009.1", "FG.009.2"))
-    idx <- which(mcols(res_all)$feature_group %in% c("FG.009.1", "FG.009.2"))
+    expect_equal(mcols(res)$feature_group, c("FG.010.001", "FG.010.002"))
+    idx <- which(mcols(res_all)$feature_group %in% c("FG.010.001", "FG.010.002"))
     expect_equal(res[[1]], res_all[[idx[1]]])
     expect_equal(res[[2]], res_all[[idx[2]]])
 })

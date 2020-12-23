@@ -1,5 +1,9 @@
 # CompMetaboTools 0.3
 
+## CompMetaboTools 0.3.1
+
+- Add `groupFeatures,XCMSnExp,SimilarRtimeParam`.
+
 ## CompMetaboTools 0.3.0
 
 - Move `groupClosest` and `groupSimilarityMatrix` to the `MsFeatures` package.
@@ -12,17 +16,14 @@
 - Add parameter `mad` to `rsd` and `rowRsd` allowing to base the RSD calculation
   on the median absolute deviation instead of the standard deviation.
 
-
 ## CompMetaboTools 0.2.4
 
 - Add `moreAreValidThan` to test for proportion of non-missing values in rows
   of a matrix.
 
-
 ## CompMetaboTools 0.2.3
 
 - Add `joyPlot` to plot stacked (partially overlapping) chromatograms.
-
 
 ## CompMetaboTools 0.2.2
 

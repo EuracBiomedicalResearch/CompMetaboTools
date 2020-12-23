@@ -109,12 +109,12 @@
 #'
 #' Two types of groupings are available:
 #' 
-#' - `greedy = FALSE` (the default): the algorithm creates small groups of
+#' - `inclusive = FALSE` (the default): the algorithm creates small groups of
 #'   highly correlated members, all of which have a correlation with each other
 #'   that are `>= threshold`. Note that with this algorithm, rows in `x` could
 #'   still have a correlation `>= threshold` with one or more elements of a
 #'   group they are not part of. See notes below for more information.
-#' - `greedy = TRUE`: the algorithm creates large groups containing rows that
+#' - `inclusive = TRUE`: the algorithm creates large groups containing rows that
 #'   have a correlation `>= threshold` with at least one element of that group.
 #'   For example, if row 1 and 3 have a correlation above the threshold and
 #'   rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
@@ -165,9 +165,9 @@
 #'     of rows in `x` that should be further sub-grouped. See description for
 #'     details.
 #'
-#' @param greedy `logical(1)` whether a version of the grouping algorithm should
-#'     be used that leads to larger, more loosely correlated, groups. The
-#'     default is `greedy = FALSE`. See description for more information.
+#' @param inclusive `logical(1)` whether a version of the grouping algorithm
+#'     should be used that leads to larger, more loosely correlated, groups. The
+#'     default is `inclusive = FALSE`. See description for more information.
 #' 
 #' @return `factor` with same length than `nrow(x)` with the group each row
 #'     is assigned to.
@@ -202,7 +202,7 @@
 #' groupByCorrelation(x, f = f)
 groupByCorrelation <- function(x, method = "pearson",
                                use = "pairwise.complete.obs",
-                               threshold = 0.9, f = NULL, greedy = FALSE) {
+                               threshold = 0.9, f = NULL, inclusive = FALSE) {
     if (length(threshold) > 1)
         stop("'threshold' has to be of length 1")
     if (!is.null(f)) {
@@ -216,7 +216,7 @@ groupByCorrelation <- function(x, method = "pearson",
             idxl <- length(idx)
             if (idxl > 1) {
                 cors <- cor(t(x[idx, ]), method = method, use = use)
-                if (greedy) {
+                if (inclusive) {
                     ## Ensure diagonal matrix is TRUE so that even if some
                     ## features have a correlation value of NA they are not
                     ## dropped
@@ -225,14 +225,14 @@ groupByCorrelation <- function(x, method = "pearson",
                     fids <- .index_list_to_factor(.group_logic_matrix(cors))
                 } else
                     fids <- groupSimilarityMatrix(cors, threshold = threshold)
-                fnew[idx] <- paste0(fg, ".", .format_groups(fids))
+                fnew[idx] <- paste0(fg, ".", MsFeatures:::.format_id(fids))
             } else
-                fnew[idx] <- paste0(fg, ".1")
+                fnew[idx] <- paste0(fg, ".001")
         }
         as.factor(fnew)
     } else {
         cors <- cor(t(x), method = method, use = use)
-        if (greedy)
+        if (inclusive)
             .index_list_to_factor(.group_logic_matrix(cors >= threshold))
         else
             as.factor(groupSimilarityMatrix(cors, threshold = threshold))
@@ -262,33 +262,46 @@ groupByCorrelation <- function(x, method = "pearson",
 #'
 #' Two types of groupings are available:
 #' 
-#' - `greedy = FALSE` (the default): the algorithm creates small groups of
+#' - `inclusive = FALSE` (the default): the algorithm creates small groups of
 #'   highly correlated members, all of which have a correlation with each other
 #'   that are `>= threshold`. Note that with this algorithm, rows in `x` could
 #'   still have a correlation `>= threshold` with one or more elements of a
 #'   group they are not part of. See notes below for more information.
-#' - `greedy = TRUE`: the algorithm creates large groups containing rows that
+#' - `inclusive = TRUE`: the algorithm creates large groups containing rows that
 #'   have a correlation `>= threshold` with at least one element of that group.
 #'   For example, if row 1 and 3 have a correlation above the threshold and
 #'   rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
 #'   all 3 are grouped into the same group (i.e. rows 1, 3 **and** 5).
 #'
 #' For more information see [groupByCorrelation()].
+#'
+#' Note that it might be useful to set `tolerance = 0` if chromatograms from
+#' the **same** sample are compared. This forces retention times of the compared
+#' chromatograms' intensities to be identical.
 #' 
 #' @param x [MChromatograms()] object of `list` of [Chromatogram()] objects.
 #'
 #' @param aggregationFun `function` to combine the correlation values between
 #'     pairs of EICs across samples (columns). See description for details.
 #'
-#' @param greedy `logical(1)` whether a version of the grouping algorithm should
-#'     be used that leads to larger, more loosely correlated, groups. The
-#'     default is `greedy = FALSE`. See description for more information.
-#'
 #' @param threshold `numeric(1)` with the threshold for correlation above which
 #'     EICs are grouped together.
 #'
+#' @param align `character(1)` defining the method how chromatograms should be
+#'     aligned prior correlation. Defaults to `align = "closest"`. See
+#'     [alignRt()] for more details.
+#'
+#' @param inclusive `logical(1)` defining the grouping approach. With
+#'     `inclusive = FALSE` (the default) small groups of highly correlated
+#'     features are created using the [groupSimilarityMatrix()] function. With
+#'     `inclusive = TRUE` groups are created with features that have at least
+#'     one correlation with any other member of the group which is higher than
+#'     `threshold`.
+#' 
 #' @param ... parameters for the [correlate()] function for [MChromatograms()]
-#'     objects.
+#'     objects, such as `tolerance` to allow specifying the maximal acceptable
+#'     difference in retention times between objects. See also [alignRt()] for
+#'     more information.
 #'
 #' @return `factor` same length as `nrow(x)` (if `x` is a `MChromatograms`
 #'     object) or `length(x)` (if `x` is a `list`) with the group each EIC
@@ -323,19 +336,21 @@ groupByCorrelation <- function(x, method = "pearson",
 #' chrs <- MChromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3), ncol = 2)
 #' groupEicCorrelation(chrs, aggregationFun = max)
 groupEicCorrelation <- function(x, aggregationFun = mean,
-                                threshold = 0.8, greedy = FALSE,
-                                align = "none", ...) {
+                                threshold = 0.8, align = "closest",
+                                inclusive = FALSE, ...) {
     nr <- nrow(x)
     nc <- ncol(x)
     res <- array(NA_real_, dim = c(nr, nr, nc))
     ## For performance issues it would also be possible to run with full = FALSE
     for (i in seq_len(nc))
         res[, , i] <- correlate(x[, i], align = align, ...)
-    res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE) > threshold
+    res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE)
     ## Ensure diagonal is always TRUE to not drop any features!
-    res[cbind(1:nr, 1:nr)] <- TRUE
-    if (greedy)
+    res[cbind(1:nr, 1:nr)] <- 1
+    if (inclusive) {
+        res <- res > threshold
         .index_list_to_factor(.group_logic_matrix(res))
+    }
     else as.factor(groupSimilarityMatrix(res, threshold = threshold))
 }
 

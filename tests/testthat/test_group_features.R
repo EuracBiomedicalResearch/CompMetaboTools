@@ -13,7 +13,7 @@ test_that(".group_logic_matrix works", {
                   c(FALSE, FALSE, TRUE, FALSE, TRUE),
                   c(FALSE, FALSE, FALSE, TRUE, FALSE),
                   c(TRUE, FALSE, TRUE, FALSE, TRUE))
-    res <- .group_logic_matrix(xmat)
+    res <- CompMetaboTools:::.group_logic_matrix(xmat)
     expect_equal(res, list(c(1, 3, 5), 2, 4))
 
     xcor <- matrix(FALSE, ncol = 13, nrow = 13)
@@ -67,7 +67,7 @@ test_that("groupByCorrelation works", {
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1, 1, 2, 1)))
 
-    res_2 <- groupByCorrelation(x, greedy = TRUE)
+    res_2 <- groupByCorrelation(x, inclusive = TRUE)
     expect_equal(res, res_2)
     
     expect_error(groupByCorrelation(x, threshold = c(0.4, 0.3)), "length 1")
@@ -78,11 +78,13 @@ test_that("groupByCorrelation works", {
                c(1, 2, 3, 4))
     f <- c(1, 2, 2, 1, 1, 2, 2)
     res <- groupByCorrelation(x, f = f)
-    expect_equal(res, factor(c("1.1", "2.1", "2.2", "1.1", "1.1", "2.2", "2.1")))
+    expect_equal(res, factor(c("1.001", "2.001", "2.002", "1.001",
+                               "1.001", "2.002", "2.001")))
 
     f <- c(1, 2, NA, NA, 1, 2, 2)
     res <- groupByCorrelation(x, f = f)
-    expect_equal(res, factor(c("1.1", "2.1", NA, NA, "1.1", "2.2", "2.1")))
+    expect_equal(res, factor(c("1.001", "2.001", NA, NA, "1.001",
+                               "2.002", "2.001")))
     
     expect_error(groupByCorrelation(x, f = 3), "its length has to ")
 })
@@ -97,10 +99,10 @@ test_that("groupEicCorrelation works", {
                          intensity = c(53, 80, 130, 15, 5, 3, 2))
     chrs <- MSnbase::MChromatograms(list(chr1, chr2, chr3))
 
-    res <- groupEicCorrelation(chrs, align = "matchRtime")
+    res <- groupEicCorrelation(chrs, align = "closest")
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 1L)))
-    res <- groupEicCorrelation(chrs, align = "none")
+    res <- groupEicCorrelation(chrs, align = "closest", tolerance = 0)
     expect_equal(res, factor(c(1L, 2L, 3L)))
     
     chrs <- MSnbase::MChromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3,
@@ -109,18 +111,18 @@ test_that("groupEicCorrelation works", {
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 3L)))
 
-    res <- groupEicCorrelation(chrs, aggregationFun = max, greedy = TRUE,
-                               align = "matchRtime")
+    res <- groupEicCorrelation(chrs, aggregationFun = max, inclusive = TRUE,
+                               align = "closest")
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 1L, 1L)))
 
-    res <- groupEicCorrelation(chrs, aggregationFun = max, greedy = FALSE,
-                               align = "matchRtime")
+    res <- groupEicCorrelation(chrs, aggregationFun = max, inclusive = FALSE,
+                               align = "closest")
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 1L)))
 
     res <- groupEicCorrelation(chrs, aggregationFun = median,
-                               align = "matchRtime")
+                               align = "closest")
     expect_true(is.factor(res))
     expect_equal(res, factor(c(1L, 2L, 1L)))
 })

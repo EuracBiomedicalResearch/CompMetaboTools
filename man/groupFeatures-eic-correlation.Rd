@@ -11,7 +11,7 @@ EicCorrelationParam(
   n = 1,
   clean = TRUE,
   value = c("maxo", "into"),
-  greedy = FALSE
+  inclusive = FALSE
 )
 
 \S4method{groupFeatures}{XCMSnExp,EicCorrelationParam}(object, param, msLevel = 1L)
@@ -33,11 +33,11 @@ chromatogram.}
 on the sum of the maximal peak intensity (\code{value = "maxo"}, the default)
 or the integrated peak area (\code{value = "into"}) for a feature.}
 
-\item{greedy}{\code{logical(1)} which grouping algorithm should be used: one that
-creates small groups of highly correlated features (\code{greedy = FALSE}, the
+\item{inclusive}{\code{logical(1)} which grouping algorithm should be used: one that
+creates small groups of highly correlated features (\code{inclusive = FALSE}, the
 default) or whether features should be grouped that have at least one
 correlation with any other member of the group in common
-(\code{greedy = TRUE}). See \code{\link[=groupByCorrelation]{groupByCorrelation()}} for more information.}
+(\code{inclusive = TRUE}). See \code{\link[=groupByCorrelation]{groupByCorrelation()}} for more information.}
 
 \item{object}{\code{\link[=XCMSnExp]{XCMSnExp()}} object containing also correspondence results.}
 
@@ -106,7 +106,7 @@ xodg_grp <- groupFeatures(xodg, param = EicCorrelationParam(n = 1))
 table(featureDefinitions(xodg_grp)$feature_group)
 
 ## Usually it is better to perform this correlation on pre-grouped features
-## e.g. based on approximate retention time.
+## e.g. based on similar retention time.
 xodg_grp <- groupFeatures(xodg, param = SimilarRtimeParam(diffRt = 4))
 xodg_grp <- groupFeatures(xodg_grp, param = EicCorrelationParam(n = 1))
 
@@ -117,7 +117,7 @@ feature-grouping for a general overview.
 
 Other feature grouping methods: 
 \code{\link{groupFeatures-abundance-correlation}},
-\code{\link{groupFeatures-approximate-rtime}}
+\code{\link{groupFeatures-similar-rtime}}
 }
 \author{
 Johannes Rainer
