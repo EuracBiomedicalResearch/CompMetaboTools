@@ -418,7 +418,7 @@ setMethod(
                                                       length.out = length(
                                                           idx_miss))))
             } else
-                f_new[idx] <- paste0(fg, ".1")
+                f_new[idx] <- paste0(fg, ".001")
             setTxtProgressBar(pb, counter)
         }
         setTxtProgressBar(pb, nrow(fvals))
