@@ -40,9 +40,6 @@ the correlation analysis. Defaults to \code{filled = TRUE}.}
 
 \item{...}{additional parameters passed to the \code{groupFeatures} method for
 \code{matrix}.}
-
-\item{peakId}{\code{character} with the IDs of the chromatographic peaks (i.e.
-rownames of \code{chromPeaks(object)}).}
 }
 \value{
 input \code{XCMSnExp} with feature group definitions added to a column

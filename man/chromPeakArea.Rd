@@ -35,6 +35,9 @@ is defined as \code{rt - diffRt} to \code{rt + diffRt}.}
 \item{ppm}{\code{numeric(1)} to define the m/z region in which peaks should be
 identified if \code{mz} is a \code{numeric}. The m/z region is defined as
 \code{mz - ppm(mz, ppm)} to \code{mz + ppm(mz, ppm)}}
+
+\item{peakId}{\code{character} with the IDs of the chromatographic peaks (i.e.
+rownames of \code{chromPeaks(object)}).}
 }
 \value{
 \code{matrix} with columnd \code{"mzmin"}, \code{"mzmax"}, \code{"rtmin"}, \code{"rtmax"}
