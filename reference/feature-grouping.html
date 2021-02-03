@@ -52,7 +52,7 @@ The available options for groupFeatures on xcms preprocessing results
 groupChromPeaks()) are:
 Grouping by similar retention times: groupFeatures-similar-rtime().
 Grouping by similar feature values across samples:
-AbundanceCorrelationParam().
+AbundanceSimilarityParam().
 Grouping by similar peak shape of extracted ion chromatograms:
 EicCorrelationParam().
 
@@ -60,6 +60,8 @@ EicCorrelationParam().
 An ideal workflow grouping features should sequentially perform the above
 methods (in the listed order).
 Feature groups can be accessed with the featureGroups function." />
+
+
 
 
 
@@ -91,7 +93,7 @@ Feature groups can be accessed with the featureGroups function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -154,7 +156,7 @@ parameters.</p>
 <code>groupChromPeaks()</code>) are:</p><ul>
 <li><p>Grouping by similar retention times: <code><a href='groupFeatures-similar-rtime.html'>groupFeatures-similar-rtime()</a></code>.</p></li>
 <li><p>Grouping by similar feature values across samples:
-<code><a href='groupFeatures-abundance-correlation.html'>AbundanceCorrelationParam()</a></code>.</p></li>
+<code>AbundanceSimilarityParam()</code>.</p></li>
 <li><p>Grouping by similar peak shape of extracted ion chromatograms:
 <code><a href='groupFeatures-eic-correlation.html'>EicCorrelationParam()</a></code>.</p></li>
 </ul>

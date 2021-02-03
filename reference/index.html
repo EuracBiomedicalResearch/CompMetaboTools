@@ -44,6 +44,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -71,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -148,6 +150,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="chromPeakArea.html">chromPeakArea()</a></code> </p>
+        </td>
+        <td><p>Get MS peak area (m/z and rt range) for chromatographic peaks</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="dropModels.html">dropModels()</a></code> </p>
         </td>
         <td><p>Remove model fits based on specified criteria
@@ -190,9 +198,9 @@ a logical indicating whether the model fit is problematic or not.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="groupFeatures-abundance-correlation.html">AbundanceCorrelationParam()</a></code> <code><a href="groupFeatures-abundance-correlation.html">groupFeatures(<i>&lt;XCMSnExp&gt;</i>,<i>&lt;AbundanceCorrelationParam&gt;</i>)</a></code> </p>
+          <p><code><a href="groupFeatures-abundance-correlation.html">groupFeatures(<i>&lt;XCMSnExp&gt;</i>,<i>&lt;AbundanceSimilarityParam&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Group features based on correlation of abundances across samples</p></td>
+        <td><p>Group features based on similarity of abundances across samples</p></td>
       </tr><tr>
         
         <td>

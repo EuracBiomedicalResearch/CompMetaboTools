@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@
 
       
 
-      </header><script src="LC-MS-feature-grouping_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="LC-MS-feature-grouping_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>LC-MS feature grouping</h1>
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.13/xcms">xcms</a></em><br><strong>Authors</strong>: Johannes Rainer, Mar Garcia-Aloy<br><strong>Modified</strong>: 2020-12-23 11:35:25<br><strong>Compiled</strong>: Wed Dec 23 12:27:59 2020</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.13/xcms">xcms</a></em><br><strong>Authors</strong>: Johannes Rainer, Mar Garcia-Aloy<br><strong>Modified</strong>: 2021-02-03 14:03:58<br><strong>Compiled</strong>: Wed Feb 3 15:01:08 2021</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Silently loading all packages</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Bioconductor/BiocStyle">BiocStyle</a></span><span class="op">)</span>
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <li>
 <code>EicCorrelationParam</code>: perform a feature grouping based on correlation of EICs.</li>
 <li>
-<code>AbundanceCorrelationParam</code>: perform a feature grouping based on correlation of feature abundances (values) across samples.</li>
+<code>AbundanceSimilarityParam</code>: perform a feature grouping based on correlation of feature abundances (values) across samples.</li>
 </ul>
 <p>Calling <code>groupFeatures</code> on an <code>xcms</code> result object will perform a feature grouping assigning each feature in the data set to a <em>feature group</em>. These feature groups are stored as an additional columns called <code>"feature_group"</code> in the <code>featureDefinition</code> data frame of the result object. Any subsequent <code>groupFeature</code> call will <em>sub-group</em> (refine) the identified feature groups further. It is thus possible to use a single grouping approach, or to combine multiple of them to generate the desired feature grouping. While the individual feature grouping algorithms can be called in any order, it is advised to use the <code>EicCorrelationParam</code> as last refinement step, because it is the computationally most expensive one, especially if applied to a result object without any pre-defined feature groups or if the feature groups are very large. In the subsequent sections we will apply the various feature grouping approaches subsequently.</p>
 <p>Note also that we perform here a grouping of all defined features, but it would also be possible to <em>just</em> group a subset of interesting features (e.g. features found significant by a statistical analysis of the data set). How this can be achieved is described in the last section of this vignette.</p>
@@ -298,7 +298,7 @@ Feature groups defined with a rt window of 20 seconds
 <div id="grouping-of-features-by-abundance-correlation-across-samples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#grouping-of-features-by-abundance-correlation-across-samples" class="anchor"></a>Grouping of features by abundance correlation across samples</h2>
-<p>Assuming we are OK with the <em>crude</em> initial feature grouping from the previous section, we can next <em>refine</em> the feature groups considering also the feature abundances across samples. We can use the <code>groupFeatures</code> method with an <code>AbundanceCorrelationParam</code> object. This approach performs a pairwise correlation between the feature values (abundances; across samples) between all features of a predefined feature group (such as defined in the previous section). Features that have a correlation <code>&gt;= threshold</code> are grouped together. Feature grouping based on this approach works best for features with a higher variability in their concentration across samples. Parameter <code>subset</code> allows to restrict the analysis to a subset of samples and allows thus to e.g. exclude QC sample pools from this correlation as these could artificially increase the correlation. Other parameters are passed directly to the internal <code>featureValues</code> call that extracts the feature values on which the correlation should be performed.</p>
+<p>Assuming we are OK with the <em>crude</em> initial feature grouping from the previous section, we can next <em>refine</em> the feature groups considering also the feature abundances across samples. We can use the <code>groupFeatures</code> method with an <code>AbundanceSimilarityParam</code> object. This approach performs a pairwise correlation between the feature values (abundances; across samples) between all features of a predefined feature group (such as defined in the previous section). Features that have a correlation <code>&gt;= threshold</code> are grouped together. Feature grouping based on this approach works best for features with a higher variability in their concentration across samples. Parameter <code>subset</code> allows to restrict the analysis to a subset of samples and allows thus to e.g. exclude QC sample pools from this correlation as these could artificially increase the correlation. Other parameters are passed directly to the internal <code>featureValues</code> call that extracts the feature values on which the correlation should be performed.</p>
 <p>Before performing the grouping we could also evaluate the correlation of features based on their (log2 transformed) abundances across samples with a heatmap.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span>
@@ -316,9 +316,9 @@ Correlation of features based on feature abundances.
 </p>
 </div>
 <p>Some large correlations can be observed for several groups of features, but many of them are not within the same <em>feature group</em> as defined in the previous section (i.e. are not eluting at the same time).</p>
-<p>Below we use the <code>groupFeatures</code> with the <code>AbundanceCorrelationParam</code> to group features with a correlation higher than 0.7 including both detected and filled-in signal. Whether filled-in or only detected signal should be used in the correlation analysis should be evaluated from data set to data set. Note also that by default the correlation is performed on log2 transformed signals.</p>
+<p>Below we use the <code>groupFeatures</code> with the <code>AbundanceSimilarityParam</code> to group features with a correlation higher than 0.7 including both detected and filled-in signal. Whether filled-in or only detected signal should be used in the correlation analysis should be evaluated from data set to data set. Note also that by default the correlation is performed on log2 transformed signals.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">xdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/groupFeatures.html">groupFeatures</a></span><span class="op">(</span><span class="va">xdata</span>, <span class="fu"><a href="../reference/groupFeatures-abundance-correlation.html">AbundanceCorrelationParam</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fl">0.7</span>,
+<code class="sourceCode R"><span class="va">xdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/groupFeatures.html">groupFeatures</a></span><span class="op">(</span><span class="va">xdata</span>, <span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/groupFeatures-similar-abundance.html">AbundanceSimilarityParam</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fl">0.7</span>,
                                                         filled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/featureGroups.html">featureGroups</a></span><span class="op">(</span><span class="va">xdata</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
@@ -326,52 +326,50 @@ Correlation of features based on feature abundances.
 ##          2          1          1          1          1          2          1 
 ## FG.004.001 FG.005.001 FG.006.001 FG.006.002 FG.007.001 FG.007.002 FG.007.003 
 ##          3          2          3          1          2          1          1 
-## FG.007.004 FG.008.001 FG.008.002 FG.008.003 FG.009.001 FG.009.002 FG.010.001 
-##          1          3          2          1          3          1          2 
-## FG.011.001 FG.011.002 FG.011.003 FG.012.001 FG.013.001 FG.013.002 FG.013.003 
-##          2          2          1          3          2          1          1 
-## FG.014.001 FG.014.002 FG.015.001 FG.015.002 FG.015.003 FG.016.001 FG.016.002 
-##          2          1          3          1          1          2          1 
-## FG.017.001 FG.017.002 FG.018.001 FG.018.002 FG.018.003 FG.018.004 FG.019.001 
-##          2          1          2          1          1          1          1 
-## FG.019.002 FG.019.003 FG.020.001 FG.020.002 FG.021.001 FG.021.002 FG.021.003 
-##          1          1          2          1          1          1          1 
-## FG.022.001 FG.022.002 FG.022.003 FG.023.001 FG.023.002 FG.024.001 FG.024.002 
-##          1          1          1          2          1          1          1 
-## FG.024.003 FG.025.001 FG.025.002 FG.025.003 FG.025.004 FG.025.005 FG.026.001 
-##          1          2          1          1          1          1          1 
-## FG.026.002 FG.026.003 FG.027.001 FG.027.002 FG.027.003 FG.028.001 FG.028.002 
+## FG.007.004 FG.008.001 FG.008.002 FG.008.003 FG.008.004 FG.009.001 FG.009.002 
+##          1          2          2          1          1          2          1 
+## FG.009.003 FG.010.001 FG.011.001 FG.011.002 FG.011.003 FG.012.001 FG.012.002 
+##          1          2          3          1          1          2          1 
+## FG.013.001 FG.013.002 FG.013.003 FG.014.001 FG.014.002 FG.015.001 FG.015.002 
+##          2          1          1          2          1          2          1 
+## FG.015.003 FG.015.004 FG.016.001 FG.016.002 FG.017.001 FG.017.002 FG.018.001 
+##          1          1          2          1          2          1          2 
+## FG.018.002 FG.018.003 FG.018.004 FG.019.001 FG.019.002 FG.019.003 FG.020.001 
+##          1          1          1          1          1          1          2 
+## FG.020.002 FG.021.001 FG.021.002 FG.022.001 FG.022.002 FG.022.003 FG.023.001 
+##          1          2          1          1          1          1          2 
+## FG.023.002 FG.024.001 FG.024.002 FG.024.003 FG.025.001 FG.025.002 FG.025.003 
+##          1          1          1          1          2          1          1 
+## FG.025.004 FG.025.005 FG.026.001 FG.026.002 FG.026.003 FG.027.001 FG.027.002 
+##          1          1          1          1          1          1          1 
+## FG.027.003 FG.028.001 FG.028.002 FG.029.001 FG.029.002 FG.030.001 FG.030.002 
+##          1          2          1          2          2          1          1 
+## FG.031.001 FG.032.001 FG.032.002 FG.032.003 FG.033.001 FG.033.002 FG.033.003 
+##          3          1          1          1          1          1          1 
+## FG.033.004 FG.034.001 FG.034.002 FG.034.003 FG.035.001 FG.035.002 FG.036.001 
+##          1          1          1          1          1          1          2 
+## FG.036.002 FG.037.001 FG.037.002 FG.038.001 FG.039.001 FG.040.001 FG.040.002 
+##          1          2          1          2          2          2          2 
+## FG.041.001 FG.041.002 FG.041.003 FG.042.001 FG.042.002 FG.043.001 FG.044.001 
+##          1          1          1          1          1          2          3 
+## FG.044.002 FG.045.001 FG.045.002 FG.045.003 FG.045.004 FG.046.001 FG.047.001 
+##          1          1          1          1          1          2          2 
+## FG.047.002 FG.048.001 FG.048.002 FG.048.003 FG.049.001 FG.049.002 FG.050.001 
+##          1          1          1          1          2          1          1 
+## FG.050.002 FG.051.001 FG.052.001 FG.052.002 FG.053.001 FG.053.002 FG.054.001 
+##          1          2          2          1          2          2          1 
+## FG.054.002 FG.055.001 FG.055.002 FG.056.001 FG.056.002 FG.056.003 FG.057.001 
+##          1          2          1          1          1          1          2 
+## FG.058.001 FG.058.002 FG.059.001 FG.059.002 FG.059.003 FG.060.001 FG.060.002 
 ##          1          1          1          1          1          2          1 
-## FG.029.001 FG.029.002 FG.030.001 FG.030.002 FG.031.001 FG.032.001 FG.032.002 
-##          3          1          1          1          3          1          1 
-## FG.032.003 FG.033.001 FG.033.002 FG.033.003 FG.033.004 FG.034.001 FG.034.002 
-##          1          1          1          1          1          1          1 
-## FG.034.003 FG.035.001 FG.035.002 FG.036.001 FG.036.002 FG.037.001 FG.037.002 
-##          1          1          1          2          1          2          1 
-## FG.038.001 FG.039.001 FG.040.001 FG.040.002 FG.041.001 FG.041.002 FG.041.003 
-##          2          2          2          2          1          1          1 
-## FG.042.001 FG.042.002 FG.043.001 FG.043.002 FG.044.001 FG.044.002 FG.044.003 
-##          1          1          1          1          2          1          1 
-## FG.045.001 FG.045.002 FG.045.003 FG.045.004 FG.046.001 FG.047.001 FG.047.002 
-##          1          1          1          1          2          1          1 
-## FG.047.003 FG.048.001 FG.048.002 FG.048.003 FG.049.001 FG.049.002 FG.050.001 
-##          1          1          1          1          2          1          1 
-## FG.050.002 FG.051.001 FG.052.001 FG.052.002 FG.053.001 FG.053.002 FG.053.003 
-##          1          2          2          1          2          1          1 
-## FG.054.001 FG.054.002 FG.055.001 FG.055.002 FG.055.003 FG.056.001 FG.056.002 
-##          1          1          1          1          1          1          1 
-## FG.056.003 FG.057.001 FG.058.001 FG.058.002 FG.059.001 FG.059.002 FG.059.003 
-##          1          2          1          1          1          1          1 
-## FG.060.001 FG.060.002 FG.061.001 FG.061.002 FG.062.001 FG.062.002 FG.063.001 
-##          2          1          2          1          1          1          2 
-## FG.064.001 FG.064.002 FG.065.001 FG.065.002 FG.066.001 FG.066.002 FG.067.001 
-##          1          1          2          1          1          1          1 
-## FG.067.002 FG.068.001 FG.069.001 FG.070.001 FG.070.002 FG.071.001 FG.071.002 
-##          1          3          2          1          1          2          1 
-## FG.072.001 FG.072.002 FG.073.001 FG.073.002 FG.074.001 FG.075.001 FG.076.001 
-##          2          1          1          1          2          1          1 
-## FG.077.001 
-##          1</code></pre>
+## FG.061.001 FG.061.002 FG.061.003 FG.062.001 FG.063.001 FG.064.001 FG.064.002 
+##          1          1          1          2          2          1          1 
+## FG.065.001 FG.065.002 FG.066.001 FG.066.002 FG.067.001 FG.067.002 FG.068.001 
+##          2          1          1          1          1          1          3 
+## FG.069.001 FG.070.001 FG.070.002 FG.071.001 FG.071.002 FG.072.001 FG.072.002 
+##          2          1          1          2          1          2          1 
+## FG.073.001 FG.074.001 FG.075.001 FG.076.001 FG.077.001 
+##          2          2          1          1          1</code></pre>
 <p>Many of the larger retention time-based feature groups have been splitted into two or more sub-groups based on the correlation of their feature abundances. We evaluate this for one specific feature group <code>"FG.040"</code> by plotting their pairwise correlation.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"FG.040"</span>, <span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/featureGroups.html">featureGroups</a></span><span class="op">(</span><span class="va">xdata</span><span class="op">)</span><span class="op">)</span>
@@ -382,7 +380,7 @@ Pairwise correlation plot for all features initially grouped into the feature gr
 </p>
 </div>
 <p>Indeed, correlations can be seen only between some of the features in this retention time feature group, e.g. between <em>FT117</em> and <em>FT120</em> and between <em>FT195</em> and <em>FT200</em>. Note however that this abundance correlation suffers from relatively few samples (8 in total), and a relatively small variance in abundances across these samples.</p>
-<p>After feature grouping by abundance correlation, the 225 features have been grouped into 169 feature groups.</p>
+<p>After feature grouping by abundance correlation, the 225 features have been grouped into 166 feature groups.</p>
 </div>
 <div id="grouping-of-features-by-eic-correlation" class="section level2">
 <h2 class="hasAnchor">
@@ -402,13 +400,9 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |==                                                                    |   3%
   |                                                                            
-  |==                                                                    |   4%
-  |                                                                            
   |===                                                                   |   4%
   |                                                                            
   |===                                                                   |   5%
-  |                                                                            
-  |====                                                                  |   5%
   |                                                                            
   |====                                                                  |   6%
   |                                                                            
@@ -420,13 +414,11 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |======                                                                |   9%
   |                                                                            
+  |=======                                                               |   9%
+  |                                                                            
   |=======                                                               |  10%
   |                                                                            
-  |=======                                                               |  11%
-  |                                                                            
   |========                                                              |  12%
-  |                                                                            
-  |=========                                                             |  12%
   |                                                                            
   |=========                                                             |  13%
   |                                                                            
@@ -438,9 +430,13 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |===========                                                           |  16%
   |                                                                            
+  |============                                                          |  16%
+  |                                                                            
   |============                                                          |  17%
   |                                                                            
   |============                                                          |  18%
+  |                                                                            
+  |=============                                                         |  18%
   |                                                                            
   |=============                                                         |  19%
   |                                                                            
@@ -450,21 +446,19 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |===============                                                       |  22%
   |                                                                            
-  |================                                                      |  22%
-  |                                                                            
   |================                                                      |  23%
   |                                                                            
   |================                                                      |  24%
   |                                                                            
   |=================                                                     |  24%
   |                                                                            
+  |=================                                                     |  25%
+  |                                                                            
   |==================                                                    |  25%
   |                                                                            
   |==================                                                    |  26%
   |                                                                            
   |===================                                                   |  27%
-  |                                                                            
-  |===================                                                   |  28%
   |                                                                            
   |====================                                                  |  28%
   |                                                                            
@@ -473,8 +467,6 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |=====================                                                 |  30%
   |                                                                            
   |=====================                                                 |  31%
-  |                                                                            
-  |======================                                                |  31%
   |                                                                            
   |======================                                                |  32%
   |                                                                            
@@ -486,15 +478,9 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |========================                                              |  35%
   |                                                                            
-  |=========================                                             |  35%
-  |                                                                            
   |=========================                                             |  36%
   |                                                                            
-  |==========================                                            |  36%
-  |                                                                            
   |==========================                                            |  37%
-  |                                                                            
-  |==========================                                            |  38%
   |                                                                            
   |===========================                                           |  38%
   |                                                                            
@@ -514,6 +500,8 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |===============================                                       |  44%
   |                                                                            
+  |===============================                                       |  45%
+  |                                                                            
   |================================                                      |  45%
   |                                                                            
   |================================                                      |  46%
@@ -522,11 +510,13 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |=================================                                     |  48%
   |                                                                            
+  |==================================                                    |  48%
+  |                                                                            
   |==================================                                    |  49%
   |                                                                            
-  |===================================                                   |  50%
+  |===================================                                   |  49%
   |                                                                            
-  |===================================                                   |  51%
+  |===================================                                   |  50%
   |                                                                            
   |====================================                                  |  51%
   |                                                                            
@@ -556,6 +546,10 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |===========================================                           |  61%
   |                                                                            
+  |===========================================                           |  62%
+  |                                                                            
+  |============================================                          |  62%
+  |                                                                            
   |============================================                          |  63%
   |                                                                            
   |============================================                          |  64%
@@ -563,8 +557,6 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |=============================================                         |  64%
   |                                                                            
   |=============================================                         |  65%
-  |                                                                            
-  |==============================================                        |  65%
   |                                                                            
   |==============================================                        |  66%
   |                                                                            
@@ -576,21 +568,19 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |================================================                      |  69%
   |                                                                            
-  |=================================================                     |  69%
-  |                                                                            
   |=================================================                     |  70%
   |                                                                            
   |=================================================                     |  71%
   |                                                                            
   |==================================================                    |  71%
   |                                                                            
-  |==================================================                    |  72%
-  |                                                                            
   |===================================================                   |  72%
   |                                                                            
   |===================================================                   |  73%
   |                                                                            
   |====================================================                  |  74%
+  |                                                                            
+  |====================================================                  |  75%
   |                                                                            
   |=====================================================                 |  75%
   |                                                                            
@@ -610,29 +600,29 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |                                                                            
   |=========================================================             |  81%
   |                                                                            
-  |=========================================================             |  82%
-  |                                                                            
   |==========================================================            |  82%
   |                                                                            
   |==========================================================            |  83%
   |                                                                            
   |==========================================================            |  84%
   |                                                                            
-  |===========================================================           |  84%
-  |                                                                            
-  |============================================================          |  85%
+  |===========================================================           |  85%
   |                                                                            
   |============================================================          |  86%
+  |                                                                            
+  |=============================================================         |  87%
   |                                                                            
   |=============================================================         |  88%
   |                                                                            
   |==============================================================        |  88%
   |                                                                            
+  |==============================================================        |  89%
+  |                                                                            
   |===============================================================       |  89%
   |                                                                            
   |===============================================================       |  90%
   |                                                                            
-  |===============================================================       |  91%
+  |================================================================      |  91%
   |                                                                            
   |================================================================      |  92%
   |                                                                            
@@ -643,8 +633,6 @@ Pairwise correlation plot for all features initially grouped into the feature gr
   |==================================================================    |  94%
   |                                                                            
   |==================================================================    |  95%
-  |                                                                            
-  |===================================================================   |  95%
   |                                                                            
   |===================================================================   |  96%
   |                                                                            
@@ -667,72 +655,72 @@ Pairwise correlation plot for all features initially grouped into the feature gr
 ##              2              1              3              2              3 
 ## FG.006.002.001 FG.007.001.001 FG.007.002.001 FG.007.003.001 FG.007.004.001 
 ##              1              2              1              1              1 
-## FG.008.001.001 FG.008.001.002 FG.008.002.001 FG.008.003.001 FG.009.001.001 
-##              2              1              2              1              3 
-## FG.009.002.001 FG.010.001.001 FG.010.001.002 FG.011.001.001 FG.011.002.001 
-##              1              1              1              2              2 
-## FG.011.003.001 FG.012.001.001 FG.013.001.001 FG.013.002.001 FG.013.003.001 
-##              1              3              2              1              1 
-## FG.014.001.001 FG.014.002.001 FG.015.001.001 FG.015.001.002 FG.015.002.001 
-##              2              1              2              1              1 
-## FG.015.003.001 FG.016.001.001 FG.016.002.001 FG.017.001.001 FG.017.002.001 
-##              1              2              1              2              1 
-## FG.018.001.001 FG.018.002.001 FG.018.003.001 FG.018.004.001 FG.019.001.001 
+## FG.008.001.001 FG.008.002.001 FG.008.002.002 FG.008.003.001 FG.008.004.001 
 ##              2              1              1              1              1 
-## FG.019.002.001 FG.019.003.001 FG.020.001.001 FG.020.001.002 FG.020.002.001 
-##              1              1              1              1              1 
-## FG.021.001.001 FG.021.002.001 FG.021.003.001 FG.022.001.001 FG.022.002.001 
-##              1              1              1              1              1 
-## FG.022.003.001 FG.023.001.001 FG.023.002.001 FG.024.001.001 FG.024.002.001 
-##              1              2              1              1              1 
-## FG.024.003.001 FG.025.001.001 FG.025.001.002 FG.025.002.001 FG.025.003.001 
-##              1              1              1              1              1 
-## FG.025.004.001 FG.025.005.001 FG.026.001.001 FG.026.002.001 FG.026.003.001 
-##              1              1              1              1              1 
-## FG.027.001.001 FG.027.002.001 FG.027.003.001 FG.028.001.001 FG.028.002.001 
-##              1              1              1              2              1 
-## FG.029.001.001 FG.029.001.002 FG.029.002.001 FG.030.001.001 FG.030.002.001 
+## FG.009.001.001 FG.009.002.001 FG.009.003.001 FG.010.001.001 FG.010.001.002 
 ##              2              1              1              1              1 
-## FG.031.001.001 FG.032.001.001 FG.032.002.001 FG.032.003.001 FG.033.001.001 
-##              3              1              1              1              1 
-## FG.033.002.001 FG.033.003.001 FG.033.004.001 FG.034.001.001 FG.034.002.001 
-##              1              1              1              1              1 
-## FG.034.003.001 FG.035.001.001 FG.035.002.001 FG.036.001.001 FG.036.001.002 
-##              1              1              1              1              1 
-## FG.036.002.001 FG.037.001.001 FG.037.002.001 FG.038.001.001 FG.039.001.001 
-##              1              2              1              2              1 
-## FG.039.001.002 FG.040.001.001 FG.040.002.001 FG.041.001.001 FG.041.002.001 
-##              1              2              2              1              1 
-## FG.041.003.001 FG.042.001.001 FG.042.002.001 FG.043.001.001 FG.043.002.001 
-##              1              1              1              1              1 
-## FG.044.001.001 FG.044.001.002 FG.044.002.001 FG.044.003.001 FG.045.001.001 
-##              1              1              1              1              1 
-## FG.045.002.001 FG.045.003.001 FG.045.004.001 FG.046.001.001 FG.047.001.001 
-##              1              1              1              2              1 
-## FG.047.002.001 FG.047.003.001 FG.048.001.001 FG.048.002.001 FG.048.003.001 
-##              1              1              1              1              1 
-## FG.049.001.001 FG.049.002.001 FG.050.001.001 FG.050.002.001 FG.051.001.001 
+## FG.011.001.001 FG.011.002.001 FG.011.003.001 FG.012.001.001 FG.012.002.001 
+##              3              1              1              2              1 
+## FG.013.001.001 FG.013.002.001 FG.013.003.001 FG.014.001.001 FG.014.002.001 
+##              2              1              1              2              1 
+## FG.015.001.001 FG.015.002.001 FG.015.003.001 FG.015.004.001 FG.016.001.001 
 ##              2              1              1              1              2 
-## FG.052.001.001 FG.052.002.001 FG.053.001.001 FG.053.002.001 FG.053.003.001 
-##              2              1              2              1              1 
-## FG.054.001.001 FG.054.002.001 FG.055.001.001 FG.055.002.001 FG.055.003.001 
+## FG.016.002.001 FG.017.001.001 FG.017.002.001 FG.018.001.001 FG.018.002.001 
+##              1              2              1              2              1 
+## FG.018.003.001 FG.018.004.001 FG.019.001.001 FG.019.002.001 FG.019.003.001 
 ##              1              1              1              1              1 
-## FG.056.001.001 FG.056.002.001 FG.056.003.001 FG.057.001.001 FG.058.001.001 
-##              1              1              1              2              1 
-## FG.058.002.001 FG.059.001.001 FG.059.002.001 FG.059.003.001 FG.060.001.001 
+## FG.020.001.001 FG.020.001.002 FG.020.002.001 FG.021.001.001 FG.021.001.002 
 ##              1              1              1              1              1 
-## FG.060.001.002 FG.060.002.001 FG.061.001.001 FG.061.002.001 FG.062.001.001 
-##              1              1              2              1              1 
-## FG.062.002.001 FG.063.001.001 FG.064.001.001 FG.064.002.001 FG.065.001.001 
+## FG.021.002.001 FG.022.001.001 FG.022.002.001 FG.022.003.001 FG.023.001.001 
+##              1              1              1              1              2 
+## FG.023.002.001 FG.024.001.001 FG.024.002.001 FG.024.003.001 FG.025.001.001 
+##              1              1              1              1              1 
+## FG.025.001.002 FG.025.002.001 FG.025.003.001 FG.025.004.001 FG.025.005.001 
+##              1              1              1              1              1 
+## FG.026.001.001 FG.026.002.001 FG.026.003.001 FG.027.001.001 FG.027.002.001 
+##              1              1              1              1              1 
+## FG.027.003.001 FG.028.001.001 FG.028.002.001 FG.029.001.001 FG.029.001.002 
+##              1              2              1              1              1 
+## FG.029.002.001 FG.030.001.001 FG.030.002.001 FG.031.001.001 FG.032.001.001 
+##              2              1              1              3              1 
+## FG.032.002.001 FG.032.003.001 FG.033.001.001 FG.033.002.001 FG.033.003.001 
+##              1              1              1              1              1 
+## FG.033.004.001 FG.034.001.001 FG.034.002.001 FG.034.003.001 FG.035.001.001 
+##              1              1              1              1              1 
+## FG.035.002.001 FG.036.001.001 FG.036.001.002 FG.036.002.001 FG.037.001.001 
+##              1              1              1              1              2 
+## FG.037.002.001 FG.038.001.001 FG.039.001.001 FG.039.001.002 FG.040.001.001 
 ##              1              2              1              1              2 
-## FG.065.002.001 FG.066.001.001 FG.066.002.001 FG.067.001.001 FG.067.002.001 
+## FG.040.002.001 FG.041.001.001 FG.041.002.001 FG.041.003.001 FG.042.001.001 
+##              2              1              1              1              1 
+## FG.042.002.001 FG.043.001.001 FG.044.001.001 FG.044.001.002 FG.044.001.003 
+##              1              2              1              1              1 
+## FG.044.002.001 FG.045.001.001 FG.045.002.001 FG.045.003.001 FG.045.004.001 
 ##              1              1              1              1              1 
-## FG.068.001.001 FG.068.001.002 FG.069.001.001 FG.070.001.001 FG.070.002.001 
-##              2              1              2              1              1 
-## FG.071.001.001 FG.071.001.002 FG.071.002.001 FG.072.001.001 FG.072.001.002 
+## FG.046.001.001 FG.047.001.001 FG.047.001.002 FG.047.002.001 FG.048.001.001 
+##              2              1              1              1              1 
+## FG.048.002.001 FG.048.003.001 FG.049.001.001 FG.049.002.001 FG.050.001.001 
+##              1              1              2              1              1 
+## FG.050.002.001 FG.051.001.001 FG.052.001.001 FG.052.002.001 FG.053.001.001 
+##              1              2              2              1              1 
+## FG.053.001.002 FG.053.002.001 FG.054.001.001 FG.054.002.001 FG.055.001.001 
+##              1              2              1              1              2 
+## FG.055.002.001 FG.056.001.001 FG.056.002.001 FG.056.003.001 FG.057.001.001 
+##              1              1              1              1              2 
+## FG.058.001.001 FG.058.002.001 FG.059.001.001 FG.059.002.001 FG.059.003.001 
 ##              1              1              1              1              1 
-## FG.072.002.001 FG.073.001.001 FG.073.002.001 FG.074.001.001 FG.075.001.001 
-##              1              1              1              2              1 
+## FG.060.001.001 FG.060.001.002 FG.060.002.001 FG.061.001.001 FG.061.002.001 
+##              1              1              1              1              1 
+## FG.061.003.001 FG.062.001.001 FG.063.001.001 FG.064.001.001 FG.064.002.001 
+##              1              2              2              1              1 
+## FG.065.001.001 FG.065.002.001 FG.066.001.001 FG.066.002.001 FG.067.001.001 
+##              2              1              1              1              1 
+## FG.067.002.001 FG.068.001.001 FG.068.001.002 FG.069.001.001 FG.070.001.001 
+##              1              2              1              2              1 
+## FG.070.002.001 FG.071.001.001 FG.071.001.002 FG.071.002.001 FG.072.001.001 
+##              1              1              1              1              1 
+## FG.072.001.002 FG.072.002.001 FG.073.001.001 FG.074.001.001 FG.075.001.001 
+##              1              1              2              2              1 
 ## FG.076.001.001 FG.077.001.001 
 ##              1              1</code></pre>
 <p>In most cases, pre-defined feature groups (by the abundance correlation) were not further subdivided. Below we evaluate some of the feature groups starting with <em>FG.007.02</em> which was split into two different feature groups based on EIC correlation. We first extract the EICs for all features from this initial feature group. With <code>n = 1</code> we specify to extract the EIC only from the sample with the highest intensity.</p>
@@ -789,17 +777,17 @@ EICs of features from feature group FG.068.001, colors label different feature s
 <p>Any call to <code>groupFeatures</code> would now simply sub-group this set of 30 features. Any feature which has an <code>NA</code> in the <code>"feature_group"</code> column will be ignored.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">xdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/groupFeatures.html">groupFeatures</a></span><span class="op">(</span><span class="va">xdata</span>, <span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/groupFeatures-similar-rtime.html">SimilarRtimeParam</a></span><span class="op">(</span>diffRt <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span>
-<span class="va">xdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/groupFeatures.html">groupFeatures</a></span><span class="op">(</span><span class="va">xdata</span>, <span class="fu"><a href="../reference/groupFeatures-abundance-correlation.html">AbundanceCorrelationParam</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span><span class="op">)</span>
+<span class="va">xdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/groupFeatures.html">groupFeatures</a></span><span class="op">(</span><span class="va">xdata</span>, <span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/groupFeatures-similar-abundance.html">AbundanceSimilarityParam</a></span><span class="op">(</span>threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/MsFeatures/man/featureGroups.html">featureGroups</a></span><span class="op">(</span><span class="va">xdata</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
-## FG.001.001 FG.001.002 FG.002.001 FG.002.002 FG.003.001 FG.003.002 FG.004.001 
-##          2          2          3          1          2          1          2 
-## FG.004.002 FG.005.001 FG.005.002 FG.006.001 FG.006.002 FG.007.001 FG.007.002 
+## FG.001.001 FG.001.002 FG.002.001 FG.003.001 FG.003.002 FG.004.001 FG.004.002 
+##          2          2          4          2          1          1          1 
+## FG.004.003 FG.005.001 FG.005.002 FG.006.001 FG.006.002 FG.007.001 FG.008.001 
+##          1          1          1          1          1          2          1 
+## FG.009.001 FG.010.001 FG.011.001 FG.012.001 FG.013.001 FG.014.001 FG.015.001 
 ##          1          1          1          1          1          1          1 
-## FG.008.001 FG.009.001 FG.010.001 FG.011.001 FG.012.001 FG.013.001 FG.014.001 
-##          1          1          1          1          1          1          1 
-## FG.015.001 FG.016.001 FG.017.001 
-##          1          1          1</code></pre>
+## FG.016.001 FG.017.001 
+##          1          1</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level1">
@@ -807,9 +795,9 @@ EICs of features from feature group FG.068.001, colors label different feature s
 <a href="#session-information" class="anchor"></a>Session information</h1>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R Under development (unstable) (2020-12-17 r79645)
+<pre><code>## R Under development (unstable) (2021-01-21 r79854)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 20.04.1 LTS
+## Running under: Ubuntu 20.04.2 LTS
 ## 
 ## Matrix products: default
 ## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
@@ -827,52 +815,53 @@ EICs of features from feature group FG.068.001, colors label different feature s
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] pheatmap_1.0.12       CompMetaboTools_0.3.1 MsFeatures_0.0.3     
-##  [4] faahKO_1.31.0         xcms_3.13.4           MSnbase_2.17.3       
-##  [7] ProtGenerics_1.23.5   S4Vectors_0.29.6      mzR_2.25.1           
-## [10] Rcpp_1.0.5            BiocParallel_1.25.2   Biobase_2.51.0       
+##  [1] pheatmap_1.0.12       CompMetaboTools_0.3.2 MsFeatures_0.99.0    
+##  [4] faahKO_1.31.0         xcms_3.13.4           MSnbase_2.17.6       
+##  [7] ProtGenerics_1.23.6   S4Vectors_0.29.6      mzR_2.25.1           
+## [10] Rcpp_1.0.6            BiocParallel_1.25.3   Biobase_2.51.0       
 ## [13] BiocGenerics_0.37.0   BiocStyle_2.19.1     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] MatrixGenerics_1.3.0        vsn_3.59.0                 
-##  [3] foreach_1.5.1               assertthat_0.2.1           
-##  [5] highr_0.8                   BiocManager_1.30.10        
-##  [7] affy_1.69.0                 GenomeInfoDbData_1.2.4     
-##  [9] yaml_2.2.1                  robustbase_0.93-6          
-## [11] impute_1.65.0               pillar_1.4.7               
-## [13] lattice_0.20-41             glue_1.4.2                 
-## [15] limma_3.47.2                digest_0.6.27              
-## [17] GenomicRanges_1.43.1        RColorBrewer_1.1-2         
-## [19] XVector_0.31.1              colorspace_2.0-0           
-## [21] Matrix_1.2-18               htmltools_0.5.0            
-## [23] preprocessCore_1.53.1       plyr_1.8.6                 
-## [25] MALDIquant_1.19.3           XML_3.99-0.5               
-## [27] pkgconfig_2.0.3             bookdown_0.21              
-## [29] zlibbioc_1.37.0             scales_1.1.1               
-## [31] RANN_2.6.1                  affyio_1.61.0              
-## [33] tibble_3.0.4                farver_2.0.3               
-## [35] IRanges_2.25.6              ggplot2_3.3.2              
-## [37] ellipsis_0.3.1              SummarizedExperiment_1.21.1
-## [39] MassSpecWavelet_1.57.0      magrittr_2.0.1             
-## [41] crayon_1.3.4                memoise_1.1.0              
-## [43] evaluate_0.14               fs_1.5.0                   
-## [45] ncdf4_1.17                  doParallel_1.0.16          
-## [47] MASS_7.3-53                 textshaping_0.2.1          
-## [49] tools_4.1.0                 lifecycle_0.2.0            
-## [51] matrixStats_0.57.0          stringr_1.4.0              
-## [53] munsell_0.5.0               DelayedArray_0.17.6        
-## [55] pcaMethods_1.83.0           compiler_4.1.0             
-## [57] pkgdown_1.6.1.9000          GenomeInfoDb_1.27.3        
-## [59] mzID_1.29.0                 systemfonts_0.3.2          
-## [61] rlang_0.4.9                 grid_4.1.0                 
-## [63] RCurl_1.98-1.2              iterators_1.0.13           
-## [65] MsCoreUtils_1.3.2           bitops_1.0-6               
-## [67] rmarkdown_2.6               gtable_0.3.0               
-## [69] codetools_0.2-18            R6_2.5.0                   
-## [71] knitr_1.30                  rprojroot_2.0.2            
-## [73] ragg_0.4.0                  desc_1.2.0                 
-## [75] stringi_1.5.3               vctrs_0.3.6                
-## [77] DEoptimR_1.0-8              xfun_0.19</code></pre>
+##  [1] bitops_1.0-6                matrixStats_0.58.0         
+##  [3] fs_1.5.0                    doParallel_1.0.16          
+##  [5] RColorBrewer_1.1-2          rprojroot_2.0.2            
+##  [7] GenomeInfoDb_1.27.5         tools_4.1.0                
+##  [9] R6_2.5.0                    affyio_1.61.0              
+## [11] colorspace_2.0-0            compiler_4.1.0             
+## [13] MassSpecWavelet_1.57.0      preprocessCore_1.53.1      
+## [15] textshaping_0.2.1           desc_1.2.0                 
+## [17] DelayedArray_0.17.7         bookdown_0.21              
+## [19] scales_1.1.1                DEoptimR_1.0-8             
+## [21] robustbase_0.93-7           affy_1.69.0                
+## [23] pkgdown_1.6.1.9000          systemfonts_1.0.0          
+## [25] stringr_1.4.0               digest_0.6.27              
+## [27] rmarkdown_2.6               XVector_0.31.1             
+## [29] pkgconfig_2.0.3             htmltools_0.5.1.1          
+## [31] MatrixGenerics_1.3.1        fastmap_1.1.0              
+## [33] limma_3.47.6                highr_0.8                  
+## [35] rlang_0.4.10                impute_1.65.0              
+## [37] farver_2.0.3                mzID_1.29.0                
+## [39] RCurl_1.98-1.2              magrittr_2.0.1             
+## [41] GenomeInfoDbData_1.2.4      MALDIquant_1.19.3          
+## [43] Matrix_1.3-2                munsell_0.5.0              
+## [45] MsCoreUtils_1.3.2           lifecycle_0.2.0            
+## [47] vsn_3.59.1                  stringi_1.5.3              
+## [49] yaml_2.2.1                  MASS_7.3-53                
+## [51] SummarizedExperiment_1.21.1 zlibbioc_1.37.0            
+## [53] plyr_1.8.6                  grid_4.1.0                 
+## [55] crayon_1.4.0                lattice_0.20-41            
+## [57] knitr_1.31                  pillar_1.4.7               
+## [59] GenomicRanges_1.43.3        codetools_0.2-18           
+## [61] XML_3.99-0.5                glue_1.4.2                 
+## [63] evaluate_0.14               pcaMethods_1.83.0          
+## [65] BiocManager_1.30.10         vctrs_0.3.6                
+## [67] foreach_1.5.1               gtable_0.3.0               
+## [69] RANN_2.6.1                  assertthat_0.2.1           
+## [71] cachem_1.0.1                ggplot2_3.3.3              
+## [73] xfun_0.20                   ragg_0.4.1                 
+## [75] ncdf4_1.17                  tibble_3.0.6               
+## [77] iterators_1.0.13            memoise_2.0.0              
+## [79] IRanges_2.25.6              ellipsis_0.3.1</code></pre>
 </div>
 <div id="references" class="section level1">
 <h1 class="hasAnchor">

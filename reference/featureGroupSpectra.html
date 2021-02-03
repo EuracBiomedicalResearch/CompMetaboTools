@@ -77,6 +77,8 @@ features of the feature group.
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -104,7 +106,7 @@ features of the feature group.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CompMetaboTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -297,40 +299,7 @@ For all other functions: a <code>Spectrum</code> object.</p>
     <pre class="examples"><div class='input'>
 <span class='co'>## Load test data set from xcms</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/sneumann/xcms'>xcms</a></span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: Biobase</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: BiocGenerics</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: parallel</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘BiocGenerics’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:parallel’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,</span>
-#&gt; <span class='message'>    clusterExport, clusterMap, parApply, parCapply, parLapply,</span>
-#&gt; <span class='message'>    parLapplyLB, parRapply, parSapply, parSapplyLB</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    IQR, mad, sd, var, xtabs</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    anyDuplicated, append, as.data.frame, basename, cbind, colnames,</span>
-#&gt; <span class='message'>    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,</span>
-#&gt; <span class='message'>    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,</span>
-#&gt; <span class='message'>    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,</span>
-#&gt; <span class='message'>    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,</span>
-#&gt; <span class='message'>    union, unique, unsplit, which.max, which.min</span></div><div class='output co'>#&gt; <span class='message'>Welcome to Bioconductor</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    Vignettes contain introductory material; view with</span>
-#&gt; <span class='message'>    'browseVignettes()'. To cite Bioconductor, see</span>
-#&gt; <span class='message'>    'citation("Biobase")', and for packages 'citation("pkgname")'.</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: BiocParallel</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: MSnbase</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: mzR</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Rcpp</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: S4Vectors</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: stats4</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘S4Vectors’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    expand.grid, I, unname</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: ProtGenerics</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘ProtGenerics’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    smooth</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>This is MSnbase version 2.17.3 </span>
-#&gt; <span class='message'>  Visit https://lgatto.github.io/MSnbase/ to get started.</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘MSnbase’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    trimws</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>This is xcms version 3.13.4 </span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘xcms’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    sigma</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>faahko_sub</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>faahko_sub</span><span class='op'>)</span>
 <span class='co'>## Update the path to the files for the local system</span>
 <span class='fu'><a href='https://rdrr.io/pkg/xcms/man/dirname.html'>dirname</a></span><span class='op'>(</span><span class='va'>faahko_sub</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"cdf/KO/"</span>, package <span class='op'>=</span> <span class='st'>"faahKO"</span><span class='op'>)</span>
 
@@ -341,22 +310,22 @@ For all other functions: a <code>Spectrum</code> object.</p>
 <span class='co'>## Group features</span>
 <span class='va'>xdata</span> <span class='op'>&lt;-</span> <span class='fu'>groupFeatures</span><span class='op'>(</span><span class='va'>xdata</span>, param <span class='op'>=</span> <span class='fu'>SimilarRtimeParam</span><span class='op'>(</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>xdata</span> <span class='op'>&lt;-</span> <span class='fu'>groupFeatures</span><span class='op'>(</span><span class='va'>xdata</span>,
-    param <span class='op'>=</span> <span class='fu'><a href='groupFeatures-abundance-correlation.html'>AbundanceCorrelationParam</a></span><span class='op'>(</span>threshold <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span><span class='op'>)</span>
+    param <span class='op'>=</span> <span class='fu'>AbundanceSimilarityParam</span><span class='op'>(</span>threshold <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='fu'>featureGroups</span><span class='op'>(</span><span class='va'>xdata</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
-#&gt; FG.003.002 FG.004.002 FG.005.002 FG.006.001 FG.006.002 FG.011.001 FG.012.001 
+#&gt; FG.004.002 FG.005.002 FG.006.001 FG.006.002 FG.011.001 FG.012.001 FG.013.001 
 #&gt;          1          1          1          1          1          1          1 
-#&gt; FG.013.001 FG.014.001 FG.015.001 FG.016.001 FG.017.001 FG.018.001 FG.019.001 
+#&gt; FG.014.001 FG.015.001 FG.016.001 FG.017.001 FG.018.001 FG.019.001 FG.020.001 
 #&gt;          1          1          1          1          1          1          1 
-#&gt; FG.020.001 FG.021.001 FG.022.001 FG.023.001 FG.024.001 FG.025.001 FG.026.001 
+#&gt; FG.021.001 FG.022.001 FG.023.001 FG.024.001 FG.025.001 FG.026.001 FG.027.001 
 #&gt;          1          1          1          1          1          1          1 
-#&gt; FG.027.001 FG.028.001 FG.029.001 FG.030.001 FG.031.001 FG.032.001 FG.033.001 
-#&gt;          1          1          1          1          1          1          1 
-#&gt; FG.001.001 FG.002.001 FG.003.001 FG.005.001 FG.007.001 FG.008.001 FG.009.001 
-#&gt;          2          2          2          2          2          2          2 
-#&gt; FG.010.001 FG.004.001 
-#&gt;          2          3 </div><div class='input'>
+#&gt; FG.028.001 FG.029.001 FG.030.001 FG.031.001 FG.032.001 FG.033.001 FG.001.001 
+#&gt;          1          1          1          1          1          1          2 
+#&gt; FG.002.001 FG.005.001 FG.007.001 FG.008.001 FG.009.001 FG.010.001 FG.003.001 
+#&gt;          2          2          2          2          2          2          3 
+#&gt; FG.004.001 
+#&gt;          3 </div><div class='input'>
 <span class='co'>################</span>
 <span class='co'>## featureGroupSpectra</span>
 <span class='co'>##</span>
@@ -364,20 +333,20 @@ For all other functions: a <code>Spectrum</code> object.</p>
 <span class='co'>## Get a pseudo spectrum for each feature group</span>
 <span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>featureGroupSpectra</span><span class='op'>(</span><span class='va'>xdata</span><span class='op'>)</span>
 <span class='va'>res</span>
-</div><div class='output co'>#&gt; MSpectra with 37 spectra and 2 metadata column(s):
+</div><div class='output co'>#&gt; MSpectra with 36 spectra and 2 metadata column(s):
 #&gt;        msLevel     rtime peaksCount | feature_group      feature_id
 #&gt;      &lt;integer&gt; &lt;numeric&gt;  &lt;integer&gt; |   &lt;character&gt; &lt;CharacterList&gt;
 #&gt;    1         1   2787.77          3 |    FG.004.001  FT01,FT04,FT46
 #&gt;    2         1   3254.90          1 |    FG.011.001            FT02
-#&gt;    3         1   3387.14          1 |    FG.003.002            FT03
+#&gt;    3         1   3387.14          3 |    FG.003.001  FT03,FT37,FT38
 #&gt;    4         1   2994.34          1 |    FG.012.001            FT05
 #&gt;    5         1   2923.92          1 |    FG.013.001            FT06
 #&gt;   ..       ...       ...        ... .           ...             ...
-#&gt;   33         1   3482.61          1 |    FG.029.001            FT42
-#&gt;   34         1   3580.41          1 |    FG.030.001            FT43
-#&gt;   35         1   3712.65          1 |    FG.031.001            FT44
-#&gt;   36         1   2918.44          1 |    FG.032.001            FT45
-#&gt;   37         1   3707.18          1 |    FG.033.001            FT47</div><div class='input'>
+#&gt;   32         1   3482.61          1 |    FG.029.001            FT42
+#&gt;   33         1   3580.41          1 |    FG.030.001            FT43
+#&gt;   34         1   3712.65          1 |    FG.031.001            FT44
+#&gt;   35         1   2918.44          1 |    FG.032.001            FT45
+#&gt;   36         1   3707.18          1 |    FG.033.001            FT47</div><div class='input'>
 <span class='co'>## Get a full scan spectrum for a subset of the feature groups</span>
 <span class='co'>## considering only the subset of the last two samples</span>
 <span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>featureGroupSpectra</span><span class='op'>(</span><span class='va'>xdata</span>,
@@ -389,7 +358,7 @@ For all other functions: a <code>Spectrum</code> object.</p>
 #&gt;     &lt;integer&gt; &lt;numeric&gt;  &lt;integer&gt; |   &lt;character&gt; &lt;CharacterList&gt;
 #&gt;   1         1   2787.77        421 |    FG.004.001  FT01,FT04,FT46
 #&gt;   2         1   3254.12        410 |    FG.011.001            FT02
-#&gt;   3         1   3387.14        404 |    FG.003.002            FT03
+#&gt;   3         1   3387.14        404 |    FG.003.001  FT03,FT37,FT38
 #&gt;   4         1   2994.34        410 |    FG.012.001            FT05</div><div class='input'>
 <span class='co'>################</span>
 <span class='co'>## Pseudo Spectrum</span>
