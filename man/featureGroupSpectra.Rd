@@ -133,7 +133,7 @@ xdata <- groupChromPeaks(faahko_sub,
 ## Group features
 xdata <- groupFeatures(xdata, param = SimilarRtimeParam(4))
 xdata <- groupFeatures(xdata,
-    param = AbundanceCorrelationParam(threshold = 0.3))
+    param = AbundanceSimilarityParam(threshold = 0.3))
 
 sort(table(featureGroups(xdata)))
 

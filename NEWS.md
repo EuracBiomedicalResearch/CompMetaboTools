@@ -1,5 +1,10 @@
 # CompMetaboTools 0.3
 
+## CompMetaboTools 0.3.2
+
+- Add `chromPeakArea` function.
+- Add `groupFeatures,XCMSnExp,AbundanceSimilarityParam`.
+
 ## CompMetaboTools 0.3.1
 
 - Add `groupFeatures,XCMSnExp,SimilarRtimeParam`.

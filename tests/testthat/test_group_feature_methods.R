@@ -82,27 +82,23 @@ test_that("EicCorrelationParam works", {
                  featureDefinitions(res_2)$feature_group)
 })
 
-test_that("AbundanceCorrelationParam works", {
-    prm <- AbundanceCorrelationParam(threshold = 0.5, value = "maxo")
+test_that("AbundanceSimilarityParam works", {
+    prm <- AbundanceSimilarityParam(threshold = 0.5, value = "maxo")
     expect_equal(prm@threshold, 0.5)
-    expect_equal(prm@value, "maxo")
-    expect_equal(prm@method, "maxint")
+    expect_equal(prm@dots, list(value = "maxo"))
 
-    expect_error(AbundanceCorrelationParam(subset = "4"), "integer")
+    expect_error(AbundanceSimilarityParam(subset = "4"), "integer")
     
-    expect_error(groupFeatures(xod, AbundanceCorrelationParam()), "feature")
+    expect_error(groupFeatures(xod, AbundanceSimilarityParam()), "feature")
     expect_error(
-        groupFeatures(xodg, AbundanceCorrelationParam(subset = c(1, 4, 5))),
-        "has to be between")
-    expect_error(
-        groupFeatures(xodg, AbundanceCorrelationParam(subset = c(TRUE))),
-        "Can not calculate")
+        groupFeatures(xodg, AbundanceSimilarityParam(subset = c(1, 4, 5))),
+        "should be between")
 
-    res <- groupFeatures(xodg, AbundanceCorrelationParam())
+    res <- groupFeatures(xodg, AbundanceSimilarityParam())
     expect_true(any(colnames(featureDefinitions(res)) == "feature_group"))
     expect_true(length(unique(featureDefinitions(res)$feature_group)) <
                 nrow(featureDefinitions(res)))
-    res_2 <- groupFeatures(xodg, AbundanceCorrelationParam(subset = c(2, 3)))
+    res_2 <- groupFeatures(xodg, AbundanceSimilarityParam(subset = c(2, 3)))
 
     plotFeatureGroups(res_2)
     expect_error(plotFeatureGroups(res_2, featureGroups = "a"), "None of the")
@@ -114,12 +110,18 @@ test_that("AbundanceCorrelationParam works", {
     idx <- c(4, 12, 23, 56)
     featureDefinitions(tmp)$ms_level[idx] <- 2
 
-    res <- groupFeatures(tmp, AbundanceCorrelationParam(), msLevel = 1)
+    res <- groupFeatures(tmp, AbundanceSimilarityParam(), msLevel = 1)
     expect_true(all(featureGroups(res)[idx] == "FG.2"))
     expect_true(all(featureGroups(res)[-idx] != "FG.2"))
-    res_2 <- groupFeatures(tmp, AbundanceCorrelationParam(), msLevel = 2)
+    res_2 <- groupFeatures(tmp, AbundanceSimilarityParam(), msLevel = 2)
     expect_true(all(featureGroups(res_2)[-idx] == "FG.2"))
     expect_true(all(featureGroups(res_2)[idx] != "FG.2"))
+
+    tmp <- quantify(xodg, filled = TRUE, method = "sum", value = "maxo")
+    res <- groupFeatures(xodg, AbundanceSimilarityParam(), filled = TRUE,
+                         method = "sum", value = "maxo")
+    res_2 <- groupFeatures(tmp, AbundanceSimilarityParam())
+    expect_equal(featureGroups(res), featureGroups(res_2))
 })
 
 test_that("featureGroupPseudoSpectrum works", {

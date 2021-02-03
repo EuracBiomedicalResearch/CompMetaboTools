@@ -23,7 +23,7 @@ NULL
 #' - Grouping by similar retention times: [groupFeatures-similar-rtime()].
 #'
 #' - Grouping by similar feature values across samples:
-#'   [AbundanceCorrelationParam()].
+#'   [AbundanceSimilarityParam()].
 #'
 #' - Grouping by similar peak shape of extracted ion chromatograms:
 #'   [EicCorrelationParam()].
@@ -106,9 +106,9 @@ setReplaceMethod("featureGroups", "XCMSnExp", function(object, value) {
 #'
 #' @importClassesFrom ProtGenerics Param
 #'
-#' @importFrom MsFeatures SimilarRtimeParam
+#' @importFrom MsFeatures SimilarRtimeParam AbundanceSimilarityParam
 #'
-#' @importClassesFrom MsFeatures SimilarRtimeParam
+#' @importClassesFrom MsFeatures SimilarRtimeParam AbundanceSimilarityParam
 #'
 #' @importMethodsFrom MsFeatures groupFeatures featureGroups featureGroups<-
 #' 
@@ -433,69 +433,56 @@ setMethod(
         object
     })
 
-#' @title Group features based on correlation of abundances across samples
+#' @title Group features based on similarity of abundances across samples
 #'
 #' @name groupFeatures-abundance-correlation
 #'
 #' @description
 #'
-#' This methods groups features based on correlation of abundances (i.e.
-#' *feature values*) across samples. Parameter `subset` allows to define a sub
-#' set of samples on which this correlation should be correlated. It might for
-#' example be better to exclude QC samples from this correlation analysis
-#' because values of all features are supposed to be constant in these samples
-#' and including these could bias the correlation estimation. Also, it might
-#' be better to perform the correlation including also *gap filled* values which
-#' is possible with parameter `filled = TRUE` on an `object` on which also
-#' [xcms::fillChromPeaks()] was called.
+#' This method groups features based on similarity of abundances (i.e.
+#' *feature values*) across samples. See also [AbundanceSimilarityParam()] for
+#' additional information and details.
 #'
+#' This help page lists parameters specific for `xcms` result objects (i.e. the
+#' [XCMSnExp()] object). Documentation of the parameters for the similarity
+#' calculation is available in the [AbundanceSimilarityParam()] help page in
+#' the `MsFeatures` package.
+#' 
 #' @param filled `logical(1)` whether filled-in values should be included in
 #'     the correlation analysis. Defaults to `filled = TRUE`.
 #' 
-#' @param inclusive `logical(1)` defining the grouping approach. With
-#'     `inclusive = FALSE` (the default) small groups of highly correlated
-#'     features are created using the [groupSimilarityMatrix()] function. With
-#'     `inclusive = TRUE` groups are created with features that have at least
-#'     one correlation with any other member of the group which is higher than
-#'     `threshold`. See also [groupByCorrelation()].
-#' 
 #' @param intensity `character(1)` passed to the `featureValues` call. See
-#'     [featureValues()] for details. Defaults to `intensity = "maxo"`.
+#'     [featureValues()] for details. Defaults to `intensity = "into"`.
 #'
 #' @param method `character(1)` passed to the `featureValues` call. See
-#'     [featureValues()] for details. Defaults to `method = "maxint"`.
+#'     [featureValues()] for details. Defaults to `method = "medret"`.
 #' 
 #' @param msLevel `integer(1)` defining the MS level on which the features
 #'     should be grouped.
 #' 
 #' @param object [XCMSnExp()] object containing also correspondence results.
 #' 
-#' @param param `AbudanceCorrelationParam` object with the settings for the
-#'     method.
+#' @param param `AbudanceSimilarityParam` object with the settings for the
+#'     method. See [AbundanceSimilarityParam()] for details on the grouping
+#'     method and its parameters.
 #'
-#' @param subset `integer` or `logical` defining a subset of samples (at least
-#'     2) on which the correlation should be performed.
-#'
-#' @param transform `function` to be applied to the feature intensities prior
-#'     correlation. Defaults to `transform = log2`, i.e. log2 transforms the
-#'     data before correlation. To use the values *as-is* use
-#'     `transform = identity`.
-#' 
-#' @param threshold `numeric(1)` with the minimal required correlation
-#'     coefficient to group featues.
-#' 
 #' @param value `character(1)` passed to the `featureValues` call. See
 #'     [featureValues()] for details. Defaults to `value = "into"`.
+#'
+#' @param ... additional parameters passed to the `groupFeatures` method for
+#'     `matrix`.
 #' 
-#' @return input `XCMSnExp` with feature groups added (i.e. in column
-#'     `"feature_group"` of its `featureDefinitions` data frame. 
+#' @return input `XCMSnExp` with feature group definitions added to a column
+#'     `"feature_group"` in its `featureDefinitions` data frame. 
 #'
 #' @family feature grouping methods
 #' 
 #' @rdname groupFeatures-abundance-correlation
 #'
-#' @exportClass AbundanceCorrelationParam
+#' @importClassesFrom MsFeatures AbundanceSimilarityParam
 #'
+#' @importFrom MsFeatures AbundanceSimilarityParam
+#' 
 #' @author Johannes Rainer
 #'
 #' @seealso feature-grouping for a general overview.
@@ -520,104 +507,49 @@ setMethod(
 #' ## in the feature value which influence grouping of features in the present
 #' ## data set.
 #' xodg_grp <- groupFeatures(xodg,
-#'     param = AbundanceCorrelationParam(threshold = 0.8))
+#'     param = AbundanceSimilarityParam(threshold = 0.8))
 #' table(featureDefinitions(xodg_grp)$feature_group)
 #'
 #' ## Group based on the maximal peak intensity per feature
 #' xodg_grp <- groupFeatures(xodg,
-#'     param = AbundanceCorrelationParam(threshold = 0.8, value = "maxo"))
+#'     param = AbundanceSimilarityParam(threshold = 0.8, value = "maxo"))
 #' table(featureDefinitions(xodg_grp)$feature_group)
 NULL
-
-setClass("AbundanceCorrelationParam",
-         slots = c(threshold = "numeric",
-                   method = "character",
-                   value = "character",
-                   intensity = "character",
-                   filled = "logical",
-                   subset = "integer",
-                   inclusive = "logical",
-                   transform = "function"),
-         contains = "Param",
-         prototype = prototype(
-             threshold = 0.9,
-             method = "maxint",
-             value = "into",
-             intensity = "maxo",
-             filled = TRUE,
-             subset = integer(),
-             inclusive = FALSE,
-             transform = log2
-         ),
-         validity = function(object) {
-             msg <- NULL
-             msg
-         })
-
-#' @rdname groupFeatures-abundance-correlation
-#'
-#' @export
-AbundanceCorrelationParam <- function(threshold = 0.9, value = "into",
-                                      method = c("maxint", "medret", "sum"),
-                                      intensity = "maxo", filled = TRUE,
-                                      subset = integer(), inclusive = FALSE,
-                                      transform = log2) {
-    method <- match.arg(method)
-    if (is.logical(subset))
-        subset <- which(subset)
-    if (is.numeric(subset))
-        subset <- as.integer(subset)
-    if (!is.integer(subset))
-        stop("'subset' has to be either a logical or an integer vector")
-    new("AbundanceCorrelationParam", threshold = threshold, value = value,
-        method = method, intensity = intensity, filled = filled,
-        subset = subset, inclusive = inclusive, transform = transform)
-}
 
 #' @rdname groupFeatures-abundance-correlation
 #'
 setMethod(
     "groupFeatures",
-    signature(object = "XCMSnExp", param = "AbundanceCorrelationParam"),
-    function(object, param, msLevel = 1L) {
+    signature(object = "XCMSnExp", param = "AbundanceSimilarityParam"),
+    function(object, param, msLevel = 1L, method = c("medret", "maxint", "sum"),
+             value = "into", intensity = "into", filled = TRUE, ...) {
         if (!hasFeatures(object))
             stop("No feature definitions present. Please run ",
                  "first 'groupChromPeaks'")
         if (length(msLevel) > 1)
             stop("Currently only grouping of features from a single MS level",
                  " is supported.")
-        nc <- length(fileNames(object))
-        if (!length(param@subset))
-            param@subset <- seq_len(nc)
-        if (!all(param@subset %in% seq_len(nc)))
-            stop("'subset' has to be between 1 and ", nc)
-        if (length(param@subset) < 2)
-            stop("Can not calculate correlations for less than 2 samples")
+        fgs <- featureGroups(object)
+        fgs_orig <- fgs
         if (any(colnames(featureDefinitions(object)) == "ms_level"))
             is_msLevel <- featureDefinitions(object)$ms_level == msLevel
         else is_msLevel <- rep(TRUE, nrow(featureDefinitions(object)))
-        if (any(colnames(featureDefinitions(object)) == "feature_group")) {
-            f <- featureDefinitions(object)$feature_group
-            f_new <- as.character(f)
-        } else {
-            f <- rep("FG", nrow(featureDefinitions(object)))
-            f_new <- rep(NA_character_, length(f))
-        }
-        f[!is_msLevel] <- NA
-        if (is.factor(f))
-            f <- droplevels(f)
-        else
-            f <- factor(f, levels = unique(f))
-        fvals <- featureValues(
-            object, method = param@method, value = param@value,
-            intensity = param@intensity,
-            filled = param@filled)[, param@subset, drop = FALSE]
-        res <- groupByCorrelation(
-            param@transform(fvals[is_msLevel, ]), method = "pearson",
-            use = "pairwise.complete.obs", threshold = param@threshold,
-            f = f[is_msLevel], inclusive = param@inclusive)
-        f_new[is_msLevel] <- as.character(res)
-        featureDefinitions(object)$feature_group <- f_new
+        if (all(is.na(fgs)))
+            fgs <- rep("FG", length(fgs))
+        fgs[!is_msLevel] <- NA
+        nas <- is.na(fgs)
+        fgs <- factor(fgs, levels = unique(fgs))
+        l <- split.data.frame(
+            featureValues(object, method = method, value = value,
+                          intensity = intensity, filled = filled), fgs)
+        res <- lapply(
+            l, function(z, param)
+                MsFeatures:::.format_id(groupFeatures(z, param = param, ...)),
+            param = param, ...)        
+        res <- paste(fgs, unsplit(res, f = fgs), sep = ".")
+        if (any(nas))
+            res[nas] <- fgs_orig[nas]
+        featureGroups(object) <- res
         xph <- new("XProcessHistory", param = param, date = date(),
                    type = xcms:::.PROCSTEP.FEATURE.GROUPING,
                    fileIndex = 1:length(fileNames(object)),
@@ -817,7 +749,7 @@ plotFeatureGroups <- function(x, xlim = numeric(), ylim = numeric(),
 #' ## Group features
 #' xdata <- groupFeatures(xdata, param = SimilarRtimeParam(4))
 #' xdata <- groupFeatures(xdata,
-#'     param = AbundanceCorrelationParam(threshold = 0.3))
+#'     param = AbundanceSimilarityParam(threshold = 0.3))
 #'
 #' sort(table(featureGroups(xdata)))
 #'
