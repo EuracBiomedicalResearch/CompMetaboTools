@@ -121,7 +121,7 @@ its settings. At present the following approaches are supported:
   time.
 - `EicCorrelationParam`: perform a feature grouping based on correlation of
   EICs.
-- `AbundanceCorrelationParam`: perform a feature grouping based on correlation
+- `AbundanceSimilarityParam`: perform a feature grouping based on correlation
   of feature abundances (values) across samples.
 
 Calling `groupFeatures` on an `xcms` result object will perform a feature
@@ -221,7 +221,7 @@ Grouping by similar retention time grouped the in total
 Assuming we are OK with the *crude* initial feature grouping from the previous
 section, we can next *refine* the feature groups considering also the feature
 abundances across samples. We can use the `groupFeatures` method with an
-`AbundanceCorrelationParam` object. This approach performs a pairwise
+`AbundanceSimilarityParam` object. This approach performs a pairwise
 correlation between the feature values (abundances; across samples) between all
 features of a predefined feature group (such as defined in the previous
 section). Features that have a correlation `>= threshold` are grouped
@@ -253,14 +253,14 @@ Some large correlations can be observed for several groups of features, but many
 of them are not within the same *feature group* as defined in the previous
 section (i.e. are not eluting at the same time).
 
-Below we use the `groupFeatures` with the `AbundanceCorrelationParam` to group
+Below we use the `groupFeatures` with the `AbundanceSimilarityParam` to group
 features with a correlation higher than 0.7 including both detected and
 filled-in signal. Whether filled-in or only detected signal should be used in
 the correlation analysis should be evaluated from data set to data set. Note
 also that by default the correlation is performed on log2 transformed signals.
 
 ```{r abundance-correlation}
-xdata <- groupFeatures(xdata, AbundanceCorrelationParam(threshold = 0.7,
+xdata <- groupFeatures(xdata, AbundanceSimilarityParam(threshold = 0.7,
                                                         filled = TRUE))
 table(featureGroups(xdata))
 ```
@@ -417,7 +417,7 @@ ignored.
 
 ```{r rtime-grouping}
 xdata <- groupFeatures(xdata, SimilarRtimeParam(diffRt = 20))
-xdata <- groupFeatures(xdata, AbundanceCorrelationParam(threshold = 0.7))
+xdata <- groupFeatures(xdata, AbundanceSimilarityParam(threshold = 0.7))
 table(featureGroups(xdata))
 ```
 

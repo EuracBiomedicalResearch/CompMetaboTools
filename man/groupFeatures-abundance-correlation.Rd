@@ -2,76 +2,61 @@
 % Please edit documentation in R/group_feature_methods.R
 \name{groupFeatures-abundance-correlation}
 \alias{groupFeatures-abundance-correlation}
-\alias{AbundanceCorrelationParam}
-\alias{groupFeatures,XCMSnExp,AbundanceCorrelationParam-method}
-\title{Group features based on correlation of abundances across samples}
+\alias{groupFeatures,XCMSnExp,AbundanceSimilarityParam-method}
+\title{Group features based on similarity of abundances across samples}
 \usage{
-AbundanceCorrelationParam(
-  threshold = 0.9,
+\S4method{groupFeatures}{XCMSnExp,AbundanceSimilarityParam}(
+  object,
+  param,
+  msLevel = 1L,
+  method = c("medret", "maxint", "sum"),
   value = "into",
-  method = c("maxint", "medret", "sum"),
-  intensity = "maxo",
+  intensity = "into",
   filled = TRUE,
-  subset = integer(),
-  inclusive = FALSE,
-  transform = log2
+  ...
 )
-
-\S4method{groupFeatures}{XCMSnExp,AbundanceCorrelationParam}(object, param, msLevel = 1L)
 }
 \arguments{
-\item{threshold}{\code{numeric(1)} with the minimal required correlation
-coefficient to group featues.}
+\item{object}{\code{\link[=XCMSnExp]{XCMSnExp()}} object containing also correspondence results.}
+
+\item{param}{\code{AbudanceSimilarityParam} object with the settings for the
+method. See \code{\link[=AbundanceSimilarityParam]{AbundanceSimilarityParam()}} for details on the grouping
+method and its parameters.}
+
+\item{msLevel}{\code{integer(1)} defining the MS level on which the features
+should be grouped.}
+
+\item{method}{\code{character(1)} passed to the \code{featureValues} call. See
+\code{\link[=featureValues]{featureValues()}} for details. Defaults to \code{method = "medret"}.}
 
 \item{value}{\code{character(1)} passed to the \code{featureValues} call. See
 \code{\link[=featureValues]{featureValues()}} for details. Defaults to \code{value = "into"}.}
 
-\item{method}{\code{character(1)} passed to the \code{featureValues} call. See
-\code{\link[=featureValues]{featureValues()}} for details. Defaults to \code{method = "maxint"}.}
-
 \item{intensity}{\code{character(1)} passed to the \code{featureValues} call. See
-\code{\link[=featureValues]{featureValues()}} for details. Defaults to \code{intensity = "maxo"}.}
+\code{\link[=featureValues]{featureValues()}} for details. Defaults to \code{intensity = "into"}.}
 
 \item{filled}{\code{logical(1)} whether filled-in values should be included in
 the correlation analysis. Defaults to \code{filled = TRUE}.}
 
-\item{subset}{\code{integer} or \code{logical} defining a subset of samples (at least
-2) on which the correlation should be performed.}
+\item{...}{additional parameters passed to the \code{groupFeatures} method for
+\code{matrix}.}
 
-\item{inclusive}{\code{logical(1)} defining the grouping approach. With
-\code{inclusive = FALSE} (the default) small groups of highly correlated
-features are created using the \code{\link[=groupSimilarityMatrix]{groupSimilarityMatrix()}} function. With
-\code{inclusive = TRUE} groups are created with features that have at least
-one correlation with any other member of the group which is higher than
-\code{threshold}. See also \code{\link[=groupByCorrelation]{groupByCorrelation()}}.}
-
-\item{transform}{\code{function} to be applied to the feature intensities prior
-correlation. Defaults to \code{transform = log2}, i.e. log2 transforms the
-data before correlation. To use the values \emph{as-is} use
-\code{transform = identity}.}
-
-\item{object}{\code{\link[=XCMSnExp]{XCMSnExp()}} object containing also correspondence results.}
-
-\item{param}{\code{AbudanceCorrelationParam} object with the settings for the
-method.}
-
-\item{msLevel}{\code{integer(1)} defining the MS level on which the features
-should be grouped.}
+\item{peakId}{\code{character} with the IDs of the chromatographic peaks (i.e.
+rownames of \code{chromPeaks(object)}).}
 }
 \value{
-input \code{XCMSnExp} with feature groups added (i.e. in column
-\code{"feature_group"} of its \code{featureDefinitions} data frame.
+input \code{XCMSnExp} with feature group definitions added to a column
+\code{"feature_group"} in its \code{featureDefinitions} data frame.
 }
 \description{
-This methods groups features based on correlation of abundances (i.e.
-\emph{feature values}) across samples. Parameter \code{subset} allows to define a sub
-set of samples on which this correlation should be correlated. It might for
-example be better to exclude QC samples from this correlation analysis
-because values of all features are supposed to be constant in these samples
-and including these could bias the correlation estimation. Also, it might
-be better to perform the correlation including also \emph{gap filled} values which
-is possible with parameter \code{filled = TRUE} on an \code{object} on which also
-\code{\link[xcms:fillChromPeaks]{xcms::fillChromPeaks()}} was called.
+This method groups features based on similarity of abundances (i.e.
+\emph{feature values}) across samples. See also \code{\link[=AbundanceSimilarityParam]{AbundanceSimilarityParam()}} for
+additional information and details.
+
+This help page lists parameters specific for \code{xcms} result objects (i.e. the
+\code{\link[=XCMSnExp]{XCMSnExp()}} object). Documentation of the parameters for the similarity
+calculation is available in the \code{\link[=AbundanceSimilarityParam]{AbundanceSimilarityParam()}} help page in
+the \code{MsFeatures} package.
 }
 \examples{
 
@@ -93,12 +78,12 @@ xodg <- groupChromPeaks(xod, param = pdp)
 ## in the feature value which influence grouping of features in the present
 ## data set.
 xodg_grp <- groupFeatures(xodg,
-    param = AbundanceCorrelationParam(threshold = 0.8))
+    param = AbundanceSimilarityParam(threshold = 0.8))
 table(featureDefinitions(xodg_grp)$feature_group)
 
 ## Group based on the maximal peak intensity per feature
 xodg_grp <- groupFeatures(xodg,
-    param = AbundanceCorrelationParam(threshold = 0.8, value = "maxo"))
+    param = AbundanceSimilarityParam(threshold = 0.8, value = "maxo"))
 table(featureDefinitions(xodg_grp)$feature_group)
 }
 \seealso{

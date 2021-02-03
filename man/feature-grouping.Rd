@@ -33,7 +33,7 @@ The available options for \code{groupFeatures} on \code{xcms} preprocessing resu
 \itemize{
 \item Grouping by similar retention times: \code{\link[=groupFeatures-similar-rtime]{groupFeatures-similar-rtime()}}.
 \item Grouping by similar feature values across samples:
-\code{\link[=AbundanceCorrelationParam]{AbundanceCorrelationParam()}}.
+\code{\link[=AbundanceSimilarityParam]{AbundanceSimilarityParam()}}.
 \item Grouping by similar peak shape of extracted ion chromatograms:
 \code{\link[=EicCorrelationParam]{EicCorrelationParam()}}.
 }
