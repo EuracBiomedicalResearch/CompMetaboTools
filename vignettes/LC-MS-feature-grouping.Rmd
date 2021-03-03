@@ -117,7 +117,7 @@ takes an `XCMSnExp` object (result object from the `xcms` pre-processing) as
 input as well as a parameter object to chose the grouping algorithm and specify
 its settings. At present the following approaches are supported:
 
-- `SimilarRtimeParam`: perform a *crude* grouping based on similar retention
+- `SimilarRtimeParam`: perform an initial grouping based on similar retention
   time.
 - `EicCorrelationParam`: perform a feature grouping based on correlation of
   EICs.
@@ -256,12 +256,14 @@ section (i.e. are not eluting at the same time).
 Below we use the `groupFeatures` with the `AbundanceSimilarityParam` to group
 features with a correlation higher than 0.7 including both detected and
 filled-in signal. Whether filled-in or only detected signal should be used in
-the correlation analysis should be evaluated from data set to data set. Note
-also that by default the correlation is performed on log2 transformed signals.
+the correlation analysis should be evaluated from data set to data set. By
+specifying `transform = log2` we tell the function to log2 transform the
+abundance prior to the correlation analysis.
 
 ```{r abundance-correlation}
 xdata <- groupFeatures(xdata, AbundanceSimilarityParam(threshold = 0.7,
-                                                        filled = TRUE))
+                                                       transform = log2),
+                       filled = TRUE)
 table(featureGroups(xdata))
 ```
 
