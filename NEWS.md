@@ -1,5 +1,9 @@
 # CompMetaboTools 0.3
 
+## CompMetaboTools 0.3.3
+
+- Add parameter `type` to `chromPeakArea`.
+
 ## CompMetaboTools 0.3.2
 
 - Add `chromPeakArea` function.
