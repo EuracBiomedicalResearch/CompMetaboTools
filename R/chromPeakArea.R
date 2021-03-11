@@ -9,8 +9,9 @@
 #' The function identifies first chromatographic peaks in `x` that match the
 #' input parameters `mz` and `rt` or `peakId` and then defines the m/z and rt
 #' range based on the `"mzmin"`, `"mzmax"`, `"rtmin"` and `"rtmax"` of these.
-#' If m/z and rt ranges are provided, only chromatographic peaks are considered
-#' that have their apex within the region.
+#' If m/z and rt ranges are provided, by default only chromatographic peaks are
+#' considered that have their apex within the region. That can be changed by
+#' using a different value for `type`.
 #'
 #' As a result a `matrix` is returned with columns `"mzmin"`, `"mzmax"`,
 #' `"rtmin"` and `"rtmax"` defining the lower and upper boundaries of the
@@ -43,6 +44,9 @@
 #'     identified if `mz` is a `numeric`. The m/z region is defined as
 #'     `mz - ppm(mz, ppm)` to `mz + ppm(mz, ppm)`
 #'
+#' @param type `character(1)` defining which peaks are considered. Defaults to
+#'     `type = "apex_within"`. See help on `chromPeaks` for more information.
+#' 
 #' @return `matrix` with columnd `"mzmin"`, `"mzmax"`, `"rtmin"`, `"rtmax"`
 #'     with the m/z and retention time ranges calculated on all chromatographic
 #'     peaks in `x` matching `mz` and `rt`. Each row representing the result for
@@ -71,7 +75,9 @@
 #' chromPeakArea(xod, rt = c(2500, 2700), diffRt = 100,
 #'     mz = cbind(c(400, 300), c(500, 400)))
 chromPeakArea <- function(x, mz = numeric(), rt = numeric(), diffRt = 40,
-                          ppm = 50, peakId = character()) {
+                          ppm = 50, peakId = character(),
+                          type = c("apex_within", "any", "within")) {
+    type <- match.arg(type)
     if (length(peakId))
         stop("Not implemented yet")
     if (!hasChromPeaks(x))
@@ -90,7 +96,7 @@ chromPeakArea <- function(x, mz = numeric(), rt = numeric(), diffRt = 40,
                   dimnames = list(NULL, c("mzmin", "mzmax", "rtmin", "rtmax")))
     for (i in seq_len(l)) {
         pks <- chromPeaks(x, mz = mz[i, , drop = FALSE], ppm = 0,
-                          rt = rt[i, , drop = FALSE], type = "apex_within")
+                          rt = rt[i, , drop = FALSE], type = type)
         if (nrow(pks))
             res[i, ] <- c(range(pks[, c("mzmin", "mzmax")]),
                           range(pks[, c("rtmin", "rtmax")]))

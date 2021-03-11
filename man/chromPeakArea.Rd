@@ -10,7 +10,8 @@ chromPeakArea(
   rt = numeric(),
   diffRt = 40,
   ppm = 50,
-  peakId = character()
+  peakId = character(),
+  type = c("apex_within", "any", "within")
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ identified if \code{mz} is a \code{numeric}. The m/z region is defined as
 
 \item{peakId}{\code{character} with the IDs of the chromatographic peaks (i.e.
 rownames of \code{chromPeaks(object)}).}
+
+\item{type}{\code{character(1)} defining which peaks are considered. Defaults to
+\code{type = "apex_within"}. See help on \code{chromPeaks} for more information.}
 }
 \value{
 \code{matrix} with columnd \code{"mzmin"}, \code{"mzmax"}, \code{"rtmin"}, \code{"rtmax"}
@@ -53,8 +57,9 @@ chromatographic peaks. The chromatographic peaks can be defined by their ID
 The function identifies first chromatographic peaks in \code{x} that match the
 input parameters \code{mz} and \code{rt} or \code{peakId} and then defines the m/z and rt
 range based on the \code{"mzmin"}, \code{"mzmax"}, \code{"rtmin"} and \code{"rtmax"} of these.
-If m/z and rt ranges are provided, only chromatographic peaks are considered
-that have their apex within the region.
+If m/z and rt ranges are provided, by default only chromatographic peaks are
+considered that have their apex within the region. That can be changed by
+using a different value for \code{type}.
 
 As a result a \code{matrix} is returned with columns \code{"mzmin"}, \code{"mzmax"},
 \code{"rtmin"} and \code{"rtmax"} defining the lower and upper boundaries of the
