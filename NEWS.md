@@ -1,5 +1,10 @@
 # CompMetaboTools 0.4
 
+## CompMetaboTools 0.4.1
+
+- Remove `plotOverlay` function (replaced by `plotChromatogramsOverlay` from
+  `xcms`.
+
 ## CompMetaboTools 0.4.0
 
 - Remove all feature grouping code (added to `xcms`).
