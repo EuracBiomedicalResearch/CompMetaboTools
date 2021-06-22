@@ -174,7 +174,7 @@
 #'
 #' @author Johannes Rainer
 #'
-#' @importFrom stats cor
+#' @importFrom stats cor median quantile residuals sd
 #'
 #' @importFrom MsFeatures groupSimilarityMatrix
 #' 
@@ -237,121 +237,6 @@ groupByCorrelation <- function(x, method = "pearson",
         else
             as.factor(groupSimilarityMatrix(cors, threshold = threshold))
     }
-}
-
-#' @title Group EICs based on their correlation
-#'
-#' @description
-#'
-#' `groupEicCorrelation` groups (extracted ion) chromatograms (EICs) based on
-#' their correlation with each other. If this correlation is `>=` than the
-#' provided `threshold` they are grouped.
-#'
-#' If `x` is a [MChromatograms()] object with more than one column (sample),
-#' pairwise correlations between EICs are first calculated for each column
-#' (sample) of `x` separately and subsequently aggregated across samples using
-#' `aggregationFun`. If `x` is a `MChromatograms` with 4 rows (EICs) and 3
-#' columns (samples), pairwise correlations are first calculated between all
-#' 4 EICs in each of the 3 columns resulting in 3 correlation matrices (of
-#' dimension 4x4). These correlation matrices are combined into a single matrix
-#' by combining the 3 correlation values per comparison with
-#' `aggregationFun`. By default the mean of the correlation value between e.g.
-#' EIC 1 and EIC 2 in each of the 3 columns is used as the final correlation
-#' value. Similar to the one-column case EICs are grouped if their (aggregated)
-#' correlation coefficient is larger than `threshold`.
-#'
-#' Two types of groupings are available:
-#' 
-#' - `inclusive = FALSE` (the default): the algorithm creates small groups of
-#'   highly correlated members, all of which have a correlation with each other
-#'   that are `>= threshold`. Note that with this algorithm, rows in `x` could
-#'   still have a correlation `>= threshold` with one or more elements of a
-#'   group they are not part of. See notes below for more information.
-#' - `inclusive = TRUE`: the algorithm creates large groups containing rows that
-#'   have a correlation `>= threshold` with at least one element of that group.
-#'   For example, if row 1 and 3 have a correlation above the threshold and
-#'   rows 3 and 5 too (but correlation between 1 and 5 is below the threshold)
-#'   all 3 are grouped into the same group (i.e. rows 1, 3 **and** 5).
-#'
-#' For more information see [groupByCorrelation()].
-#'
-#' Note that it might be useful to set `tolerance = 0` if chromatograms from
-#' the **same** sample are compared. This forces retention times of the compared
-#' chromatograms' intensities to be identical.
-#' 
-#' @param x [MChromatograms()] object of `list` of [Chromatogram()] objects.
-#'
-#' @param aggregationFun `function` to combine the correlation values between
-#'     pairs of EICs across samples (columns). See description for details.
-#'
-#' @param threshold `numeric(1)` with the threshold for correlation above which
-#'     EICs are grouped together.
-#'
-#' @param align `character(1)` defining the method how chromatograms should be
-#'     aligned prior correlation. Defaults to `align = "closest"`. See
-#'     [alignRt()] for more details.
-#'
-#' @param inclusive `logical(1)` defining the grouping approach. With
-#'     `inclusive = FALSE` (the default) small groups of highly correlated
-#'     features are created using the [groupSimilarityMatrix()] function. With
-#'     `inclusive = TRUE` groups are created with features that have at least
-#'     one correlation with any other member of the group which is higher than
-#'     `threshold`.
-#' 
-#' @param ... parameters for the [correlate()] function for [MChromatograms()]
-#'     objects, such as `tolerance` to allow specifying the maximal acceptable
-#'     difference in retention times between objects. See also [alignRt()] for
-#'     more information.
-#'
-#' @return `factor` same length as `nrow(x)` (if `x` is a `MChromatograms`
-#'     object) or `length(x)` (if `x` is a `list`) with the group each EIC
-#'     is assigned to.
-#' 
-#' @importMethodsFrom xcms correlate
-#' 
-#' @importFrom MSnbase MChromatograms
-#' 
-#' @family grouping operations
-#'
-#' @author Johannes Rainer
-#' 
-#' @export
-#'
-#' @examples
-#'
-#' library(MSnbase)
-#' set.seed(123)
-#' chr1 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
-#'     intensity = c(5, 29, 50, NA, 100, 12, 3, 4, 1, 3))
-#' chr2 <- Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
-#'     intensity = c(80, 50, 20, 10, 9, 4, 3, 4, 1, 3))
-#' chr3 <- Chromatogram(rtime = 3:9 + rnorm(7, sd = 0.3),
-#'     intensity = c(53, 80, 130, 15, 5, 3, 2))
-#' chrs <- MChromatograms(list(chr1, chr2, chr3))
-#'
-#' groupEicCorrelation(chrs)
-#'
-#' ## With a MChromatograms with two columns, use the maximal correlation
-#' ## coefficient found in each of the columns
-#' chrs <- MChromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3), ncol = 2)
-#' groupEicCorrelation(chrs, aggregationFun = max)
-groupEicCorrelation <- function(x, aggregationFun = mean,
-                                threshold = 0.8, align = "closest",
-                                inclusive = FALSE, ...) {
-    nr <- nrow(x)
-    nc <- ncol(x)
-    res <- array(NA_real_, dim = c(nr, nr, nc))
-    ## For performance issues it would also be possible to run with full = FALSE
-    for (i in seq_len(nc))
-        res[, , i] <- correlate(x[, i], align = align, ...)
-    res <- apply(res, c(1, 2), aggregationFun, na.rm = TRUE)
-    ## Ensure diagonal is always TRUE to not drop any features!
-    res[cbind(1:nr, 1:nr)] <- 1
-    if (inclusive) {
-        res <- res > threshold
-        .index_list_to_factor(.group_logic_matrix(res))
-    }
-    else as.factor(groupSimilarityMatrix(res, threshold = threshold))
 }
 
 #' @title Sub-group allowing only single positive/polarity pairs per group

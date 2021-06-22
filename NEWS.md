@@ -1,3 +1,9 @@
+# CompMetaboTools 0.4
+
+## CompMetaboTools 0.4.0
+
+- Remove all feature grouping code (added to `xcms`).
+
 # CompMetaboTools 0.3
 
 ## CompMetaboTools 0.3.3

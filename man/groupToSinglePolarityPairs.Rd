@@ -60,8 +60,7 @@ groupToSinglePolarityPairs(grp, pol, x)
 }
 \seealso{
 Other grouping operations: 
-\code{\link{groupByCorrelation}()},
-\code{\link{groupEicCorrelation}()}
+\code{\link{groupByCorrelation}()}
 }
 \author{
 Johannes Rainer

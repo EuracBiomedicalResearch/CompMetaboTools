@@ -89,44 +89,6 @@ test_that("groupByCorrelation works", {
     expect_error(groupByCorrelation(x, f = 3), "its length has to ")
 })
 
-test_that("groupEicCorrelation works", {
-    set.seed(123)
-    chr1 <- MSnbase::Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
-                         intensity = c(5, 29, 50, NA, 100, 12, 3, 4, 1, 3))
-    chr2 <- MSnbase::Chromatogram(rtime = 1:10 + rnorm(n = 10, sd = 0.3),
-                         intensity = c(80, 50, 20, 10, 9, 4, 3, 4, 1, 3))
-    chr3 <- MSnbase::Chromatogram(rtime = 3:9 + rnorm(7, sd = 0.3),
-                         intensity = c(53, 80, 130, 15, 5, 3, 2))
-    chrs <- MSnbase::MChromatograms(list(chr1, chr2, chr3))
-
-    res <- groupEicCorrelation(chrs, align = "closest")
-    expect_true(is.factor(res))
-    expect_equal(res, factor(c(1L, 2L, 1L)))
-    res <- groupEicCorrelation(chrs, align = "closest", tolerance = 0)
-    expect_equal(res, factor(c(1L, 2L, 3L)))
-    
-    chrs <- MSnbase::MChromatograms(list(chr1, chr2, chr3, chr1, chr2, chr3,
-                                        chr2, chr3, chr1), ncol = 3)
-    res <- groupEicCorrelation(chrs)
-    expect_true(is.factor(res))
-    expect_equal(res, factor(c(1L, 2L, 3L)))
-
-    res <- groupEicCorrelation(chrs, aggregationFun = max, inclusive = TRUE,
-                               align = "closest")
-    expect_true(is.factor(res))
-    expect_equal(res, factor(c(1L, 1L, 1L)))
-
-    res <- groupEicCorrelation(chrs, aggregationFun = max, inclusive = FALSE,
-                               align = "closest")
-    expect_true(is.factor(res))
-    expect_equal(res, factor(c(1L, 2L, 1L)))
-
-    res <- groupEicCorrelation(chrs, aggregationFun = median,
-                               align = "closest")
-    expect_true(is.factor(res))
-    expect_equal(res, factor(c(1L, 2L, 1L)))
-})
-
 test_that("groupToSinglePolarityPairs works", {
     x <- rbind(
         c(4, 3, 5, 1),

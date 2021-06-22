@@ -1,6 +1,6 @@
 Package: CompMetaboTools
 Title: Utility Functions from the Eurac Research Computational Metabolomics Team
-Version: 0.3.3
+Version: 0.4.0
 Description: Utility functions used frequently in analyses of the
     Computational Metabolomics Team of the Eurac Research, Institute for
     Biomedicine.
@@ -54,9 +54,8 @@ Collate:
     'MChromatograms.R'
     'chromPeakArea.R'
     'dropModels.R'
-    'hidden_aliases.R'
-    'group_feature_methods.R'
     'group_features.R'
+    'hidden_aliases.R'
     'joyPlot.R'
     'matching.R'
     'model_flagging.R'
