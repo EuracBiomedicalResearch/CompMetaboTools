@@ -15,8 +15,7 @@ Authors@R: c(person(given = "Johannes", family = "Rainer",
 Author: Mar Garcia-Aloy and Johannes Rainer.
 Maintainer: Johannes Rainer <johannes.rainer@eurac.edu>
 Depends:
-    R (>= 3.6.0),
-    MsFeatures (>= 0.0.3)
+    R (>= 3.6.0)
 Imports:
     BiocParallel,
     SummarizedExperiment,
@@ -28,7 +27,8 @@ Imports:
     xcms (>= 3.13.3),
     MsCoreUtils (>= 1.1.0),
     ProtGenerics (>= 1.23.4),
-    stats
+    stats,
+    MsFeatures
 Suggests:
     testthat,
     roxygen2,
@@ -40,8 +40,6 @@ Suggests:
     BiocStyle,
     pheatmap,
     knitr
-Remotes:
-    RforMassSpectrometry/MsFeatures
 License: Artistic-2.0
 LazyData: yes
 VignetteBuilder: knitr

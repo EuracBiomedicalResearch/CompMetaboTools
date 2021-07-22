@@ -82,6 +82,8 @@ setGeneric("joyPlot", def = function(object, ...)
 #'
 #' @author Johannes Rainer
 #'
+#' @importMethodsFrom xcms filterFile rtime
+#' 
 #' @name joyPlot
 #' 
 #' @examples

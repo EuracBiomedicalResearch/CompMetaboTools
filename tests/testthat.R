@@ -1,5 +1,6 @@
 library("testthat")
 library("CompMetaboTools")
+library(MsFeatures)
 
 library(faahKO)
 
