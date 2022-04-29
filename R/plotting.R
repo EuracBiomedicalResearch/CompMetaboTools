@@ -40,7 +40,7 @@ plot_pca <- function(pc, pch = 16, col = "#000000", pc_x = 1, pc_y = 2,
                               digits = 3), " % variance"),
          ylab = paste0("PC", pc_y, ": ",
                        format(pcSummary$importance[2, pc_y] * 100, 
-                              digits = 3), " % variance"))
+                              digits = 3), " % variance"), ...)
     grid()
     if (!is.null(labels)) 
         text(pc$x[, pc_x], pc$x[, pc_y], labels = labels, col = col, 

@@ -1,5 +1,9 @@
 # CompMetaboTools 0.4
 
+## CompMetaboTools 0.4.2
+
+- Pass `...` also to the `plot` call in `plot_pca`.
+
 ## CompMetaboTools 0.4.1
 
 - Remove `plotOverlay` function (replaced by `plotChromatogramsOverlay` from
