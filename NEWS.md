@@ -1,5 +1,9 @@
 # CompMetaboTools 0.4
 
+## CompMetaboTools 0.4.3
+
+- Add `averageSE` function to average replicates in a `SummarizedExperiment`.
+
 ## CompMetaboTools 0.4.2
 
 - Pass `...` also to the `plot` call in `plot_pca`.
