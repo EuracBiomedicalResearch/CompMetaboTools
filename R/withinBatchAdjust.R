@@ -1,5 +1,7 @@
 #' @title Apply per-batch model adjustment of feature abundances
 #'
+#' @description
+#' 
 #' `withinBatchAdjust` adjusts feature abundances within each batch based
 #' on the model provided with parameter `models` (which are fitted using the
 #' [withinBatchFit()] function.

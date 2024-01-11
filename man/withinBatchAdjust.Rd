@@ -2,11 +2,7 @@
 % Please edit documentation in R/withinBatchAdjust.R
 \name{withinBatchAdjust}
 \alias{withinBatchAdjust}
-\title{Apply per-batch model adjustment of feature abundances
-
-\code{withinBatchAdjust} adjusts feature abundances within each batch based
-on the model provided with parameter \code{models} (which are fitted using the
-\code{\link[=withinBatchFit]{withinBatchFit()}} function.}
+\title{Apply per-batch model adjustment of feature abundances}
 \usage{
 withinBatchAdjust(
   x,
@@ -42,8 +38,6 @@ abundances are returned in natural scale.}
 of assay \code{assay} adjusted based on the provided models \code{models}.
 }
 \description{
-Apply per-batch model adjustment of feature abundances
-
 \code{withinBatchAdjust} adjusts feature abundances within each batch based
 on the model provided with parameter \code{models} (which are fitted using the
 \code{\link[=withinBatchFit]{withinBatchFit()}} function.

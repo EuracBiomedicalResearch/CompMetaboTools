@@ -1,5 +1,9 @@
 # CompMetaboTools 0.4
 
+## CompMetaboTools 0.4.4
+
+- Remove `rsd` and `rowRsd` (have been transferred to `MetaboCoreUtils`).
+
 ## CompMetaboTools 0.4.3
 
 - Add `averageSE` function to average replicates in a `SummarizedExperiment`.

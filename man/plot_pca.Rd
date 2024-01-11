@@ -2,10 +2,7 @@
 % Please edit documentation in R/plotting.R
 \name{plot_pca}
 \alias{plot_pca}
-\title{Plot of PCA results
-
-\code{plot_pca} is a simple utility function to plot the results from a PCA
-analysis.}
+\title{Plot of PCA results}
 \usage{
 plot_pca(
   pc,
@@ -41,8 +38,6 @@ provided, these will be displayed instead of data points.}
 calls (if \code{labels = NULL} or not).}
 }
 \description{
-Plot of PCA results
-
 \code{plot_pca} is a simple utility function to plot the results from a PCA
 analysis.
 }

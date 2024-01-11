@@ -2,13 +2,7 @@
 % Please edit documentation in R/dropModels.R
 \name{dropModels}
 \alias{dropModels}
-\title{Remove model fits based on specified criteria
-
-The \code{dropModels} function takes model fits such as the ones returned by
-\code{xcms:::rowFitModel} or \code{\link[=withinBatchFit]{withinBatchFit()}} and removes models idenfified by
-function \code{FLAG_FUN}. This function can be one of the \verb{flag_*} functions (such
-as \code{\link[=flag_model_residual]{flag_model_residual()}}) that take a linear model fit as input and return
-a logical indicating whether the model fit is problematic or not.}
+\title{Remove model fits based on specified criteria}
 \usage{
 dropModels(x, FLAG_FUN, ...)
 }
@@ -28,8 +22,6 @@ The input \code{x} with poor quality models identified by \code{FUN} replaced
 with \code{NA}.
 }
 \description{
-Remove model fits based on specified criteria
-
 The \code{dropModels} function takes model fits such as the ones returned by
 \code{xcms:::rowFitModel} or \code{\link[=withinBatchFit]{withinBatchFit()}} and removes models idenfified by
 function \code{FLAG_FUN}. This function can be one of the \verb{flag_*} functions (such

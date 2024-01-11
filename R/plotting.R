@@ -1,5 +1,7 @@
 #' @title Plot of PCA results
 #'
+#' @description
+#' 
 #' `plot_pca` is a simple utility function to plot the results from a PCA
 #' analysis.
 #'
@@ -40,7 +42,14 @@ plot_pca <- function(pc, pch = 16, col = "#000000", pc_x = 1, pc_y = 2,
                               digits = 3), " % variance"),
          ylab = paste0("PC", pc_y, ": ",
                        format(pcSummary$importance[2, pc_y] * 100, 
-                              digits = 3), " % variance"), ...)
+                              digits = 3), " % variance"),
+         xaxt = "n", yaxt = "n", ...)
+    xat <- axTicks(1, usr = par("usr")[1:2])
+    labs <- gsub("-", "\U2212", print.default(xat))
+    axis(1, at = xat, labels = labs)
+    yat <- axTicks(2, usr = par("usr")[1:2])
+    labs <- gsub("-", "\U2212", print.default(yat))
+    axis(2, at = yat, labels = labs)    
     grid()
     if (!is.null(labels)) 
         text(pc$x[, pc_x], pc$x[, pc_y], labels = labels, col = col, 

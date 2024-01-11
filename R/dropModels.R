@@ -1,5 +1,7 @@
 #' @title Remove model fits based on specified criteria
 #'
+#' @description
+#' 
 #' The `dropModels` function takes model fits such as the ones returned by
 #' `xcms:::rowFitModel` or [withinBatchFit()] and removes models idenfified by
 #' function `FLAG_FUN`. This function can be one of the `flag_*` functions (such

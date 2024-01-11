@@ -1,6 +1,6 @@
 Package: CompMetaboTools
 Title: Utility Functions from the Eurac Research Computational Metabolomics Team
-Version: 0.4.3
+Version: 0.4.4
 Description: Utility functions used frequently in analyses of the
     Computational Metabolomics Team of the Eurac Research, Institute for
     Biomedicine.
@@ -46,10 +46,11 @@ VignetteBuilder: knitr
 BugReports: https://github.com/EuracBiomedicalResearch/CompMetaboTools/issues
 URL: https://github.com/EuracBiomedicalResearch/CompMetaboTools
 biocViews: Infrastructure, MassSpectrometry, Metabolomics
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Roxygen: list(markdown=TRUE)
 Collate: 
     'MChromatograms.R'
+    'averageSE.R'
     'chromPeakArea.R'
     'dropModels.R'
     'group_features.R'
@@ -60,7 +61,6 @@ Collate:
     'moreAreValidThan.R'
     'ms_file_utils.R'
     'plotting.R'
-    'rsd.R'
     'sync_files.R'
     'withinBatchAdjust.R'
     'withinBatchFit.R'
